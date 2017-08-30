@@ -1,0 +1,61 @@
+---
+title: "Report for `r params$code`"
+author: "medfateTeam"
+date: "`r Sys.time()`"
+params:
+  wd: ''
+  code: ''
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_knit$set(root.dir = params$wd)
+library(medfate)
+library(MedfateValidation)
+```
+
+```{r test}
+code <- params$code
+
+treeData <- load_treeData(code)
+shrubData <- load_shrubData(code)
+seedData <- load_seedData(code)
+customParams <- load_customParams(code)
+measuredData <- load_measuredData(code)
+meteoData <- load_meteoData(code)
+miscData <- load_miscData(code)
+soilData <- load_soilData(code)
+terrainData <- load_terrainData(code)
+
+forest_object <- buildForest(treeData, shrubData, seedData, miscData)
+soil_object <- buildSoil(soilData)
+
+data('SpParamsMED', package = 'medfate')
+
+input <- medfate::forest2swbInput(forest_object, soil_object, SpParamsMED,
+                         medfate::defaultControl())
+
+res <- medfate::swb(input, soil_object, meteoData)
+```
+
+```{r plot}
+par(mfrow = c(4,1))
+
+plot(res, yearAxis = TRUE)
+plot(res, type = 'ET', yearAxis = TRUE)
+
+plot(x = 1:nrow(meteoData),
+     y = res$SoilWaterBalance$W.1 * prades_soil$Theta_FC[[1]],
+     col = 'black')
+yts <- meteoData$SWC_avcor
+yse <- meteoData$SWC_secor
+lines(x = 1:nrow(meteoData), y = yts, col = "red", lwd=2)
+lines(x = 1:nrow(meteoData), y = yts+1.96*yse, col = "red", lwd = 1)
+lines(x = 1:nrow(meteoData), y = yts-1.96*yse, col = "red", lwd = 1)
+
+plot(res, type = 'PlantStress', yearAxis = TRUE)
+
+par(mfrow = c(1,1))
+```
+
