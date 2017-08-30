@@ -70,6 +70,10 @@ load_meteoData <- function(site) {
   # load data
   meteo_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                            stringsAsFactors = FALSE)
+  # rownames
+  rownames(meteo_data) <- meteo_data[['Date']]
+  # get rid of Date column
+  meteo_data$Date <- NULL
   # return data frame
   return(meteo_data)
 }
