@@ -57,10 +57,13 @@ if (params$transpMode %in% c('simple', 'both')) {
   simple_input <- medfate::forest2swbInput(forest_object, soil_object,
                                            sp_params, control_obj)
   
+  # input modifications (if any)
+  simple_input <- inputMod(simple_input, customParams)
+  
   # model run
   res_simple <- medfate::swb(simple_input, soil_object, meteoData)
 } else {
-  # if simple mode is not performed, inform about it in the report
+  # if simple mode is not performed, report about it
   cat('Simple model has not been selected to be performed')
 }
 ```
@@ -104,12 +107,15 @@ if (params$transpMode %in% c('complex', 'both')) {
   complex_input <- medfate::forest2swbInput(forest_object, soil_object,
                                             sp_params, control_obj)
   
+  # input modifications (if any)
+  complex_input <- inputMod(complex_input, customParams)
+  
   # model run
   res_complex <- medfate::swb(complex_input, soil_object, meteoData,
                              terrainData$latitude, terrainData$elevation,
                              terrainData$slope, terrainData$aspect)
 } else {
-  # if simple mode is not performed, inform about it in the report
+  # if simple mode is not performed, report about it
   cat('Complex model has not been selected to be performed')
 }
 ```
