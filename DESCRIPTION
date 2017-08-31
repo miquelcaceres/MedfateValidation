@@ -13,3 +13,6 @@ RoxygenNote: 6.0.1
 Imports:
     medfate,
     rmarkdown
+Suggests:
+    knitr
+VignetteBuilder: knitr

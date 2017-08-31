@@ -1,0 +1,82 @@
+---
+title: "Sites Data Structure"
+author: "medfate Team"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sites Data Structure}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+In this vignette the sites/plots data structure needed for the automated
+calibration/validation of the medfate model is explained.
+
+## Data files format
+
+Files must be in `txt` format, with headers, without rownames, separated
+by tabs (`"\t"`) and with point (`"."`) as decimal character.
+Also, names of the files must start with the site/plot code.
+
+## Needed files
+
+Each site/plot data can be comprised of 9 files, some of them being optional:
+
+- treeData
+- shrubData (*optional*)
+- seedData (*optional*)
+- miscData
+- meteoData
+- soilData
+- terrainData (*optional*)
+- customParams (*optional*)
+- measuredData
+
+In the following sections each file will be described in detail using `FOO` as
+site code
+
+## treeData
+
+> Name: FOO_treeData.txt  
+  Location: Sites_data/FOO/
+
+This data file must have 6 columns and the same number of rows as tree species
+present in the site/plot:
+
+Species | N | DBH | Height | Z50 | Z95
+--------|---|-----|--------|-----|------
+54 | 168 | 37.55 | 800 | 750 | 3000
+68 | 384 | 14.60 | 660 | 750 | 3000
+
+Variables:
+
+  : **Species** A numeric code as found in the SpParams data from the `medfate` package
+  : **N** Species density
+  : **DBH** Mean diameter at breast height for the species
+  : **Height** Mean height for the species
+  : **Z50** Depth in mm enclosing the 50% of the roots
+  : **Z95** Depth in mm enclosing the 95% of the roots
+
+## shrubData
+
+> Name: FOO_shrubData.txt  
+  Location: Sites_data/FOO/
+
+This file is optional. If not supplied the shrub slot of the `forest` object
+will be emtpy.  
+
+File must have 4 columns and the same number of rows as shrub species present
+in the site/plot:
+
+Species | Cover | Height | Z
+--------|-------|--------|----
+64 | 3.75 | 30 | 2000
+78 | 30.00 | 100 | 1000
+
+Variables:
+
+  : **Species** A numeric code as found in the SpParams data from the `medfate` package
+  : **Cover** Percent cover of the species
+  : **Height** Mean height for the species
+  : **Z** Depth in mm of the root system for the species
+

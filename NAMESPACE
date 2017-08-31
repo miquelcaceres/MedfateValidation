@@ -3,6 +3,7 @@
 export(SpParams_mod)
 export(buildForest)
 export(buildSoil)
+export(inputMod)
 export(load_customParams)
 export(load_measuredData)
 export(load_meteoData)

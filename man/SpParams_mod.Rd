@@ -17,3 +17,6 @@ the result of \code{\link{load_customParams}}}
 This function modifies the SpParams table with the values supplied in the
 customParams.txt file
 }
+\seealso{
+Other CustomMods: \code{\link{inputMod}}
+}
