@@ -16,3 +16,13 @@ report_render(output_file = NULL, output_dir = NULL, ...)
 \description{
 Function for generating automaitcally the report
 }
+\details{
+The parameters accepted by the rmarkdown template (\code{...} argument) are
+the following:
+\itemize{
+  \item{wd: working directory (i.e. the route to the validation root folder)}
+  \item{code: Site/Plot code for which the report must be generated}
+  \item{transpMode: Transpiration mode, accepted values are \code{simple},
+        \code{complex} and \code{both}}
+}
+}

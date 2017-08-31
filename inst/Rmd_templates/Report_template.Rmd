@@ -5,6 +5,7 @@ date: "`r Sys.time()`"
 params:
   wd: ''
   code: ''
+  transpMode: ''
 output: html_document
 ---
 
@@ -15,7 +16,8 @@ library(medfate)
 library(MedfateValidation)
 ```
 
-```{r test}
+```{r data, message=FALSE}
+# data
 code <- params$code
 
 treeData <- load_treeData(code)
@@ -32,30 +34,52 @@ forest_object <- buildForest(treeData, shrubData, seedData, miscData)
 soil_object <- buildSoil(soilData)
 
 data('SpParamsMED', package = 'medfate')
-
-input <- medfate::forest2swbInput(forest_object, soil_object, SpParamsMED,
-                         medfate::defaultControl())
-
-res <- medfate::swb(input, soil_object, meteoData)
 ```
 
-```{r plot}
-par(mfrow = c(4,1))
 
-plot(res, yearAxis = TRUE)
-plot(res, type = 'ET', yearAxis = TRUE)
+## *Simple* Model
 
-plot(x = 1:nrow(meteoData),
-     y = res$SoilWaterBalance$W.1 * prades_soil$Theta_FC[[1]],
+```{r simple_model, eval=TRUE, message=FALSE}
+# check if simple mode has to be performed
+if (params$transpMode %in% c('simple', 'both')) {
+  # control object
+  control_obj <- medfate::defaultControl()
+  control_obj$verbose <- FALSE
+  control_obj$transpirationMode <- 'Simple'
+  
+  # input object
+  simple_input <- medfate::forest2swbInput(forest_object, soil_object, SpParamsMED,
+                                           medfate::control_obj)
+  
+  # model run
+  res_simple <- medfate::swb(simple_input, soil_object, meteoData)
+} else {
+  # if simple mode is not performed, inform about it in the report
+  cat('Simple model has not been selected to be performed')
+}
+```
+
+```{r plot, eval = TRUE, fig.height=12}
+# show the plot only if simple mode must be performed
+if (params$transpMode %in% c('simple', 'both')) {
+  # config layout
+  par(mfrow = c(4,1))
+  # P/PET plot
+  plot(res_simple, yearAxis = TRUE)
+  # ET plot
+  plot(res_simple, type = 'ET', yearAxis = TRUE)
+  # SWC plot
+  plot(x = 1:nrow(meteoData),
+     y = res_simple$SoilWaterBalance$W.1 * soil_object$Theta_FC[[1]],
      col = 'black')
-yts <- meteoData$SWC_avcor
-yse <- meteoData$SWC_secor
-lines(x = 1:nrow(meteoData), y = yts, col = "red", lwd=2)
-lines(x = 1:nrow(meteoData), y = yts+1.96*yse, col = "red", lwd = 1)
-lines(x = 1:nrow(meteoData), y = yts-1.96*yse, col = "red", lwd = 1)
-
-plot(res, type = 'PlantStress', yearAxis = TRUE)
-
-par(mfrow = c(1,1))
+  yts <- measuredData$SWC
+  yse <- measuredData$SWC_err
+  lines(x = 1:nrow(meteoData), y = yts, col = "red", lwd = 2)
+  lines(x = 1:nrow(meteoData), y = yts + 1.96 * yse, col = "red", lwd = 1)
+  lines(x = 1:nrow(meteoData), y = yts - 1.96 * yse, col = "red", lwd = 1)
+  # Stress plot
+  plot(res_simple, type = 'PlantStress', yearAxis = TRUE)
+  # reset layout
+  par(mfrow = c(1,1))
+}
 ```
-
