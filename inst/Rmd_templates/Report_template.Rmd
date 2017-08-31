@@ -5,7 +5,7 @@ date: "`r Sys.time()`"
 params:
   wd: ''
   code: ''
-  transpMode: ''
+  transpMode: 'both'
 output: html_document
 ---
 
@@ -17,9 +17,10 @@ library(MedfateValidation)
 ```
 
 ```{r data, message=FALSE}
-# data
+# site/plot code
 code <- params$code
 
+# raw data
 treeData <- load_treeData(code)
 shrubData <- load_shrubData(code)
 seedData <- load_seedData(code)
@@ -30,10 +31,15 @@ miscData <- load_miscData(code)
 soilData <- load_soilData(code)
 terrainData <- load_terrainData(code)
 
+# model objects
 forest_object <- buildForest(treeData, shrubData, seedData, miscData)
 soil_object <- buildSoil(soilData)
 
+# SpParams
 data('SpParamsMED', package = 'medfate')
+
+# SpParams modifications (if any)
+sp_params <- SpParams_mod(SpParamsMED, customParams)
 ```
 
 
@@ -48,8 +54,8 @@ if (params$transpMode %in% c('simple', 'both')) {
   control_obj$transpirationMode <- 'Simple'
   
   # input object
-  simple_input <- medfate::forest2swbInput(forest_object, soil_object, SpParamsMED,
-                                           medfate::control_obj)
+  simple_input <- medfate::forest2swbInput(forest_object, soil_object,
+                                           sp_params, control_obj)
   
   # model run
   res_simple <- medfate::swb(simple_input, soil_object, meteoData)
@@ -59,7 +65,7 @@ if (params$transpMode %in% c('simple', 'both')) {
 }
 ```
 
-```{r plot, eval = TRUE, fig.height=12}
+```{r plot_simple, eval = TRUE, fig.height=12}
 # show the plot only if simple mode must be performed
 if (params$transpMode %in% c('simple', 'both')) {
   # config layout
@@ -70,8 +76,8 @@ if (params$transpMode %in% c('simple', 'both')) {
   plot(res_simple, type = 'ET', yearAxis = TRUE)
   # SWC plot
   plot(x = 1:nrow(meteoData),
-     y = res_simple$SoilWaterBalance$W.1 * soil_object$Theta_FC[[1]],
-     col = 'black')
+       y = res_simple$SoilWaterBalance$W.1 * soil_object$Theta_FC[[1]],
+       col = 'black')
   yts <- measuredData$SWC
   yse <- measuredData$SWC_err
   lines(x = 1:nrow(meteoData), y = yts, col = "red", lwd = 2)
@@ -83,3 +89,60 @@ if (params$transpMode %in% c('simple', 'both')) {
   par(mfrow = c(1,1))
 }
 ```
+
+## *Complex* Model
+
+```{r complex_model}
+# check if complex mode has to be performed
+if (params$transpMode %in% c('complex', 'both')) {
+  # control object
+  control_obj <- medfate::defaultControl()
+  control_obj$verbose <- FALSE
+  control_obj$transpirationMode <- 'Complex'
+  
+  # input object
+  complex_input <- medfate::forest2swbInput(forest_object, soil_object,
+                                            sp_params, control_obj)
+  
+  # model run
+  res_complex <- medfate::swb(complex_input, soil_object, meteoData,
+                             terrainData$latitude, terrainData$elevation,
+                             terrainData$slope, terrainData$aspect)
+} else {
+  # if simple mode is not performed, inform about it in the report
+  cat('Complex model has not been selected to be performed')
+}
+```
+
+```{r plot_complex, eval = TRUE, fig.height=12}
+# show the plot only if simple mode must be performed
+if (params$transpMode %in% c('complex', 'both')) {
+  # config layout
+  par(mfrow = c(4,1))
+  # P/PET plot
+  plot(res_complex, yearAxis = TRUE)
+  # ET plot
+  plot(res_complex, type = 'ET', yearAxis = TRUE)
+  # SWC plot
+  plot(x = 1:nrow(meteoData),
+       y = res_complex$SoilWaterBalance$W.1 * soil_object$Theta_FC[[1]],
+       col = 'black')
+  yts <- measuredData$SWC
+  yse <- measuredData$SWC_err
+  lines(x = 1:nrow(meteoData), y = yts, col = "red", lwd = 2)
+  lines(x = 1:nrow(meteoData), y = yts + 1.96 * yse, col = "red", lwd = 1)
+  lines(x = 1:nrow(meteoData), y = yts - 1.96 * yse, col = "red", lwd = 1)
+  # Stress plot
+  plot(res_complex, type = 'PlantStress', yearAxis = TRUE)
+  # reset layout
+  par(mfrow = c(1,1))
+}
+```
+
+## Models comparision
+
+TO DO:
+
++ r²
++ MAE
++ scatterplot simple vs complex
