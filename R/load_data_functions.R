@@ -25,6 +25,13 @@ load_treeData <- function(site) {
 load_shrubData <- function(site) {
   # file route
   location <- file.path('Sites_data', site, paste0(site, '_shrubData.txt'))
+
+  # check if file exists, if not return NULL (in order to avoid errors in the
+  # workflow)
+  if (!file.exists(location)) {
+    return(NULL)
+  }
+
   # load data
   shrub_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                            stringsAsFactors = FALSE)
@@ -39,6 +46,13 @@ load_shrubData <- function(site) {
 load_seedData <- function(site) {
   # file route
   location <- file.path('Sites_data', site, paste0(site, '_seedData.txt'))
+
+  # check if file exists, if not return NULL (in order to avoid errors in the
+  # workflow)
+  if (!file.exists(location)) {
+    return(NULL)
+  }
+
   # load data
   seed_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                           stringsAsFactors = FALSE)
@@ -113,6 +127,13 @@ load_measuredData <- function(site) {
 load_terrainData <- function(site) {
   # file route
   location <- file.path('Sites_data', site, paste0(site, '_terrainData.txt'))
+
+  # check if file exists, if not return NULL (in order to avoid errors in the
+  # workflow)
+  if (!file.exists(location)) {
+    return(NULL)
+  }
+
   # load data
   terrain_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                              stringsAsFactors = FALSE)
@@ -127,6 +148,13 @@ load_terrainData <- function(site) {
 load_customParams <- function(site) {
   # file route
   location <- file.path('Sites_data', site, paste0(site, '_customParams.txt'))
+
+  # check if file exists, if not return NULL (in order to avoid errors in the
+  # workflow)
+  if (!file.exists(location)) {
+    return(NULL)
+  }
+
   # load data
   custom_params <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                               stringsAsFactors = FALSE)

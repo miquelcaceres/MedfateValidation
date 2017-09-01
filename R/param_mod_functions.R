@@ -15,6 +15,11 @@
 
 SpParams_mod <- function(SpParams, customParams) {
 
+  # check if customParams exists, if not return SpParams without modification
+  if (is.null(customParams)) {
+    return(SpParams)
+  }
+
   # get the names of the custom params and the SpParams
   custom <- names(customParams)
   sp_par <- names(SpParams)
@@ -49,6 +54,11 @@ SpParams_mod <- function(SpParams, customParams) {
 #' @export
 
 inputMod <- function(swbInput, customParams) {
+
+  # check if customParams exists, if not return swbInput without modification
+  if (is.null(customParams)) {
+    return(swbInput)
+  }
 
   # get the names of the custom params and the input tables
   custom <- names(customParams)
