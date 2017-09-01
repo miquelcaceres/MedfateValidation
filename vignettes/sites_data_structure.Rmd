@@ -1,10 +1,10 @@
 ---
-title: "Sites Data Structure"
+title: "Validation Sites Data Structure"
 author: "medfate Team"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Sites Data Structure}
+  %\VignetteIndexEntry{Validation Sites Data Structure}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -79,4 +79,143 @@ Variables:
   : **Cover** Percent cover of the species
   : **Height** Mean height for the species
   : **Z** Depth in mm of the root system for the species
+
+## seedData
+
+> Name: FOO_seedData.txt  
+  Location: Sites_data/FOO/
+
+This file is optional. If not supplied the seedbank slot of the  `forest` object
+will be empty.
+
+File must have 2 columns and the same number of rows as species (tree + shrub)
+present in the site/plot:
+
+Species | Abundance
+--------|----------
+54 | 100
+65 | 100
+68 | 100
+78 | 100
+
+Variables:
+
+  : **Species** A numeric code as found in the SpParams data from the `medfate` package
+  : **Abundance** Abundance class??
+
+## miscData
+
+> Name: FOO_miscData.txt  
+  Location: Sites_data/FOO/
+
+This file contains the single value elements of the forest object and must have
+4 columns and one single row:
+
+ID | patchsize | herbCover | herbHeight
+---|-----------|-----------|------------
+FOO | 10000 | 10 | 20
+
+Variables:
+
+  : **ID** An identifier of the forest stand (a string)
+  : **patchsize** The area of the forest stand in square meters
+  : **herbCover** Percent cover of the herb layer
+  : **herbHeight** Mean height in cm of the herb layer
+
+## meteoData
+
+> Name: FOO_meteoData.txt  
+  Location: Sites_data/FOO/
+
+This file contains the metereological data series, with as many rows as days
+which must be modelled. It must have the following columns:
+
+  : **Date** Day date in the ISO format `YYYY-MM-DD`
+  : **DOY** Day of year (Julian day)
+  : **Precipitation** Precipitation (in mm)
+  : **MeanTemperature** Mean temperature (in degrees Celsius)
+  : **MinTemperature** Minimum temperature (in degrees Celsius)
+  : **MaxTemperature** Maximum temperature (in degrees Celsius)
+  : **MinRelativeHumidity** Minimum relative humidity (in percent)
+  : **MaxRelativeHumidity** Maximum relative humidity (in percent)
+  : **Radiation** Solar radiation (in MJ/m2/day)
+  : **WindSpeed** Wind speed (in m/s). If not available, this column can be left with NA values
+  : **PET** Potential evapotranspiration (in mm)
+
+## soilData
+
+> Name: FOO_soilData.txt  
+  Location: Sites_data/FOO/
+
+This file must have 8 columns and as many rows as soil layers present in the
+site/plot:
+
+widths | clay | sand | macro | rfc | Gsoil | Ksoil | W
+-------|------|------|-------|-----|-------|-------|----
+300 | 25 | 25 | 0.1 | 30 | 0.5 | 0.05 | 1
+700 | 25 | 25 | 0.1 | 60 | 0.5 | 0.05 | 1
+
+Variables:
+
+  : **widths** Width of soil layers in mm
+  : **clay** Clay content percent for each soil layer
+  : **sand** Sand content percent for each soil layer
+  : **macro** Macroporosity for each layer
+  : **rcf** Rock fragment content for each layer
+  : **Gsoil** Gamma parameter for infiltration (same value for all layers)
+  : **Ksoil** Kappa parameter for infiltration (same value for all layers)
+  : **W** Initial water content of each soil layer in proportion (0-1)
+
+## terrainData
+
+> Name: FOO_terrainData.txt  
+  Location: Sites_data/FOO/
+
+This file is optional if, **and only if**, complex mode will be not used. In
+any other situation is mandatory.  
+
+File must have 4 columns and one sigle row:
+
+latitude | elevation | aspect | slope
+---------|-----------|--------|-------
+41.82592 | 100 | 0 | 0
+
+Variables:
+
+  : **latitude** Site/plot latitude in degrees (decimal format)
+  : **elevation** Site/plot elevation in meters
+  : **aspect** Site/plot aspect in degrees from North
+  : **slope** Site/plot slope in degrees
+
+## customParams
+
+> Name: FOO_customParams.txt  
+  Location: Sites_data/FOO/
+
+This file is optional if no custom/optimized/measured parameters are provided
+for the site.
+
+It can contain any number of columns, and these must have the same names as in
+the SpParamsMED dataset from `medfate` package or the `above` slot of the
+swbInput object from the `medfate` package (see `medfate::forest2swbInput` help
+function). As an example:
+
+xylem_kmax | Vmax298
+-----------|---------
+0.1089123 | 160.9927
+
+## measuredData
+
+> Name: FOO_measuredData.txt  
+  Location: Sites_data/FOO/
+
+This file must have the same number of rows as the meteoData file corresponding
+to the dates measured (again, the same as in the meteoData). Also it must have
+3 colums for the SWC and total E plus as many columns as species for E:
+
+SWC | SWC_err | E_tot | E_sp54 | E_sp65 | E_sp68 | E_sp78
+----|---------|-------|--------|--------|--------|--------
+0.3037281 | NA | 0.3550796 | 0.1466177 | 0.1481117 | 0.01155866 | 0.04879147
+... | ... | ... | ... | ... | ... | ...
+
 
