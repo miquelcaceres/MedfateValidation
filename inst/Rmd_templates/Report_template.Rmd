@@ -152,3 +152,24 @@ TO DO:
 + r²
 + MAE
 + scatterplot simple vs complex
+
+## Saving the txt res
+
+```{r saving_txt_results}
+if (params$transpMode %in% c('both')) {
+  sp_names <- paste0('E_sp', simple_input$above$SP)
+  saveRes(res_simple, res_complex,
+          sp_names = sp_names, site_code = params$code)
+} else {
+  if (params$transpMode %in% c('simple')) {
+    sp_names <- paste0('E_sp', simple_input$above$SP)
+    saveRes(res_simple, sp_names = sp_names,
+            site_code = params$code)
+  } else {
+    sp_names <- paste0('E_sp', complex_input$above$SP)
+    saveRes(complex_res = res_complex, sp_names = sp_names,
+            site_code = params$code)
+  }
+}
+```
+
