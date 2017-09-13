@@ -175,36 +175,18 @@ if (params$transpMode %in% c('both')) {
 ### SWC in the first layer
 
 ```{r statistics_SWC}
-SWC_MAE_simple <- MAE_calculator(measuredData[['SWC']],
-                                 models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]])
-SWC_MAE_complex <- MAE_calculator(measuredData[['SWC']],
-                                  models_dfs[['complex']][['W.1']] * soil_object$Theta_FC[[1]])
-SWC_MAE_both <- MAE_calculator(models_dfs[['complex']][['W.1']] * soil_object$Theta_FC[[1]],
-                               models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]])
-
-SWC_r_sq_simple <- r_squared_calculator(measuredData[['SWC']],
-                                    models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]])
-SWC_r_sq_complex <- r_squared_calculator(measuredData[['SWC']],
-                                     models_dfs[['complex']][['W.1']] * soil_object$Theta_FC[[1]])
-SWC_r_sq_both <- r_squared_calculator(models_dfs[['complex']][['W.1']] * soil_object$Theta_FC[[1]],
-                                  models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]])
-
-SWC_bias_simple <- bias_calculator(measuredData[['SWC']],
-                                   models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]])
-SWC_bias_complex <- bias_calculator(measuredData[['SWC']],
-                                    models_dfs[['complex']][['W.1']] * soil_object$Theta_FC[[1]])
-SWC_bias_both <- bias_calculator(models_dfs[['complex']][['W.1']] * soil_object$Theta_FC[[1]],
-                                 models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]])
+SWC_stats <- statistics_summary('SWC', models_dfs, measuredData,
+                                soil_object)
 ```
 
 Comparision | MAE | r² | Bias
 ------------|-----|----|-------
-Simple *vs.* Measured | `r SWC_MAE_simple` | `r SWC_r_sq_simple` | `r SWC_bias_simple`
-Complex *vs.* Measured | `r SWC_MAE_complex` | `r SWC_r_sq_complex` | `r SWC_bias_complex`
-Simple *vs.* Complex | `r SWC_MAE_both` | `r SWC_r_sq_both` | `r SWC_bias_both`
+Simple *vs.* Measured | `r SWC_stats$SWC_MAE_simple` | `r SWC_stats$SWC_r_sq_simple` | `r SWC_stats$SWC_bias_simple`
+Complex *vs.* Measured | `r SWC_stats$SWC_MAE_complex` | `r SWC_stats$SWC_r_sq_complex` | `r SWC_stats$SWC_bias_complex`
+Simple *vs.* Complex | `r SWC_stats$SWC_MAE_both` | `r SWC_stats$SWC_r_sq_both` | `r SWC_stats$SWC_bias_both`
 
 
-```{r plots_SWC, fig.height=6, fig.width=8}
+```{r plots_SWC, fig.height=6, fig.width=8, eval = FALSE}
 par(mfrow = c(2,3))
 
 plot(models_dfs[['simple']][['Dates']],
@@ -249,33 +231,15 @@ par(mfrow = c(1,1))
 ### Total Tranpiration
 
 ```{r statistics_Eplanttot, eval = FALSE}
-Eplanttot_MAE_simple <- MAE_calculator(measuredData[['Eplanttot']],
-                                       models_dfs[['simple']][['Eplanttot']])
-Eplanttot_MAE_complex <- MAE_calculator(measuredData[['Eplanttot']],
-                                        models_dfs[['complex']][['Eplanttot']])
-Eplanttot_MAE_both <- MAE_calculator(models_dfs[['complex']][['Eplanttot']],
-                                     models_dfs[['simple']][['Eplanttot']])
-
-Eplanttot_r_sq_simple <- r_squared_calculator(measuredData[['Eplanttot']],
-                                              models_dfs[['simple']][['Eplanttot']])
-Eplanttot_r_sq_complex <- r_squared_calculator(measuredData[['Eplanttot']],
-                                               models_dfs[['complex']][['Eplanttot']])
-Eplanttot_r_sq_both <- r_squared_calculator(models_dfs[['complex']][['Eplanttot']],
-                                            models_dfs[['simple']][['Eplanttot']])
-
-Eplanttot_bias_simple <- bias_calculator(measuredData[['Eplanttot']],
-                                         models_dfs[['simple']][['Eplanttot']])
-Eplanttot_bias_complex <- bias_calculator(measuredData[['Eplanttot']],
-                                          models_dfs[['complex']][['Eplanttot']])
-Eplanttot_bias_both <- bias_calculator(models_dfs[['complex']][['Eplanttot']],
-                                       models_dfs[['simple']][['Eplanttot']])
+Eplanttot_stats <- statistics_summary('Eplanttot', models_dfs, measuredData,
+                                      soil_object)
 ```
 
 Comparision | MAE | r² | Bias
 ------------|-----|----|-------
-Simple *vs.* Measured | `r #Eplanttot_MAE_simple` | `r #Eplanttot_r_sq_simple` | `r #Eplanttot_bias_simple`
-Complex *vs.* Measured | `r #Eplanttot_MAE_complex` | `r #Eplanttot_r_sq_complex` | `r #Eplanttot_bias_complex`
-Simple *vs.* Complex | `r #Eplanttot_MAE_both` | `r #Eplanttot_r_sq_both` | `r #Eplanttot_bias_both`
+Simple *vs.* Measured | `r #Eplanttot_stats$Eplanttot_MAE_simple` | `r #Eplanttot_stats$Eplanttot_r_sq_simple` | `r #Eplanttot_stats$Eplanttot_bias_simple`
+Complex *vs.* Measured | `r #Eplanttot_stats$Eplanttot_MAE_complex` | `r #EEplanttot_stats$planttot_r_sq_complex` | `r #Eplanttot_stats$Eplanttot_bias_complex`
+Simple *vs.* Complex | `r #Eplanttot_stats$Eplanttot_MAE_both` | `r #Eplanttot_stats$Eplanttot_r_sq_both` | `r #Eplanttot_stats$Eplanttot_bias_both`
 
 
 ```{r plots_Eplanttot, fig.height=8, fig.width=8, eval=FALSE}
