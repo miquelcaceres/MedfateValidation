@@ -42,3 +42,22 @@ r_squared_calculator <- function(real, predicted) {
   return(res)
 }
 
+#' bias calculation
+#'
+#' Simple function ti calculate the bias value
+#'
+#' Usually bias values are calculated between the real values and the predicted
+#' values, but also can be calculated between simple and complex model results
+#'
+#' @param real Numeric vector with the "real" values
+#'
+#' @param predicted Numeric vector with the "predicted" values
+#'
+#' @export
+
+bias_calculator <- function(real, predicted) {
+  # calculate bias
+  res <- mean(real - predicted)
+  # return it
+  return(res)
+}

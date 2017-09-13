@@ -21,6 +21,11 @@
 
 saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
                     sp_names, site_code) {
+
+  # empty list to store the model data frame results for later use
+  # (plots and statistics)
+  models_dfs <- list(simple = NULL, complex = NULL)
+
   # simple model
   if (is.null(simple_res)) {
     print('Unable to save simple model results: No simple model performed')
@@ -53,6 +58,8 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
                                   'simple_model_res.txt'))
     write.table(simple_to_save, file_name, row.names = FALSE,
                 col.names = TRUE, fileEncoding = 'UTF-8')
+
+    models_dfs[['simple']] <- simple_to_save
   }
 
   # complex_model
@@ -87,6 +94,8 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
                                   'complex_model_res.txt'))
     write.table(complex_to_save, file_name, row.names = FALSE,
                 col.names = TRUE, fileEncoding = 'UTF-8')
+
+    models_dfs[['complex']] <- complex_to_save
   }
 
   # spParams table
@@ -103,4 +112,6 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
   write.table(spParams, params_file, row.names = FALSE, col.names = TRUE,
               fileEncoding = 'UTF-8')
 
+  # returning the lis with the models dfs to later use
+  return(models_dfs)
 }
