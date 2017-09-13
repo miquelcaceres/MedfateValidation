@@ -8,14 +8,18 @@
 #'
 #' @param complex_res swb object with the complex model results
 #'
+#' @param spParams data.frame containing the species parameters used in the model
+#'
 #' @param sp_names character vector with the species transpiration column names,
 #'   based on the species code
 #'
 #' @param site_code character with the site/plot code name
 #'
+#' @importFrom magrittr %>%
+#'
 #' @export
 
-saveRes <- function(simple_res = NULL, complex_res = NULL,
+saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
                     sp_names, site_code) {
   # simple model
   if (is.null(simple_res)) {
@@ -84,4 +88,19 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
     write.table(complex_to_save, file_name, row.names = FALSE,
                 col.names = TRUE, fileEncoding = 'UTF-8')
   }
+
+  # spParams table
+  params_file <- file.path('Output', packageVersion('medfate')[[1]],
+                           site_code,
+                           paste0(format(Sys.time(), "%Y%m%d_%H%M"),
+                                  '_', site_code, '_',
+                                  'SpParams.txt'))
+
+  # filtering to obtain only the ones we want
+  indexes <- as.numeric(stringr::str_extract(sp_names, '\\d+'))
+  spParams <- spParams[spParams$SpIndex %in% indexes, ]
+
+  write.table(spParams, params_file, row.names = FALSE, col.names = TRUE,
+              fileEncoding = 'UTF-8')
+
 }
