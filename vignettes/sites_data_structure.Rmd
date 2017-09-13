@@ -198,11 +198,13 @@ for the site.
 It can contain any number of columns, and these must have the same names as in
 the SpParamsMED dataset from `medfate` package or the `above` slot of the
 swbInput object from the `medfate` package (see `medfate::forest2swbInput` help
-function). As an example:
+function). Also a mandatory column, **SpIndex** with the code of the species
+in the SpParams table. As an example:
 
-xylem_kmax | Vmax298
------------|---------
-0.1089123 | 160.9927
+SpIndex | xylem_kmax | Vmax298
+--------|------------|---------
+54 | 0.1089123 | 160.9927
+68 | 0.1089123 | 160.9927
 
 ## measuredData
 

@@ -26,10 +26,16 @@ SpParams_mod <- function(SpParams, customParams) {
 
   # iterate between the custom params exisiting in SpParams
   for (param in custom) {
+
     # check if the param exists in SpParams
     if (param %in% sp_par) {
-      # subsitute it!
-      SpParams[[param]] <- customParams[[param]]
+
+      # iterate by species, in case same variable has different values by sp
+      for (sp in customParams[['SpIndex']]) {
+
+        # subsitute it!
+        SpParams[which(SpParams[['SpIndex']] == sp), param] <- customParams[which(customParams[['SpIndex']] == sp), param]
+      }
     }
   }
 
