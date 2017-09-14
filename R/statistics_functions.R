@@ -200,6 +200,114 @@ statistics_summary <- function(var, models, measured_data, soil) {
     return(res)
   }
 
-  # TODO transpiration by cohort
+  # if transpiration by cohort
+  if (var == 'E_by_Cohort') {
 
+    # check which models have been performed and get the statistics
+    if (!is.null(models[['simple']])) {
+      # cohorts in the model res
+      pred_cohorts_simple <- as.character(
+        na.omit(stringr::str_extract(names(models[['simple']]), '^E_sp.+'))
+      )
+      # cohorts in measured data
+      meas_cohorts_simple <- as.character(
+        na.omit(stringr::str_extract(names(measured_data), '^E_sp.+'))
+      )
+      # statistics
+      Esp_MAE_simple <- purrr::map2_dbl(
+        meas_cohorts_simple, pred_cohorts_simple,
+        ~ MAE_calculator(measured_data[[.x]], models[['simple']][[.y]])
+      )
+
+      Esp_r_sq_simple <- purrr::map2_dbl(
+        meas_cohorts_simple, pred_cohorts_simple,
+        ~ r_squared_calculator(measured_data[[.x]], models[['simple']][[.y]])
+      )
+
+      Esp_bias_simple <- purrr::map2_dbl(
+        meas_cohorts_simple, pred_cohorts_simple,
+        ~ bias_calculator(measured_data[[.x]], models[['simple']][[.y]])
+      )
+    } else {
+      Esp_MAE_simple <- numeric(0)
+      Esp_r_sq_simple <- numeric(0)
+      Esp_bias_simple <- numeric(0)
+    }
+
+    if (!is.null(models[['complex']])) {
+      # cohorts in the model res
+      pred_cohorts_complex <- as.character(
+        na.omit(stringr::str_extract(names(models[['complex']]), '^E_sp.+'))
+      )
+      # cohorts in measured data
+      meas_cohorts_complex <- as.character(
+        na.omit(stringr::str_extract(names(measured_data), '^E_sp.+'))
+      )
+      # statistics
+      Esp_MAE_complex <- purrr::map2_dbl(
+        meas_cohorts_complex, pred_cohorts_complex,
+        ~ MAE_calculator(measured_data[[.x]], models[['complex']][[.y]])
+      )
+
+      Esp_r_sq_complex <- purrr::map2_dbl(
+        meas_cohorts_complex, pred_cohorts_complex,
+        ~ r_squared_calculator(measured_data[[.x]], models[['complex']][[.y]])
+      )
+
+      Esp_bias_complex <- purrr::map2_dbl(
+        meas_cohorts_complex, pred_cohorts_complex,
+        ~ bias_calculator(measured_data[[.x]], models[['complex']][[.y]])
+      )
+    } else {
+      Esp_MAE_complex <- numeric(0)
+      Esp_r_sq_complex <- numeric(0)
+      Esp_bias_complex <- numeric(0)
+    }
+
+    if (!is.null(models[['simple']]) & !is.null(models[['complex']])) {
+      # cohorts in the model res
+      cohorts_complex <- as.character(
+        na.omit(stringr::str_extract(names(models[['complex']]), '^E_sp.+'))
+      )
+      # cohorts in measured data
+      cohorts_simple <- as.character(
+        na.omit(stringr::str_extract(names(models[['simple']]), '^E_sp.+'))
+      )
+      # statistics
+      Esp_MAE_both <- purrr::map2_dbl(
+        cohorts_complex, cohorts_simple,
+        ~ MAE_calculator(models[['complex']][[.x]], models[['simple']][[.y]])
+      )
+
+      Esp_r_sq_both <- purrr::map2_dbl(
+        cohorts_complex, cohorts_simple,
+        ~ r_squared_calculator(models[['complex']][[.x]], models[['simple']][[.y]])
+      )
+
+      Esp_bias_both <- purrr::map2_dbl(
+        cohorts_complex, cohorts_simple,
+        ~ bias_calculator(models[['complex']][[.x]], models[['simple']][[.y]])
+      )
+
+    } else {
+      Esp_MAE_both <- numeric(0)
+      Esp_r_sq_both <- numeric(0)
+      Esp_bias_both <- numeric(0)
+    }
+
+    # build the res object and return it
+    res <- list(
+      Esp_MAE_simple = Esp_MAE_simple,
+      Esp_r_sq_simple = Esp_r_sq_simple,
+      Esp_bias_simple = Esp_bias_simple,
+      Esp_MAE_complex = Esp_MAE_complex,
+      Esp_r_sq_complex = Esp_r_sq_complex,
+      Esp_bias_complex = Esp_bias_complex,
+      Esp_MAE_both = Esp_MAE_both,
+      Esp_r_sq_both = Esp_r_sq_both,
+      Esp_bias_both = Esp_bias_both
+    )
+
+    return(res)
+  }
 }

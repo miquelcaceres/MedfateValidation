@@ -13,6 +13,7 @@ RoxygenNote: 6.0.1
 Imports:
     dplyr,
     medfate,
+    purrr,
     rmarkdown
 Suggests:
     knitr
