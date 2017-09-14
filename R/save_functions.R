@@ -10,9 +10,6 @@
 #'
 #' @param spParams data.frame containing the species parameters used in the model
 #'
-#' @param sp_names character vector with the species transpiration column names,
-#'   based on the species code
-#'
 #' @param site_code character with the site/plot code name
 #'
 #' @importFrom magrittr %>%
@@ -20,7 +17,7 @@
 #' @export
 
 saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
-                    sp_names, site_code) {
+                    site_code) {
 
   # empty list to store the model data frame results for later use
   # (plots and statistics)
@@ -39,7 +36,7 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
 
     # sp's transpiration
     SP_transp <- as.data.frame(simple_res[['PlantTranspiration']])
-    names(SP_transp) <- sp_names
+    names(SP_transp) <- paste0('E_', names(SP_transp))
 
     # soilwater content
     soilWater <- simple_res[["SoilWaterBalance"]] %>%
@@ -60,6 +57,9 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
                 col.names = TRUE, fileEncoding = 'UTF-8')
 
     models_dfs[['simple']] <- simple_to_save
+
+    # indexes for later
+    indexes <- simple_res[['cohorts']][['SP']]
   }
 
   # complex_model
@@ -75,7 +75,7 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
 
     # sp's transpiration
     SP_transp <- as.data.frame(complex_res[['PlantTranspiration']])
-    names(SP_transp) <- sp_names
+    names(SP_transp) <- paste0('E_', names(SP_transp))
 
     # soilwater content
     soilWater <- complex_res[["SoilWaterBalance"]] %>%
@@ -96,6 +96,9 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
                 col.names = TRUE, fileEncoding = 'UTF-8')
 
     models_dfs[['complex']] <- complex_to_save
+
+    # indexes for later
+    indexes <- complex_res[['cohorts']][['SP']]
   }
 
   # spParams table
@@ -106,7 +109,6 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
                                   'SpParams.txt'))
 
   # filtering to obtain only the ones we want
-  indexes <- as.numeric(stringr::str_extract(sp_names, '\\d+'))
   spParams <- spParams[spParams$SpIndex %in% indexes, ]
 
   write.table(spParams, params_file, row.names = FALSE, col.names = TRUE,

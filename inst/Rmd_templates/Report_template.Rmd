@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_knit$set(root.dir = params$wd)
 library(medfate)
 library(MedfateValidation)
+library(dplyr)
 ```
 
 ```{r data, message=FALSE}
@@ -156,15 +157,15 @@ if (params$transpMode %in% c('complex', 'both')) {
 if (params$transpMode %in% c('both')) {
   sp_names <- paste0('E_sp', simple_input$above$SP)
   models_dfs <- saveRes(res_simple, res_complex, spParams = sp_params,
-                        sp_names = sp_names, site_code = params$code)
+                        site_code = params$code)
 } else {
   if (params$transpMode %in% c('simple')) {
     sp_names <- paste0('E_sp', simple_input$above$SP)
-    models_dfs <- saveRes(res_simple, sp_names = sp_names, spParams = sp_params,
+    models_dfs <- saveRes(res_simple, spParams = sp_params,
                           site_code = params$code)
   } else {
     sp_names <- paste0('E_sp', complex_input$above$SP)
-    models_dfs <- saveRes(complex_res = res_complex, sp_names = sp_names,
+    models_dfs <- saveRes(complex_res = res_complex,
                           spParams = sp_params, site_code = params$code)
   }
 }
@@ -186,7 +187,7 @@ Complex *vs.* Measured | `r SWC_stats$SWC_MAE_complex` | `r SWC_stats$SWC_r_sq_c
 Simple *vs.* Complex | `r SWC_stats$SWC_MAE_both` | `r SWC_stats$SWC_r_sq_both` | `r SWC_stats$SWC_bias_both`
 
 
-```{r plots_SWC, fig.height=6, fig.width=8, eval = FALSE}
+```{r plots_SWC, fig.height=6, fig.width=8, eval = TRUE}
 par(mfrow = c(2,3))
 
 plot(models_dfs[['simple']][['Dates']],
@@ -230,19 +231,19 @@ par(mfrow = c(1,1))
 
 ### Total Tranpiration
 
-```{r statistics_Eplanttot, eval = FALSE}
+```{r statistics_Eplanttot}
 Eplanttot_stats <- statistics_summary('Eplanttot', models_dfs, measuredData,
                                       soil_object)
 ```
 
 Comparision | MAE | r² | Bias
 ------------|-----|----|-------
-Simple *vs.* Measured | `r #Eplanttot_stats$Eplanttot_MAE_simple` | `r #Eplanttot_stats$Eplanttot_r_sq_simple` | `r #Eplanttot_stats$Eplanttot_bias_simple`
-Complex *vs.* Measured | `r #Eplanttot_stats$Eplanttot_MAE_complex` | `r #EEplanttot_stats$planttot_r_sq_complex` | `r #Eplanttot_stats$Eplanttot_bias_complex`
-Simple *vs.* Complex | `r #Eplanttot_stats$Eplanttot_MAE_both` | `r #Eplanttot_stats$Eplanttot_r_sq_both` | `r #Eplanttot_stats$Eplanttot_bias_both`
+Simple *vs.* Measured | `r Eplanttot_stats$Eplanttot_MAE_simple` | `r Eplanttot_stats$Eplanttot_r_sq_simple` | `r Eplanttot_stats$Eplanttot_bias_simple`
+Complex *vs.* Measured | `r Eplanttot_stats$Eplanttot_MAE_complex` | `r Eplanttot_stats$planttot_r_sq_complex` | `r Eplanttot_stats$Eplanttot_bias_complex`
+Simple *vs.* Complex | `r Eplanttot_stats$Eplanttot_MAE_both` | `r Eplanttot_stats$Eplanttot_r_sq_both` | `r Eplanttot_stats$Eplanttot_bias_both`
 
 
-```{r plots_Eplanttot, fig.height=8, fig.width=8, eval=FALSE}
+```{r plots_Eplanttot, fig.height=8, fig.width=8}
 par(mfrow = c(2,3))
 
 plot(models_dfs[['simple']][['Dates']],
@@ -281,5 +282,35 @@ plot(models_dfs[['simple']][['Eplanttot']],
 par(mfrow = c(1,1))
 ```
 
-### Transpiration by species
+### Transpiration by cohorts
 
+```{r statistics_E_cohorts, results='asis'}
+Ecohorts_stats <- statistics_summary('E_by_Cohort', models_dfs, measuredData,
+                                     soil_object)
+
+rbind(
+  round(Ecohorts_stats[["Esp_MAE_simple"]], 5),
+  round(Ecohorts_stats[["Esp_r_sq_simple"]], 5),
+  round(Ecohorts_stats[["Esp_bias_simple"]], 5),
+  round(Ecohorts_stats[["Esp_MAE_complex"]], 5),
+  round(Ecohorts_stats[["Esp_r_sq_complex"]], 5),
+  round(Ecohorts_stats[["Esp_bias_complex"]], 5),
+  round(Ecohorts_stats[["Esp_MAE_both"]], 5),
+  round(Ecohorts_stats[["Esp_r_sq_both"]], 5),
+  round(Ecohorts_stats[["Esp_bias_both"]], 5)
+) %>%
+  cbind(
+    c('MAE Simple vs. Measured',
+      'rsq Simple vs. Measured',
+      'Bias Simple vs. Measured',
+      'MAE Complex vs. Measured',  
+      'rsq Complex vs. Measured',  
+      'Bias Complex vs. Measured',
+      'MAE Simple vs. Complex',
+      'rsq Simple vs. Complex',
+      'Bias Simple vs. Complex'),
+    .
+  ) %>%
+  as.data.frame() %>%
+  xtable::xtable()
+```

@@ -207,11 +207,11 @@ statistics_summary <- function(var, models, measured_data, soil) {
     if (!is.null(models[['simple']])) {
       # cohorts in the model res
       pred_cohorts_simple <- as.character(
-        na.omit(stringr::str_extract(names(models[['simple']]), '^E_sp.+'))
+        na.omit(stringr::str_extract(names(models[['simple']]), '^E_.+'))
       )
       # cohorts in measured data
       meas_cohorts_simple <- as.character(
-        na.omit(stringr::str_extract(names(measured_data), '^E_sp.+'))
+        na.omit(stringr::str_extract(names(measured_data), '^E_.+'))
       )
       # statistics
       Esp_MAE_simple <- purrr::map2_dbl(
@@ -229,19 +229,19 @@ statistics_summary <- function(var, models, measured_data, soil) {
         ~ bias_calculator(measured_data[[.x]], models[['simple']][[.y]])
       )
     } else {
-      Esp_MAE_simple <- numeric(0)
-      Esp_r_sq_simple <- numeric(0)
-      Esp_bias_simple <- numeric(0)
+      Esp_MAE_simple <- NA
+      Esp_r_sq_simple <- NA
+      Esp_bias_simple <- NA
     }
 
     if (!is.null(models[['complex']])) {
       # cohorts in the model res
       pred_cohorts_complex <- as.character(
-        na.omit(stringr::str_extract(names(models[['complex']]), '^E_sp.+'))
+        na.omit(stringr::str_extract(names(models[['complex']]), '^E_.+'))
       )
       # cohorts in measured data
       meas_cohorts_complex <- as.character(
-        na.omit(stringr::str_extract(names(measured_data), '^E_sp.+'))
+        na.omit(stringr::str_extract(names(measured_data), '^E_.+'))
       )
       # statistics
       Esp_MAE_complex <- purrr::map2_dbl(
@@ -259,19 +259,19 @@ statistics_summary <- function(var, models, measured_data, soil) {
         ~ bias_calculator(measured_data[[.x]], models[['complex']][[.y]])
       )
     } else {
-      Esp_MAE_complex <- numeric(0)
-      Esp_r_sq_complex <- numeric(0)
-      Esp_bias_complex <- numeric(0)
+      Esp_MAE_complex <- NA
+      Esp_r_sq_complex <- NA
+      Esp_bias_complex <- NA
     }
 
     if (!is.null(models[['simple']]) & !is.null(models[['complex']])) {
       # cohorts in the model res
       cohorts_complex <- as.character(
-        na.omit(stringr::str_extract(names(models[['complex']]), '^E_sp.+'))
+        na.omit(stringr::str_extract(names(models[['complex']]), '^E_.+'))
       )
       # cohorts in measured data
       cohorts_simple <- as.character(
-        na.omit(stringr::str_extract(names(models[['simple']]), '^E_sp.+'))
+        na.omit(stringr::str_extract(names(models[['simple']]), '^E_.+'))
       )
       # statistics
       Esp_MAE_both <- purrr::map2_dbl(
@@ -290,9 +290,9 @@ statistics_summary <- function(var, models, measured_data, soil) {
       )
 
     } else {
-      Esp_MAE_both <- numeric(0)
-      Esp_r_sq_both <- numeric(0)
-      Esp_bias_both <- numeric(0)
+      Esp_MAE_both <- NA
+      Esp_r_sq_both <- NA
+      Esp_bias_both <- NA
     }
 
     # build the res object and return it

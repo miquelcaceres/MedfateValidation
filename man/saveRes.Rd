@@ -4,8 +4,7 @@
 \alias{saveRes}
 \title{Save results}
 \usage{
-saveRes(simple_res = NULL, complex_res = NULL, spParams = NULL, sp_names,
-  site_code)
+saveRes(simple_res = NULL, complex_res = NULL, spParams = NULL, site_code)
 }
 \arguments{
 \item{simple_res}{swb object with the simple model results}
@@ -13,9 +12,6 @@ saveRes(simple_res = NULL, complex_res = NULL, spParams = NULL, sp_names,
 \item{complex_res}{swb object with the complex model results}
 
 \item{spParams}{data.frame containing the species parameters used in the model}
-
-\item{sp_names}{character vector with the species transpiration column names,
-based on the species code}
 
 \item{site_code}{character with the site/plot code name}
 }
