@@ -188,45 +188,7 @@ Simple *vs.* Complex | `r SWC_stats$SWC_MAE_both` | `r SWC_stats$SWC_r_sq_both` 
 
 
 ```{r plots_SWC, fig.height=6, fig.width=8, eval = TRUE}
-par(mfrow = c(2,3))
-
-plot(models_dfs[['simple']][['Dates']],
-     models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]],
-     col = 'blue', ylab = 'SWC', xlab = 'Date',
-     main = 'Simple vs. Measured')
-lines(models_dfs[['simple']][['Dates']],
-      measuredData[['SWC']], col = 'red', lwd = 2)
-
-plot(models_dfs[['complex']][['Dates']],
-     models_dfs[['complex']][['W.1']] * soil_object$Theta_FC[[1]],
-     col = 'green', ylab = 'SWC', xlab = 'Date',
-     main = 'Complex vs. Measured')
-lines(models_dfs[['complex']][['Dates']],
-      measuredData[['SWC']], col = 'red', lwd = 2)
-
-plot(models_dfs[['simple']][['Dates']],
-     models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]],
-     col = 'blue', ylab = 'SWC', xlab = 'Date', type = 'n',
-     main = 'Simple vs. Complex')
-lines(models_dfs[['complex']][['Dates']],
-      models_dfs[['complex']][['W.1']] * soil_object$Theta_FC[[1]],
-      col = 'green', lwd = 2)
-lines(models_dfs[['simple']][['Dates']],
-      models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]],
-      col = 'blue', lwd = 2)
-
-plot(models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]],
-     measuredData[['SWC']], pch = 20, xlab = 'Simple', ylab = 'Measured')
-
-plot(models_dfs[['complex']][['W.1']] * soil_object$Theta_FC[[1]],
-     measuredData[['SWC']], pch = 20, xlab = 'Complex', ylab = 'Measured')
-
-plot(models_dfs[['simple']][['W.1']] * soil_object$Theta_FC[[1]],
-     models_dfs[['complex']][['W.1']] * soil_object$Theta_FC[[1]],
-     pch = 20, xlab = 'Simple', ylab = 'Complex')
-
-# reset layout
-par(mfrow = c(1,1))
+plot_res('SWC', models_dfs, soil_object, measuredData, params$transpMode)
 ```
 
 ### Total Tranpiration
@@ -244,42 +206,7 @@ Simple *vs.* Complex | `r Eplanttot_stats$Eplanttot_MAE_both` | `r Eplanttot_sta
 
 
 ```{r plots_Eplanttot, fig.height=8, fig.width=8}
-par(mfrow = c(2,3))
-
-plot(models_dfs[['simple']][['Dates']],
-     models_dfs[['simple']][['Eplanttot']],
-     col = 'blue', ylab = 'SWC', xlab = 'Date',
-     main = 'Simple vs. Measured')
-lines(models_dfs[['simple']][['Dates']],
-      measuredData[['Eplanttot']], col = 'red', lwd = 2)
-
-plot(models_dfs[['complex']][['Dates']],
-     models_dfs[['complex']][['Eplanttot']],
-     col = 'green', ylab = 'Eplanttot', xlab = 'Date',
-     main = 'Complex vs. Measured')
-lines(models_dfs[['complex']][['Dates']],
-      measuredData[['Eplanttot']], col = 'red', lwd = 2)
-
-plot(models_dfs[['simple']][['Dates']],
-     models_dfs[['simple']][['Eplanttot']],
-     col = 'blue', ylab = 'Eplanttot', xlab = 'Date', type = 'l',
-     main = 'Simple vs. Complex')
-lines(models_dfs[['complex']][['Dates']],
-      models_dfs[['complex']][['Eplanttot']],
-      col = 'green', lwd = 2)
-
-plot(models_dfs[['simple']][['Eplanttot']],
-     measuredData[['Eplanttot']], pch = 21, xlab = 'Simple', ylab = 'Measured')
-
-plot(models_dfs[['complex']][['Eplanttot']],
-     measuredData[['Eplanttot']], pch = 21, xlab = 'Complex', ylab = 'Measured')
-
-plot(models_dfs[['simple']][['Eplanttot']],
-     models_dfs[['complex']][['Eplanttot']],
-     pch = 21, xlab = 'Simple', ylab = 'Complex')
-
-# reset layout
-par(mfrow = c(1,1))
+plot_res('Eplanttot', models_dfs, soil_object, measuredData, params$transpMode)
 ```
 
 ### Transpiration by cohorts
@@ -312,5 +239,6 @@ rbind(
     .
   ) %>%
   as.data.frame() %>%
-  xtable::xtable()
+  xtable::xtable(auto = TRUE) %>%
+  print(., type = 'html', html.table.attributes = "border=0")
 ```
