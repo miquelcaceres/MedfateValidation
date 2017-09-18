@@ -14,7 +14,7 @@
 
 MAE_calculator <- function(real, predicted) {
   # calculate MAE
-  res <- mean(abs(real - predicted))
+  res <- mean(abs(real - predicted), na.rm = TRUE)
   # return it
   return(res)
 }
@@ -57,7 +57,7 @@ r_squared_calculator <- function(real, predicted) {
 
 bias_calculator <- function(real, predicted) {
   # calculate bias
-  res <- mean(predicted - real)
+  res <- mean(predicted - real, na.rm = TRUE)
   # return it
   return(res)
 }
