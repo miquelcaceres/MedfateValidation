@@ -45,11 +45,15 @@ sp_params <- SpParams_mod(SpParamsMED, customParams)
 
 # General Info
 
-:
-Package version: `r packageVersion('medfate')`  
-Site: `r params$code`  
-
-
+```{r gen_info, results='asis'}
+knitr::kable(
+  data.frame(
+    Pkg_version  = as.character(packageVersion('medfate')),
+    Site = params$code,
+    Date = format(Sys.Date())
+  )
+)
+```
 
 ## *Simple* Model
 
@@ -244,5 +248,11 @@ rbind(
 
 ```{r plots_Eplant_coh, fig.height=6, fig.width=8}
 plot_res('E_by_Cohort', models_dfs, soil_object, measuredData, params$transpMode)
+```
+
+### Session Info
+
+```{r}
+devtools::session_info()
 ```
 
