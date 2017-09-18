@@ -9,12 +9,13 @@ report_render(output_file = NULL, output_dir = NULL, ...)
 \arguments{
 \item{output_file}{file name for the output report}
 
-\item{output_dir}{destination folder}
+\item{output_dir}{destination folder (if it does not exist, it will be
+created)}
 
 \item{...}{Rmarkdown parameters}
 }
 \description{
-Function for generating automaitcally the report
+Function for generating automatically the report
 }
 \details{
 The parameters accepted by the rmarkdown template (\code{...} argument) are

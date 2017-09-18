@@ -1,6 +1,6 @@
 #' Report generation function
 #'
-#' Function for generating automaitcally the report
+#' Function for generating automatically the report
 #'
 #' The parameters accepted by the rmarkdown template (\code{...} argument) are
 #' the following:
@@ -12,12 +12,18 @@
 #' }
 #'
 #' @param output_file file name for the output report
-#' @param output_dir destination folder
+#' @param output_dir destination folder (if it does not exist, it will be
+#'   created)
 #' @param ... Rmarkdown parameters
 #'
 #' @export
 
 report_render <- function(output_file = NULL, output_dir = NULL, ...) {
+
+  # check if directory to save the report exists and if not, create it
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir)
+  }
 
   # render the template with the code indicated in the ... argument
   rmarkdown::render(input = system.file("Rmd_templates", "Report_template.Rmd", package = "MedfateValidation"),
@@ -30,3 +36,4 @@ report_render <- function(output_file = NULL, output_dir = NULL, ...) {
                     run_pandoc = TRUE,
                     quiet = TRUE)
 }
+
