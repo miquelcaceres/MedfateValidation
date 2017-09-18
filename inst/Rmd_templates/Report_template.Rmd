@@ -201,11 +201,11 @@ Eplanttot_stats <- statistics_summary('Eplanttot', models_dfs, measuredData,
 Comparision | MAE | r² | Bias
 ------------|-----|----|-------
 Simple *vs.* Measured | `r Eplanttot_stats$Eplanttot_MAE_simple` | `r Eplanttot_stats$Eplanttot_r_sq_simple` | `r Eplanttot_stats$Eplanttot_bias_simple`
-Complex *vs.* Measured | `r Eplanttot_stats$Eplanttot_MAE_complex` | `r Eplanttot_stats$planttot_r_sq_complex` | `r Eplanttot_stats$Eplanttot_bias_complex`
+Complex *vs.* Measured | `r Eplanttot_stats$Eplanttot_MAE_complex` | `r Eplanttot_stats$Eplanttot_r_sq_complex` | `r Eplanttot_stats$Eplanttot_bias_complex`
 Simple *vs.* Complex | `r Eplanttot_stats$Eplanttot_MAE_both` | `r Eplanttot_stats$Eplanttot_r_sq_both` | `r Eplanttot_stats$Eplanttot_bias_both`
 
 
-```{r plots_Eplanttot, fig.height=8, fig.width=8}
+```{r plots_Eplanttot, fig.height=6, fig.width=8}
 plot_res('Eplanttot', models_dfs, soil_object, measuredData, params$transpMode)
 ```
 
@@ -239,6 +239,10 @@ rbind(
     .
   ) %>%
   as.data.frame() %>%
-  xtable::xtable(auto = TRUE) %>%
-  print(., type = 'html', html.table.attributes = "border=0")
+  knitr::kable(col.names = c('Statistics', Ecohorts_stats[['Cohort_name']]))
 ```
+
+```{r plots_Eplant_coh, fig.height=6, fig.width=8}
+plot_res('E_by_Cohort', models_dfs, soil_object, measuredData, params$transpMode)
+```
+

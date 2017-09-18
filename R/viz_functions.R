@@ -105,77 +105,175 @@ plot_res <- function(variable, models, soil, measured_data, mode) {
     if (mode == 'both') {
 
       plot(models[['simple']][['Dates']],
-           models[['simple']][['Eplanttot']] * soil$Theta_FC[[1]],
+           models[['simple']][['Eplanttot']],
            ylab = 'Eplanttot', xlab = 'Date', type = 'n',
            main = 'Simple vs. Measured')
       lines(models[['simple']][['Dates']],
-            models[['simple']][['Eplanttot']] * soil$Theta_FC[[1]],
+            models[['simple']][['Eplanttot']],
             col = 'blue')
       lines(models[['simple']][['Dates']],
             measured_data[['Eplanttot']], col = 'red', lwd = 2)
 
-      plot(models[['simple']][['Eplanttot']] * soil$Theta_FC[[1]],
+      plot(models[['simple']][['Eplanttot']],
            measured_data[['Eplanttot']], pch = 20, xlab = 'Simple', ylab = 'Measured')
 
       plot(models[['complex']][['Dates']],
-           models[['complex']][['Eplanttot']] * soil$Theta_FC[[1]],
+           models[['complex']][['Eplanttot']],
            type = 'n', ylab = 'Eplanttot', xlab = 'Date',
            main = 'Complex vs. Measured')
       lines(models[['complex']][['Dates']],
-            models[['complex']][['Eplanttot']] * soil$Theta_FC[[1]],
+            models[['complex']][['Eplanttot']],
             col = 'green')
       lines(models[['complex']][['Dates']],
             measured_data[['Eplanttot']], col = 'red', lwd = 2)
 
-      plot(models[['complex']][['Eplanttot']] * soil$Theta_FC[[1]],
+      plot(models[['complex']][['Eplanttot']],
            measured_data[['Eplanttot']], pch = 20, xlab = 'Complex', ylab = 'Measured')
 
       plot(models[['simple']][['Dates']],
-           models[['simple']][['Eplanttot']] * soil$Theta_FC[[1]],
+           models[['simple']][['Eplanttot']],
            col = 'blue', ylab = 'Eplanttot', xlab = 'Date', type = 'n',
            main = 'Simple vs. Complex')
       lines(models[['complex']][['Dates']],
-            models[['complex']][['Eplanttot']] * soil$Theta_FC[[1]],
+            models[['complex']][['Eplanttot']],
             col = 'green', lwd = 2)
       lines(models[['simple']][['Dates']],
-            models[['simple']][['Eplanttot']] * soil$Theta_FC[[1]],
+            models[['simple']][['Eplanttot']],
             col = 'blue', lwd = 2)
 
-      plot(models[['simple']][['Eplanttot']] * soil$Theta_FC[[1]],
-           models[['complex']][['Eplanttot']] * soil$Theta_FC[[1]],
+      plot(models[['simple']][['Eplanttot']],
+           models[['complex']][['Eplanttot']],
            pch = 20, xlab = 'Simple', ylab = 'Complex')
     }
 
     if (mode == 'simple') {
 
       plot(models[['simple']][['Dates']],
-           models[['simple']][['Eplanttot']] * soil$Theta_FC[[1]],
+           models[['simple']][['Eplanttot']],
            ylab = 'Eplanttot', xlab = 'Date', type = 'n',
            main = 'Simple vs. Measured')
       lines(models[['simple']][['Dates']],
-            models[['simple']][['Eplanttot']] * soil$Theta_FC[[1]],
+            models[['simple']][['Eplanttot']],
             col = 'blue')
       lines(models[['simple']][['Dates']],
             measured_data[['Eplanttot']], col = 'red', lwd = 2)
 
-      plot(models[['simple']][['Eplanttot']] * soil$Theta_FC[[1]],
+      plot(models[['simple']][['Eplanttot']],
            measured_data[['Eplanttot']], pch = 20, xlab = 'Simple', ylab = 'Measured')
     }
 
     if (mode == 'complex') {
 
       plot(models[['complex']][['Dates']],
-           models[['complex']][['Eplanttot']] * soil$Theta_FC[[1]],
+           models[['complex']][['Eplanttot']],
            type = 'n', ylab = 'Eplanttot', xlab = 'Date',
            main = 'Complex vs. Measured')
       lines(models[['complex']][['Dates']],
-            models[['complex']][['Eplanttot']] * soil$Theta_FC[[1]],
+            models[['complex']][['Eplanttot']],
             col = 'green')
       lines(models[['complex']][['Dates']],
             measured_data[['Eplanttot']], col = 'red', lwd = 2)
 
-      plot(models[['complex']][['Eplanttot']] * soil$Theta_FC[[1]],
+      plot(models[['complex']][['Eplanttot']],
            measured_data[['Eplanttot']], pch = 20, xlab = 'Complex', ylab = 'Measured')
+    }
+  }
+
+  # E by cohort
+  if (variable == 'E_by_Cohort') {
+
+    if (mode == 'both') {
+      # get cohorts names
+      coh_names <- as.character(
+        na.omit(stringr::str_extract(names(models[['simple']]), '^E_.+'))
+      )
+
+      for (cohort in coh_names) {
+        plot(models[['simple']][['Dates']],
+             models[['simple']][[cohort]],
+             ylab = cohort, xlab = 'Date', type = 'n',
+             main = 'Simple vs. Measured')
+        lines(models[['simple']][['Dates']],
+              models[['simple']][[cohort]],
+              col = 'blue')
+        lines(models[['simple']][['Dates']],
+              measured_data[[cohort]], col = 'red', lwd = 2)
+
+        plot(models[['simple']][[cohort]],
+             measured_data[[cohort]], pch = 20, xlab = 'Simple', ylab = 'Measured')
+
+        plot(models[['complex']][['Dates']],
+             models[['complex']][[cohort]],
+             type = 'n', ylab = cohort, xlab = 'Date',
+             main = 'Complex vs. Measured')
+        lines(models[['complex']][['Dates']],
+              models[['complex']][[cohort]],
+              col = 'green')
+        lines(models[['complex']][['Dates']],
+              measured_data[[cohort]], col = 'red', lwd = 2)
+
+        plot(models[['complex']][[cohort]],
+             measured_data[[cohort]], pch = 20, xlab = 'Complex', ylab = 'Measured')
+
+        plot(models[['simple']][['Dates']],
+             models[['simple']][[cohort]],
+             col = 'blue', ylab = cohort, xlab = 'Date', type = 'n',
+             main = 'Simple vs. Complex')
+        lines(models[['complex']][['Dates']],
+              models[['complex']][[cohort]],
+              col = 'green', lwd = 2)
+        lines(models[['simple']][['Dates']],
+              models[['simple']][[cohort]],
+              col = 'blue', lwd = 2)
+
+        plot(models[['simple']][[cohort]],
+             models[['complex']][[cohort]],
+             pch = 20, xlab = 'Simple', ylab = 'Complex')
+      }
+    }
+
+    if (mode == 'simple') {
+      # get cohorts names
+      coh_names <- as.character(
+        na.omit(stringr::str_extract(names(models[['simple']]), '^E_.+'))
+      )
+
+      for (cohort in coh_names) {
+        plot(models[['simple']][['Dates']],
+             models[['simple']][[cohort]],
+             ylab = cohort, xlab = 'Date', type = 'n',
+             main = 'Simple vs. Measured')
+        lines(models[['simple']][['Dates']],
+              models[['simple']][[cohort]],
+              col = 'blue')
+        lines(models[['simple']][['Dates']],
+              measured_data[[cohort]], col = 'red', lwd = 2)
+
+        plot(models[['simple']][[cohort]],
+             measured_data[[cohort]], pch = 20, xlab = 'Simple', ylab = 'Measured')
+      }
+    }
+
+    if (mode == 'complex') {
+      # get cohorts names
+      coh_names <- as.character(
+        na.omit(stringr::str_extract(names(models[['complex']]), '^E_.+'))
+      )
+
+      for (cohort in coh_names) {
+        plot(models[['complex']][['Dates']],
+             models[['complex']][[cohort]],
+             type = 'n', ylab = cohort, xlab = 'Date',
+             main = 'Complex vs. Measured')
+        lines(models[['complex']][['Dates']],
+              models[['complex']][[cohort]],
+              col = 'green')
+        lines(models[['complex']][['Dates']],
+              measured_data[[cohort]], col = 'red', lwd = 2)
+
+        plot(models[['complex']][[cohort]],
+             measured_data[[cohort]], pch = 20, xlab = 'Complex', ylab = 'Measured')
+      }
     }
   }
 

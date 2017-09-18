@@ -295,6 +295,13 @@ statistics_summary <- function(var, models, measured_data, soil) {
       Esp_bias_both <- NA
     }
 
+    # names of the cohorts
+    if (!is.null(models[['simple']])) {
+      coh_names <- pred_cohorts_simple
+    } else {
+      coh_names <- pred_cohorts_complex
+    }
+
     # build the res object and return it
     res <- list(
       Esp_MAE_simple = Esp_MAE_simple,
@@ -305,7 +312,8 @@ statistics_summary <- function(var, models, measured_data, soil) {
       Esp_bias_complex = Esp_bias_complex,
       Esp_MAE_both = Esp_MAE_both,
       Esp_r_sq_both = Esp_r_sq_both,
-      Esp_bias_both = Esp_bias_both
+      Esp_bias_both = Esp_bias_both,
+      Cohort_name = coh_names
     )
 
     return(res)
