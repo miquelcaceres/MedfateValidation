@@ -22,7 +22,7 @@ report_render <- function(output_file = NULL, output_dir = NULL, ...) {
 
   # check if directory to save the report exists and if not, create it
   if (!dir.exists(output_dir)) {
-    dir.create(output_dir)
+    dir.create(output_dir, recursive = TRUE)
   }
 
   # render the template with the code indicated in the ... argument
@@ -37,3 +37,31 @@ report_render <- function(output_file = NULL, output_dir = NULL, ...) {
                     quiet = TRUE)
 }
 
+#' Main function to do the calibration/validation
+#'
+#' Validate a list of sites/plots
+#'
+#' @param sites A character vector with the sites codes
+#'
+#' @param wd Complete path to the validation directory
+#'
+#' @param transpMode Character string indicating the transpiration mode to use
+#'
+#' @export
+
+main_process <- function(sites, wd, transpMode) {
+
+  for (code in sites) {
+    report_name <- file.path('Output', packageVersion('medfate')[[1]],
+                             code,
+                             paste0(format(Sys.time(), "%Y%m%d_%H%M"),
+                                    '_', code, '_',
+                                    'report.html'))
+
+    report_folder <- file.path('Output', packageVersion('medfate')[[1]],
+                               code)
+
+    report_render(report_name, report_folder, wd = wd, code = code,
+                  transpMode = transpMode)
+  }
+}
