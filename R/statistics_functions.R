@@ -34,6 +34,11 @@ MAE_calculator <- function(real, predicted) {
 #' @export
 
 r_squared_calculator <- function(real, predicted) {
+
+  # check if variable exists
+  if (all(is.na(real)) | all(is.na(predicted))) {
+    return(NA)
+  }
   # build the model
   model_res <- lm(real ~ predicted)
   # extract the r squared
