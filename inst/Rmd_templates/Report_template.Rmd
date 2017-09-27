@@ -12,13 +12,15 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(error = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
 knitr::opts_knit$set(root.dir = params$wd)
 library(medfate)
 library(MedfateValidation)
 library(dplyr)
 ```
 
-```{r data, message=FALSE}
+```{r data, message=FALSE, warning=TRUE}
 # site/plot code
 code <- params$code
 
@@ -42,6 +44,11 @@ data('SpParamsMED', package = 'medfate')
 
 # SpParams modifications (if any)
 sp_params <- SpParams_mod(SpParamsMED, customParams)
+
+# Warning for custom FC
+if (!all(is.na((soilData[['FC']])))) {
+  warning('Custom FC values has been provided: ', soilData[['FC']][1], ' ...')
+}
 ```
 
 # General Info
@@ -251,9 +258,22 @@ rbind(
 plot_res('E_by_Cohort', models_dfs, soil_object, measuredData, params$transpMode)
 ```
 
-### Session Info
+## Soil Info
 
-```{r}
+```{r soil_info}
+if (params$transpMode %in% c('simple', 'both')) {
+  print(soil_object)
+  simple_input[['below']]
+} else {
+  print(soil_object)
+  complex_input[['below']]
+}
+```
+
+
+## Session Info
+
+```{r session_info}
 devtools::session_info()
 ```
 

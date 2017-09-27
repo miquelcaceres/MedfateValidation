@@ -70,6 +70,13 @@ buildSoil <- function(soilData) {
   # create the soil object
   soilObject <- medfate::soil(soil_list, soilData[['W']])
 
-  # return the soil object
-  return(soilObject)
+  # check if a custom field capacity is provided
+  if (all(is.na((soilData[['FC']])))) {
+    # if not, return the soil object without modifications
+    return(soilObject)
+  } else {
+    # if it is, modify the FC and return the soil object
+    soilObject[["Theta_FC"]] <- soilData[['FC']]
+    return(soilObject)
+  }
 }
