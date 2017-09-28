@@ -65,13 +65,39 @@ hydratry %>%
          SLA, LeafDuration, WoodDens,
          Narea, Hmax, Zmean) -> hydratry_processed
 
-# prepare paramsmed adn join hydratry
+# prepare paramsmed and join hydratry
 paramsmed %>%
-  filter(Name %in% coincidences) %>%
+  filter(Name %in% coincidences) -> paramsmed_processed
+
+paramsmed_processed %>%
   select(-Vmax298, -VCstem_d, -xylem_kmax, -Al2As,
          # -WUE,
          -SLA, -LeafDuration, -WoodDens, -Hmax) %>%
   left_join(hydratry_processed, by = 'Name') %>%
   mutate(SpIndex = 0:(n()-1)) -> newParams
+
+newParams %>%
+  select(sort(names(newParams))) -> newParams
+
+paramsmed_processed %>%
+  select(sort(names(paramsmed_processed))) -> paramsmed_processed
+
+# fill NAs
+newParams <- map2_df(
+  newParams[, -c(10,15,16,34)], paramsmed_processed,
+  function(x,y) {
+    x[is.na(x)] <- y[is.na(x)]
+    # print(x[is.na(x)])
+    return(x)
+  }
+) %>%
+  mutate(
+    Jmax = newParams$Jmax,
+    Narea = newParams$Narea,
+    PItlp = newParams$PItlp,
+    Zmean = newParams$Zmean,
+  ) %>%
+  select(names(paramsmed))
+
 
 write_csv(newParams, 'data-raw/newParams.csv')

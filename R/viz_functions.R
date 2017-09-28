@@ -16,8 +16,12 @@ plot_swc_simple <- function(models, soil, measured_data) {
   SWC_vals_simple <- models[['simple']][['W.1']] * soil$Theta_FC[[1]]
   SWC_vals_meas <- measured_data[['SWC']]
   y_limits <- c(
-    min(min(SWC_vals_simple, na.rm = TRUE), min(SWC_vals_meas, na.rm = TRUE)) - (min(min(SWC_vals_simple, na.rm = TRUE), min(SWC_vals_meas, na.rm = TRUE)))*0.05,
-    max(max(SWC_vals_simple, na.rm = TRUE), max(SWC_vals_meas, na.rm = TRUE)) + (max(max(SWC_vals_simple, na.rm = TRUE), max(SWC_vals_meas, na.rm = TRUE)))*0.05
+    min(min(SWC_vals_simple, na.rm = TRUE),
+        min(SWC_vals_meas, na.rm = TRUE)) - (min(min(SWC_vals_simple, na.rm = TRUE),
+                                                 min(SWC_vals_meas, na.rm = TRUE)))*0.05,
+    max(max(SWC_vals_simple, na.rm = TRUE),
+        max(SWC_vals_meas, na.rm = TRUE)) + (max(max(SWC_vals_simple, na.rm = TRUE),
+                                                 max(SWC_vals_meas, na.rm = TRUE)))*0.05
   )
 
   # check if there are measured values, if not, return an empty plot

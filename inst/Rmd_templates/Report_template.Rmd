@@ -42,14 +42,14 @@ soil_object <- buildSoil(soilData)
 
 # SpParams
 # check if new or old will be used
-if (params$SpParams == 'old') {
+if (params$SPParams == 'old') {
   # load
   data('SpParamsMED', package = 'medfate')
   # modify
   sp_params <- SpParams_mod(SpParamsMED, customParams)
 }
 
-if (params$SpParams == 'new') {
+if (params$SPParams == 'new') {
   # load
   data('newParams', package = 'MedfateValidation')
   # modify
