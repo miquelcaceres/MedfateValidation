@@ -49,7 +49,7 @@ report_render <- function(output_file = NULL, output_dir = NULL, ...) {
 #'
 #' @export
 
-main_process <- function(sites, wd, transpMode) {
+main_process <- function(sites, wd, transpMode, SPParams = 'old') {
 
   for (code in sites) {
     report_name <- file.path('Output', packageVersion('medfate')[[1]],
@@ -62,6 +62,6 @@ main_process <- function(sites, wd, transpMode) {
                                code)
 
     report_render(report_name, report_folder, wd = wd, code = code,
-                  transpMode = transpMode)
+                  transpMode = transpMode, SPParams = SPParams)
   }
 }

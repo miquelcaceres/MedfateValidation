@@ -6,6 +6,7 @@ params:
   wd: ''
   code: ''
   transpMode: 'both'
+  SPParams: 'old'
 output: html_document
 ---
 
@@ -40,10 +41,20 @@ forest_object <- buildForest(treeData, shrubData, seedData, miscData)
 soil_object <- buildSoil(soilData)
 
 # SpParams
-data('SpParamsMED', package = 'medfate')
+# check if new or old will be used
+if (params$SpParams == 'old') {
+  # load
+  data('SpParamsMED', package = 'medfate')
+  # modify
+  sp_params <- SpParams_mod(SpParamsMED, customParams)
+}
 
-# SpParams modifications (if any)
-sp_params <- SpParams_mod(SpParamsMED, customParams)
+if (params$SpParams == 'new') {
+  # load
+  data('newParams', package = 'MedfateValidation')
+  # modify
+  sp_params <- SpParams_mod(newParams, customParams)
+}
 
 # Warning for custom FC
 if (!all(is.na((soilData[['FC']])))) {

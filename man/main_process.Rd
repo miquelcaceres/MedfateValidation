@@ -4,7 +4,7 @@
 \alias{main_process}
 \title{Main function to do the calibration/validation}
 \usage{
-main_process(sites, wd, transpMode)
+main_process(sites, wd, transpMode, SPParams = "old")
 }
 \arguments{
 \item{sites}{A character vector with the sites codes}
