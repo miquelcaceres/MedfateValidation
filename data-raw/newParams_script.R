@@ -13,7 +13,9 @@ hydratry <- read_delim('data-raw/HydraTRY.csv', delim = '\t') %>%
 # SpParams
 data('SpParamsMED')
 # new spparams object
-paramsmed <- as_tibble(SpParamsMED)
+paramsmed <- as_tibble(SpParamsMED) %>%
+  mutate(Name = as.character(Name))
+paramsmed[paramsmed$Name == 'Quercus humilis',"Name"] <- 'Quercus pubescens'
 
 # get the names by the tpl for both db
 names_test_paramsmed <- tpl.get(paramsmed$Name)
@@ -101,3 +103,5 @@ newParams <- map2_df(
 
 
 write_csv(newParams, 'data-raw/newParams.csv')
+
+devtools::use_data(newParams, overwrite = TRUE)
