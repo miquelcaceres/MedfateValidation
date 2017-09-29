@@ -97,7 +97,7 @@ newParams <- map2_df(
     PItlp = newParams$PItlp,
     Zmean = newParams$Zmean,
   ) %>%
-  select(names(paramsmed))
+  select(names(paramsmed), Jmax, Narea, PItlp, Zmean)
 
 
 write_csv(newParams, 'data-raw/newParams.csv')
