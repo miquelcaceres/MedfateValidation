@@ -1,5 +1,7 @@
 #' @describeIn plot_swc_simple
 #'
+#' @import ggplot2
+#'
 #' @export
 
 plot_swc_simple_gg <- function(models, soil, measured_data) {
@@ -8,14 +10,6 @@ plot_swc_simple_gg <- function(models, soil, measured_data) {
   dates <- models[['simple']][['Dates']]
   SWC_vals_simple <- models[['simple']][['W.1']] * soil$Theta_FC[[1]]
   SWC_vals_meas <- measured_data[['SWC']]
-  y_limits <- c(
-    min(min(SWC_vals_simple, na.rm = TRUE),
-        min(SWC_vals_meas, na.rm = TRUE)) - (min(min(SWC_vals_simple, na.rm = TRUE),
-                                                 min(SWC_vals_meas, na.rm = TRUE)))*0.05,
-    max(max(SWC_vals_simple, na.rm = TRUE),
-        max(SWC_vals_meas, na.rm = TRUE)) + (max(max(SWC_vals_simple, na.rm = TRUE),
-                                                 max(SWC_vals_meas, na.rm = TRUE)))*0.05
-  )
 
   plot_data <- data.frame(
     Date = as.Date(dates),
@@ -48,15 +42,28 @@ plot_swc_simple_gg <- function(models, soil, measured_data) {
 
   } else {
 
+    # build the limits
+    y_limits <- c(
+      min(min(SWC_vals_simple, na.rm = TRUE),
+          min(SWC_vals_meas, na.rm = TRUE)) - (min(min(SWC_vals_simple, na.rm = TRUE),
+                                                   min(SWC_vals_meas, na.rm = TRUE)))*0.05,
+      max(max(SWC_vals_simple, na.rm = TRUE),
+          max(SWC_vals_meas, na.rm = TRUE)) + (max(max(SWC_vals_simple, na.rm = TRUE),
+                                                   max(SWC_vals_meas, na.rm = TRUE)))*0.05
+    )
+
     # if there is measured values, populate the plots
     swc_plot <- swc_plot +
-      geom_line(alpha = 0.4, size = 1)
+      geom_line(alpha = 0.4, size = 0.7) +
+      scale_y_continuous(limits = y_limits)
 
     cor_plot <- cor_plot +
       geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
       geom_point(shape = 20, alpha = 0.8, colour = 'black') +
       stat_smooth(method = 'lm', colour = 'black',
-                  size = 1, se = FALSE, alpha = 0.4)
+                  size = 1, se = FALSE, alpha = 0.4) +
+      scale_y_continuous(limits = y_limits) +
+      scale_x_continuous(limits = y_limits)
 
     return(list(swc = swc_plot, cor = cor_plot))
   }
@@ -72,14 +79,6 @@ plot_swc_complex_gg <- function(models, soil, measured_data) {
   dates <- models[['complex']][['Dates']]
   SWC_vals_complex <- models[['complex']][['W.1']] * soil$Theta_FC[[1]]
   SWC_vals_meas <- measured_data[['SWC']]
-  y_limits <- c(
-    min(min(SWC_vals_complex, na.rm = TRUE),
-        min(SWC_vals_meas, na.rm = TRUE)) - (min(min(SWC_vals_complex, na.rm = TRUE),
-                                                 min(SWC_vals_meas, na.rm = TRUE)))*0.05,
-    max(max(SWC_vals_complex, na.rm = TRUE),
-        max(SWC_vals_meas, na.rm = TRUE)) + (max(max(SWC_vals_complex, na.rm = TRUE),
-                                                 max(SWC_vals_meas, na.rm = TRUE)))*0.05
-  )
 
   plot_data <- data.frame(
     Date = as.Date(dates),
@@ -112,15 +111,28 @@ plot_swc_complex_gg <- function(models, soil, measured_data) {
 
   } else {
 
+    # build the limits
+    y_limits <- c(
+      min(min(SWC_vals_complex, na.rm = TRUE),
+          min(SWC_vals_meas, na.rm = TRUE)) - (min(min(SWC_vals_complex, na.rm = TRUE),
+                                                   min(SWC_vals_meas, na.rm = TRUE)))*0.05,
+      max(max(SWC_vals_complex, na.rm = TRUE),
+          max(SWC_vals_meas, na.rm = TRUE)) + (max(max(SWC_vals_complex, na.rm = TRUE),
+                                                   max(SWC_vals_meas, na.rm = TRUE)))*0.05
+    )
+
     # if there is measured values, populate the plots
     swc_plot <- swc_plot +
-      geom_line(alpha = 0.4, size = 1)
+      geom_line(alpha = 0.4, size = 0.7) +
+      scale_y_continuous(limits = y_limits)
 
     cor_plot <- cor_plot +
       geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
       geom_point(shape = 20, alpha = 0.8, colour = 'black') +
       stat_smooth(method = 'lm', colour = 'black',
-                  size = 1, se = FALSE, alpha = 0.4)
+                  size = 1, se = FALSE, alpha = 0.4) +
+      scale_y_continuous(limits = y_limits) +
+      scale_x_continuous(limits = y_limits)
 
     return(list(swc = swc_plot, cor = cor_plot))
   }
@@ -136,14 +148,6 @@ plot_swc_both_gg <- function(models, soil, measured_data) {
   dates <- models[['simple']][['Dates']]
   SWC_vals_complex <- models[['complex']][['W.1']] * soil$Theta_FC[[1]]
   SWC_vals_simple <- models[['simple']][['W.1']] * soil$Theta_FC[[1]]
-  y_limits <- c(
-    min(min(SWC_vals_complex, na.rm = TRUE),
-        min(SWC_vals_simple, na.rm = TRUE)) - (min(min(SWC_vals_complex, na.rm = TRUE),
-                                                   min(SWC_vals_simple, na.rm = TRUE)))*0.05,
-    max(max(SWC_vals_complex, na.rm = TRUE),
-        max(SWC_vals_simple, na.rm = TRUE)) + (max(max(SWC_vals_complex, na.rm = TRUE),
-                                                   max(SWC_vals_simple, na.rm = TRUE)))*0.05
-  )
 
   plot_data <- data.frame(
     Date = as.Date(dates),
@@ -170,14 +174,27 @@ plot_swc_both_gg <- function(models, soil, measured_data) {
     )
 
   # if there is measured values, populate the plots
+
+  y_limits <- c(
+    min(min(SWC_vals_complex, na.rm = TRUE),
+        min(SWC_vals_simple, na.rm = TRUE)) - (min(min(SWC_vals_complex, na.rm = TRUE),
+                                                   min(SWC_vals_simple, na.rm = TRUE)))*0.05,
+    max(max(SWC_vals_complex, na.rm = TRUE),
+        max(SWC_vals_simple, na.rm = TRUE)) + (max(max(SWC_vals_complex, na.rm = TRUE),
+                                                   max(SWC_vals_simple, na.rm = TRUE)))*0.05
+  )
+
   swc_plot <- swc_plot +
-    geom_line(alpha = 0.4, size = 1)
+    geom_line(alpha = 0.4, size = 0.7) +
+    scale_y_continuous(limits = y_limits)
 
   cor_plot <- cor_plot +
     geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
     geom_point(shape = 20, alpha = 0.8, colour = 'black') +
     stat_smooth(method = 'lm', colour = 'black',
-                size = 1, se = FALSE, alpha = 0.4)
+                size = 1, se = FALSE, alpha = 0.4) +
+    scale_y_continuous(limits = y_limits) +
+    scale_x_continuous(limits = y_limits)
 
   return(list(swc = swc_plot, cor = cor_plot))
 }
@@ -192,14 +209,6 @@ plot_eplanttot_simple_gg <- function(models, measured_data) {
   dates <- models[['simple']][['Dates']]
   Etot_vals_simple <- models[['simple']][['Eplanttot']]
   Etot_vals_meas <- measured_data[['Eplanttot']]
-  y_limits <- c(
-    min(min(Etot_vals_simple, na.rm = TRUE),
-        min(Etot_vals_meas, na.rm = TRUE)) - (min(min(Etot_vals_simple, na.rm = TRUE),
-                                                 min(Etot_vals_meas, na.rm = TRUE)))*0.05,
-    max(max(Etot_vals_simple, na.rm = TRUE),
-        max(Etot_vals_meas, na.rm = TRUE)) + (max(max(Etot_vals_simple, na.rm = TRUE),
-                                                 max(Etot_vals_meas, na.rm = TRUE)))*0.05
-  )
 
   plot_data <- data.frame(
     Date = as.Date(dates),
@@ -232,15 +241,28 @@ plot_eplanttot_simple_gg <- function(models, measured_data) {
 
   } else {
 
+    # build the limits
+    y_limits <- c(
+      min(min(Etot_vals_simple, na.rm = TRUE),
+          min(Etot_vals_meas, na.rm = TRUE)) - (min(min(Etot_vals_simple, na.rm = TRUE),
+                                                    min(Etot_vals_meas, na.rm = TRUE)))*0.05,
+      max(max(Etot_vals_simple, na.rm = TRUE),
+          max(Etot_vals_meas, na.rm = TRUE)) + (max(max(Etot_vals_simple, na.rm = TRUE),
+                                                    max(Etot_vals_meas, na.rm = TRUE)))*0.05
+    )
+
     # if there is measured values, populate the plots
     etot_plot <- etot_plot +
-      geom_line(alpha = 0.4, size = 1)
+      geom_line(alpha = 0.4, size = 0.7) +
+      scale_y_continuous(limits = y_limits)
 
     cor_plot <- cor_plot +
       geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
       geom_point(shape = 20, alpha = 0.8, colour = 'black') +
       stat_smooth(method = 'lm', colour = 'black',
-                  size = 1, se = FALSE, alpha = 0.4)
+                  size = 1, se = FALSE, alpha = 0.4) +
+      scale_y_continuous(limits = y_limits) +
+      scale_x_continuous(limits = y_limits)
 
     return(list(etot = etot_plot, cor = cor_plot))
   }
@@ -256,14 +278,6 @@ plot_eplanttot_complex_gg <- function(models, measured_data) {
   dates <- models[['complex']][['Dates']]
   Etot_vals_complex <- models[['complex']][['Eplanttot']]
   Etot_vals_meas <- measured_data[['Eplanttot']]
-  y_limits <- c(
-    min(min(Etot_vals_complex, na.rm = TRUE),
-        min(Etot_vals_meas, na.rm = TRUE)) - (min(min(Etot_vals_complex, na.rm = TRUE),
-                                                  min(Etot_vals_meas, na.rm = TRUE)))*0.05,
-    max(max(Etot_vals_complex, na.rm = TRUE),
-        max(Etot_vals_meas, na.rm = TRUE)) + (max(max(Etot_vals_complex, na.rm = TRUE),
-                                                  max(Etot_vals_meas, na.rm = TRUE)))*0.05
-  )
 
   plot_data <- data.frame(
     Date = as.Date(dates),
@@ -296,15 +310,28 @@ plot_eplanttot_complex_gg <- function(models, measured_data) {
 
   } else {
 
+    # build the limits
+    y_limits <- c(
+      min(min(Etot_vals_complex, na.rm = TRUE),
+          min(Etot_vals_meas, na.rm = TRUE)) - (min(min(Etot_vals_complex, na.rm = TRUE),
+                                                    min(Etot_vals_meas, na.rm = TRUE)))*0.05,
+      max(max(Etot_vals_complex, na.rm = TRUE),
+          max(Etot_vals_meas, na.rm = TRUE)) + (max(max(Etot_vals_complex, na.rm = TRUE),
+                                                    max(Etot_vals_meas, na.rm = TRUE)))*0.05
+    )
+
     # if there is measured values, populate the plots
     etot_plot <- etot_plot +
-      geom_line(alpha = 0.4, size = 1)
+      geom_line(alpha = 0.4, size = 0.7) +
+      scale_y_continuous(limits = y_limits)
 
     cor_plot <- cor_plot +
       geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
       geom_point(shape = 20, alpha = 0.8, colour = 'black') +
       stat_smooth(method = 'lm', colour = 'black',
-                  size = 1, se = FALSE, alpha = 0.4)
+                  size = 1, se = FALSE, alpha = 0.4) +
+      scale_y_continuous(limits = y_limits) +
+      scale_x_continuous(limits = y_limits)
 
     return(list(etot = etot_plot, cor = cor_plot))
   }
@@ -320,14 +347,6 @@ plot_eplanttot_both_gg <- function(models, measured_data) {
   dates <- models[['simple']][['Dates']]
   Eplanttot_vals_complex <- models[['complex']][['Eplanttot']]
   Eplanttot_vals_simple <- models[['simple']][['Eplanttot']]
-  y_limits <- c(
-    min(min(Eplanttot_vals_complex, na.rm = TRUE),
-        min(Eplanttot_vals_simple, na.rm = TRUE)) - (min(min(Eplanttot_vals_complex, na.rm = TRUE),
-                                                   min(Eplanttot_vals_simple, na.rm = TRUE)))*0.05,
-    max(max(Eplanttot_vals_complex, na.rm = TRUE),
-        max(Eplanttot_vals_simple, na.rm = TRUE)) + (max(max(Eplanttot_vals_complex, na.rm = TRUE),
-                                                   max(Eplanttot_vals_simple, na.rm = TRUE)))*0.05
-  )
 
   plot_data <- data.frame(
     Date = as.Date(dates),
@@ -344,7 +363,7 @@ plot_eplanttot_both_gg <- function(models, measured_data) {
 
   etot_plot <- plot_data %>%
     tidyr::gather(key = Model, value = Etot, -Date) %>%
-    ggplot(aes(x = Date, y = SWC, colour = Model)) +
+    ggplot(aes(x = Date, y = Etot, colour = Model)) +
     scale_color_manual(values = c('green', 'blue')) +
     scale_x_date(date_breaks = '4 months') +
     theme_minimal() +
@@ -354,14 +373,24 @@ plot_eplanttot_both_gg <- function(models, measured_data) {
     )
 
   # if there is measured values, populate the plots
+  y_limits <- c(
+    min(min(Eplanttot_vals_complex, na.rm = TRUE),
+        min(Eplanttot_vals_simple, na.rm = TRUE)) - (min(min(Eplanttot_vals_complex, na.rm = TRUE),
+                                                         min(Eplanttot_vals_simple, na.rm = TRUE)))*0.05,
+    max(max(Eplanttot_vals_complex, na.rm = TRUE),
+        max(Eplanttot_vals_simple, na.rm = TRUE)) + (max(max(Eplanttot_vals_complex, na.rm = TRUE),
+                                                         max(Eplanttot_vals_simple, na.rm = TRUE)))*0.05
+  )
   etot_plot <- etot_plot +
-    geom_line(alpha = 0.4, size = 1)
+    geom_line(alpha = 0.4, size = 0.7) +
+    scale_y_continuous(limits = y_limits)
 
   cor_plot <- cor_plot +
     geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
     geom_point(shape = 20, alpha = 0.8, colour = 'black') +
     stat_smooth(method = 'lm', colour = 'black',
-                size = 1, se = FALSE, alpha = 0.4)
+                size = 1, se = FALSE, alpha = 0.4) +
+    scale_y_continuous(limits = y_limits)
 
   return(list(etot = etot_plot, cor = cor_plot))
 }
@@ -417,15 +446,28 @@ plot_cohort_simple_gg <- function(models, measured_data) {
       list_cor_plots[n] <- cor_plot
 
     } else {
+      # build the limits
+      y_limits <- c(
+        min(min(E_vals_simple, na.rm = TRUE),
+            min(E_vals_meas, na.rm = TRUE)) - (min(min(E_vals_simple, na.rm = TRUE),
+                                                   min(E_vals_meas, na.rm = TRUE)))*0.05,
+        max(max(E_vals_simple, na.rm = TRUE),
+            max(E_vals_meas, na.rm = TRUE)) + (max(max(E_vals_simple, na.rm = TRUE),
+                                                   max(E_vals_meas, na.rm = TRUE)))*0.05
+      )
+
       # if there is measured values, populate the plots
       ecoh_plot <- ecoh_plot +
-        geom_line(alpha = 0.4, size = 1)
+        geom_line(alpha = 0.4, size = 0.7) +
+        scale_y_continuous(limits = y_limits)
 
       cor_plot <- cor_plot +
         geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
         geom_point(shape = 20, alpha = 0.8, colour = 'black') +
         stat_smooth(method = 'lm', colour = 'black',
-                    size = 1, se = FALSE, alpha = 0.4)
+                    size = 1, se = FALSE, alpha = 0.4) +
+        scale_y_continuous(limits = y_limits) +
+        scale_x_continuous(limits = y_limits)
 
       list_ecoh_plots[n] <- ecoh_plot
       list_cor_plots[n] <- cor_plot
@@ -491,15 +533,29 @@ plot_cohort_complex_gg <- function(models, measured_data) {
       list_cor_plots[n] <- cor_plot
 
     } else {
+
+      # build the limits
+      y_limits <- c(
+        min(min(E_vals_complex, na.rm = TRUE),
+            min(E_vals_meas, na.rm = TRUE)) - (min(min(E_vals_complex, na.rm = TRUE),
+                                                   min(E_vals_meas, na.rm = TRUE)))*0.05,
+        max(max(E_vals_complex, na.rm = TRUE),
+            max(E_vals_meas, na.rm = TRUE)) + (max(max(E_vals_complex, na.rm = TRUE),
+                                                   max(E_vals_meas, na.rm = TRUE)))*0.05
+      )
+
       # if there is measured values, populate the plots
       ecoh_plot <- ecoh_plot +
-        geom_line(alpha = 0.4, size = 1)
+        geom_line(alpha = 0.4, size = 0.7) +
+        scale_y_continuous(limits = y_limits)
 
       cor_plot <- cor_plot +
         geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
         geom_point(shape = 20, alpha = 0.8, colour = 'black') +
         stat_smooth(method = 'lm', colour = 'black',
-                    size = 1, se = FALSE, alpha = 0.4)
+                    size = 1, se = FALSE, alpha = 0.4) +
+        scale_y_continuous(limits = y_limits) +
+        scale_x_continuous(limits = y_limits)
 
       list_ecoh_plots[n] <- ecoh_plot
       list_cor_plots[n] <- cor_plot
@@ -558,26 +614,30 @@ plot_cohort_both_gg <- function(models, measured_data) {
         axis.text.x = element_text(angle = 25)
       )
 
+    y_limits <- c(
+      min(min(E_vals_complex, na.rm = TRUE),
+          min(E_vals_simple, na.rm = TRUE)) - (min(min(E_vals_complex, na.rm = TRUE),
+                                                   min(E_vals_simple, na.rm = TRUE)))*0.05,
+      max(max(E_vals_complex, na.rm = TRUE),
+          max(E_vals_simple, na.rm = TRUE)) + (max(max(E_vals_complex, na.rm = TRUE),
+                                                   max(E_vals_simple, na.rm = TRUE)))*0.05
+    )
+
     # check if there are measured vals, if not, return an empty plot
-    if (all(is.na(E_vals_meas))) {
+    ecoh_plot <- ecoh_plot +
+      geom_line(alpha = 0.4, size = 0.7) +
+      scale_y_continuous(limits = y_limits)
 
-      list_ecoh_plots[n] <- ecoh_plot
-      list_cor_plots[n] <- cor_plot
+    cor_plot <- cor_plot +
+      geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
+      geom_point(shape = 20, alpha = 0.8, colour = 'black') +
+      stat_smooth(method = 'lm', colour = 'black',
+                  size = 1, se = FALSE, alpha = 0.4) +
+      scale_y_continuous(limits = y_limits) +
+      scale_x_continuous(limits = y_limits)
 
-    } else {
-      # if there is measured values, populate the plots
-      ecoh_plot <- ecoh_plot +
-        geom_line(alpha = 0.4, size = 1)
-
-      cor_plot <- cor_plot +
-        geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
-        geom_point(shape = 20, alpha = 0.8, colour = 'black') +
-        stat_smooth(method = 'lm', colour = 'black',
-                    size = 1, se = FALSE, alpha = 0.4)
-
-      list_ecoh_plots[n] <- ecoh_plot
-      list_cor_plots[n] <- cor_plot
-    }
+    list_ecoh_plots[n] <- ecoh_plot
+    list_cor_plots[n] <- cor_plot
 
     n <- n+1
   }
@@ -604,11 +664,11 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       both <- plot_swc_both_gg(models, soil, measured_data)
 
       # build the cowplot
-      plot_grid(
+      return(plot_grid(
         simple[['swc']], complex[['swc']], both[['swc']],
         simple[['cor']], complex[['cor']], both[['cor']],
         ncol = 3
-      )
+      ))
     }
 
     if (mode == 'simple') {
@@ -616,9 +676,9 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       simple <- plot_swc_simple_gg(models, soil, measured_data)
 
       # build the cowplot
-      plot_grid(
+      return(plot_grid(
         plotlist = simple, ncol = 1
-      )
+      ))
     }
 
     if (mode == 'complex') {
@@ -626,9 +686,9 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       complex <- plot_swc_complex_gg(models, soil, measured_data)
 
       # build the cowplot
-      plot_grid(
+      return(plot_grid(
         plotlist = complex, ncol = 1
-      )
+      ))
     }
   }
 
@@ -641,11 +701,11 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       both <- plot_eplanttot_both_gg(models, measured_data)
 
       # build the cowplot
-      plot_grid(
+      return(plot_grid(
         simple[['etot']], complex[['etot']], both[['etot']],
         simple[['cor']], complex[['cor']], both[['cor']],
         ncol = 3
-      )
+      ))
     }
 
     if (mode == 'simple') {
@@ -653,9 +713,9 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       simple <- plot_eplanttot_simple_gg(models, measured_data)
 
       # build the cowplot
-      plot_grid(
+      return(plot_grid(
         plotlist = simple, ncol = 1
-      )
+      ))
     }
 
     if (mode == 'complex') {
@@ -663,9 +723,9 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       complex <- plot_eplanttot_complex_gg(models, measured_data)
 
       # build the cowplot
-      plot_grid(
+      return(plot_grid(
         plotlist = complex, ncol = 1
-      )
+      ))
     }
   }
 
@@ -679,36 +739,41 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       n_coh <- length(simple[['ecoh']])
-      plot_grid(
-        plotlist = simple[['ecoh']],
-        ncol = if (n_coh < 4) {n_coh} else {3},
-        nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+
+      res <- list(
+        plot_grid(
+          plotlist = simple[['ecoh']],
+          ncol = if (n_coh < 4) {n_coh} else {3},
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+        ),
+        plot_grid(
+          plotlist = simple[['cor']],
+          ncol = if (n_coh < 4) {n_coh} else {3},
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+        ),
+        plot_grid(
+          plotlist = complex[['ecoh']],
+          ncol = if (n_coh < 4) {n_coh} else {3},
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+        ),
+        plot_grid(
+          plotlist = complex[['cor']],
+          ncol = if (n_coh < 4) {n_coh} else {3},
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+        ),
+        plot_grid(
+          plotlist = both[['ecoh']],
+          ncol = if (n_coh < 4) {n_coh} else {3},
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+        ),
+        plot_grid(
+          plotlist = both[['cor']],
+          ncol = if (n_coh < 4) {n_coh} else {3},
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+        )
       )
-      plot_grid(
-        plotlist = simple[['cor']],
-        ncol = if (n_coh < 4) {n_coh} else {3},
-        nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
-      )
-      plot_grid(
-        plotlist = complex[['ecoh']],
-        ncol = if (n_coh < 4) {n_coh} else {3},
-        nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
-      )
-      plot_grid(
-        plotlist = complex[['cor']],
-        ncol = if (n_coh < 4) {n_coh} else {3},
-        nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
-      )
-      plot_grid(
-        plotlist = both[['ecoh']],
-        ncol = if (n_coh < 4) {n_coh} else {3},
-        nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
-      )
-      plot_grid(
-        plotlist = both[['cor']],
-        ncol = if (n_coh < 4) {n_coh} else {3},
-        nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
-      )
+
+      return(res)
     }
 
     if (mode == 'simple') {
@@ -717,16 +782,21 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       n_coh <- length(simple[['ecoh']])
-      plot_grid(
-        plotlist = simple[['ecoh']],
-        ncol = if (n_coh < 4) {n_coh} else {3},
-        nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+
+      res <- list(
+        plot_grid(
+          plotlist = simple[['ecoh']],
+          ncol = if (n_coh < 4) {n_coh} else {3},
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+        ),
+        plot_grid(
+          plotlist = simple[['cor']],
+          ncol = if (n_coh < 4) {n_coh} else {3},
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+        )
       )
-      plot_grid(
-        plotlist = simple[['cor']],
-        ncol = if (n_coh < 4) {n_coh} else {3},
-        nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
-      )
+
+      return(res)
     }
 
     if (mode == 'complex') {
@@ -735,16 +805,21 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       n_coh <- length(complex[['ecoh']])
-      plot_grid(
-        plotlist = complex[['ecoh']],
-        ncol = if (n_coh < 4) {n_coh} else {3},
-        nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+
+      res <- list(
+        plot_grid(
+          plotlist = complex[['ecoh']],
+          ncol = if (n_coh < 4) {n_coh} else {3},
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+        ),
+        plot_grid(
+          plotlist = complex[['cor']],
+          ncol = if (n_coh < 4) {n_coh} else {3},
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+        )
       )
-      plot_grid(
-        plotlist = complex[['cor']],
-        ncol = if (n_coh < 4) {n_coh} else {3},
-        nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
-      )
+
+      return(res)
     }
   }
 }
