@@ -1,5 +1,5 @@
 ---
-title: "Report for `r params$code`"
+title: "Global report for `r params$code`"
 author: "medfateTeam"
 date: "`r Sys.time()`"
 params:
@@ -215,6 +215,12 @@ Simple *vs.* Complex | `r SWC_stats$SWC_MAE_both` | `r SWC_stats$SWC_r_sq_both` 
 
 ```{r plots_SWC, fig.height=6, fig.width=8}
 print(plot_res_gg('SWC', models_dfs, soil_object, measuredData, params$transpMode))
+```
+
+### SWC in all layers
+
+```{r plots_SWC_layers, fig.height=6, fig.width=7}
+print(plot_swc_layers_gg(models_dfs))
 ```
 
 ### Total Tranpiration
