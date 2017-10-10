@@ -110,6 +110,20 @@ load_soilData <- function(site) {
 #'
 #' @export
 
+load_soilDataUnilayer <- function(site) {
+  # file route
+  location <- file.path('Sites_data', site, paste0(site, '_soilDataUnilayer.txt'))
+  # load data
+  soil_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
+                          stringsAsFactors = FALSE)
+  # return data frame
+  return(soil_data)
+}
+
+#' @describeIn load_treeData
+#'
+#' @export
+
 load_measuredData <- function(site) {
   # file route
   location <- file.path('Sites_data', site, paste0(site, '_measuredData.txt'))

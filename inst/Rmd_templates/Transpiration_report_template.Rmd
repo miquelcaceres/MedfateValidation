@@ -1,5 +1,5 @@
 ---
-title: "Global report for `r params$code`"
+title: "Transpiration report for `r params$code`"
 author: "medfateTeam"
 date: "`r Sys.time()`"
 params:
@@ -33,12 +33,11 @@ customParams <- load_customParams(code)
 measuredData <- load_measuredData(code)
 meteoData <- load_meteoData(code)
 miscData <- load_miscData(code)
-soilData <- load_soilData(code)
+soilData <- load_soilDataUnilayer(code) # soil data for only one layer
 terrainData <- load_terrainData(code)
 
 # model objects
 forest_object <- buildForest(treeData, shrubData, seedData, miscData)
-soil_object <- buildSoil(soilData)
 
 # SpParams
 # check if new or old will be used
@@ -74,8 +73,6 @@ knitr::kable(
 )
 ```
 
-## *Simple* Model
-
 ```{r simple_model, eval=TRUE, message=FALSE}
 # check if simple mode has to be performed
 if (params$transpMode %in% c('simple', 'both')) {
@@ -91,40 +88,15 @@ if (params$transpMode %in% c('simple', 'both')) {
   # input modifications (if any)
   simple_input <- inputMod(simple_input, customParams)
   
-  # model run
-  res_simple <- medfate::swb(simple_input, soil_object, meteoData)
+  # model run day by day
+  res_simple <- transp_day_by_day(simple_input, meteoData, soilData,
+                                  terrainData, measuredData)
 } else {
   # if simple mode is not performed, report about it
+  res_simple <- NULL
   cat('Simple model has not been selected to be performed')
 }
 ```
-
-```{r plot_simple, eval = TRUE, fig.height=8, fig.width=8}
-# show the plot only if simple mode must be performed
-if (params$transpMode %in% c('simple', 'both')) {
-  # config layout
-  par(mfrow = c(2,2))
-  # P/PET plot
-  plot(res_simple, yearAxis = TRUE)
-  # ET plot
-  plot(res_simple, type = 'ET', yearAxis = TRUE)
-  # SWC plot
-  plot(x = 1:nrow(meteoData),
-       y = res_simple$SoilWaterBalance$W.1 * soil_object$Theta_FC[[1]],
-       col = 'black', ylab = 'SWC', xlab = 'Days (absolute)')
-  yts <- measuredData$SWC
-  yse <- measuredData$SWC_err
-  lines(x = 1:nrow(meteoData), y = yts, col = "red", lwd = 2)
-  lines(x = 1:nrow(meteoData), y = yts + 1.96 * yse, col = "red", lwd = 1)
-  lines(x = 1:nrow(meteoData), y = yts - 1.96 * yse, col = "red", lwd = 1)
-  # Stress plot
-  plot(res_simple, type = 'PlantStress', yearAxis = TRUE)
-  # reset layout
-  par(mfrow = c(1,1))
-}
-```
-
-## *Complex* Model
 
 ```{r complex_model}
 # check if complex mode has to be performed
@@ -137,97 +109,36 @@ if (params$transpMode %in% c('complex', 'both')) {
   # input object
   # we also rebuild the soil_object to avoid using W data from the previous
   # runs
-  soil_object <- buildSoil(soilData)
   complex_input <- medfate::forest2swbInput(forest_object, soil_object,
                                             sp_params, control_obj)
   
   # input modifications (if any)
   complex_input <- inputMod(complex_input, customParams)
   
-  # model run
-  res_complex <- medfate::swb(complex_input, soil_object, meteoData,
-                             terrainData$latitude, terrainData$elevation,
-                             terrainData$slope, terrainData$aspect)
+  # model run day by day
+  res_complex <- transp_day_by_day(complex_input, meteoData, soilData,
+                                   terrainData, measuredData)
 } else {
   # if simple mode is not performed, report about it
+  res_complex <- NULL
   cat('Complex model has not been selected to be performed')
 }
 ```
 
-```{r plot_complex, eval = TRUE, fig.height=8, fig.width=8}
-# show the plot only if simple mode must be performed
-if (params$transpMode %in% c('complex', 'both')) {
-  # config layout
-  par(mfrow = c(2,2))
-  # P/PET plot
-  plot(res_complex, yearAxis = TRUE)
-  # ET plot
-  plot(res_complex, type = 'ET', yearAxis = TRUE)
-  # SWC plot
-  plot(x = 1:nrow(meteoData),
-       y = res_complex$SoilWaterBalance$W.1 * soil_object$Theta_FC[[1]],
-       col = 'black', ylab = 'SWC', xlab = 'Days (absolute)')
-  yts <- measuredData$SWC
-  yse <- measuredData$SWC_err
-  lines(x = 1:nrow(meteoData), y = yts, col = "red", lwd = 2)
-  lines(x = 1:nrow(meteoData), y = yts + 1.96 * yse, col = "red", lwd = 1)
-  lines(x = 1:nrow(meteoData), y = yts - 1.96 * yse, col = "red", lwd = 1)
-  # Stress plot
-  plot(res_complex, type = 'PlantStress', yearAxis = TRUE)
-  # reset layout
-  par(mfrow = c(1,1))
-}
-```
-
-```{r saving_txt_results}
-if (params$transpMode %in% c('both')) {
-  sp_names <- paste0('E_sp', simple_input$above$SP)
-  models_dfs <- saveRes(res_simple, res_complex, spParams = sp_params,
-                        site_code = params$code)
-} else {
-  if (params$transpMode %in% c('simple')) {
-    sp_names <- paste0('E_sp', simple_input$above$SP)
-    models_dfs <- saveRes(res_simple, spParams = sp_params,
-                          site_code = params$code)
-  } else {
-    sp_names <- paste0('E_sp', complex_input$above$SP)
-    models_dfs <- saveRes(complex_res = res_complex,
-                          spParams = sp_params, site_code = params$code)
-  }
-}
+```{r joining_res}
+models_dfs <- list(
+  simple = res_simple,
+  complex = res_complex
+)
 ```
 
 ## Models comparision
-
-### SWC in the first layer
-
-```{r statistics_SWC}
-SWC_stats <- statistics_summary('SWC', models_dfs, measuredData,
-                                soil_object)
-```
-
-Comparision | MAE | r² | Bias
-------------|-----|----|-------
-Simple *vs.* Measured | `r SWC_stats$SWC_MAE_simple` | `r SWC_stats$SWC_r_sq_simple` | `r SWC_stats$SWC_bias_simple`
-Complex *vs.* Measured | `r SWC_stats$SWC_MAE_complex` | `r SWC_stats$SWC_r_sq_complex` | `r SWC_stats$SWC_bias_complex`
-Simple *vs.* Complex | `r SWC_stats$SWC_MAE_both` | `r SWC_stats$SWC_r_sq_both` | `r SWC_stats$SWC_bias_both`
-
-
-```{r plots_SWC, fig.height=6, fig.width=8}
-print(plot_res_gg('SWC', models_dfs, soil_object, measuredData, params$transpMode))
-```
-
-### SWC in all layers
-
-```{r plots_SWC_layers, fig.height=6, fig.width=7}
-print(plot_swc_layers_gg(models_dfs))
-```
 
 ### Total Tranpiration
 
 ```{r statistics_Eplanttot}
 Eplanttot_stats <- statistics_summary('Eplanttot', models_dfs, measuredData,
-                                      soil_object)
+                                      soil = buildSoil(soilData))
 ```
 
 Comparision | MAE | r² | Bias
@@ -238,14 +149,15 @@ Simple *vs.* Complex | `r Eplanttot_stats$Eplanttot_MAE_both` | `r Eplanttot_sta
 
 
 ```{r plots_Eplanttot, fig.height=6, fig.width=8}
-print(plot_res_gg('Eplanttot', models_dfs, soil_object, measuredData, params$transpMode))
+print(plot_res_gg('Eplanttot', models_dfs, buildSoil(soilData),
+                  measuredData, params$transpMode))
 ```
 
 ### Transpiration by cohorts
 
 ```{r statistics_E_cohorts, results='asis'}
 Ecohorts_stats <- statistics_summary('E_by_Cohort', models_dfs, measuredData,
-                                     soil_object)
+                                     buildSoil(soilData))
 
 rbind(
   round(Ecohorts_stats[["Esp_MAE_simple"]], 5),
@@ -275,7 +187,7 @@ rbind(
 ```
 
 ```{r plots_Eplant_coh, fig.height=3, fig.width=7}
-plots_cohorts <- plot_res_gg('E_by_Cohort', models_dfs, soil_object,
+plots_cohorts <- plot_res_gg('E_by_Cohort', models_dfs, buildSoil(soilData),
                              measuredData, params$transpMode)
 
 purrr::walk(
@@ -288,10 +200,10 @@ purrr::walk(
 
 ```{r soil_info}
 if (params$transpMode %in% c('simple', 'both')) {
-  print(soil_object)
+  print(buildSoil(soilData))
   simple_input[['below']]
 } else {
-  print(soil_object)
+  print(buildSoil(soilData))
   complex_input[['below']]
 }
 ```
@@ -320,7 +232,7 @@ file_name <- file.path('Output', packageVersion('medfate')[[1]],
                        params$code,
                        paste0(format(Sys.time(), "%Y%m%d_%H%M"),
                               '_', params$code, '_',
-                              'global_report_objects.RData'))
+                              'transp_report_objects.RData'))
 save(list = ls(all.names = TRUE), file = file_name)
 # printing session info
 devtools::session_info()
