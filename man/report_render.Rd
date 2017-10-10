@@ -4,9 +4,13 @@
 \alias{report_render}
 \title{Report generation function}
 \usage{
-report_render(output_file = NULL, output_dir = NULL, ...)
+report_render(report = "global", output_file = NULL, output_dir = NULL,
+  ...)
 }
 \arguments{
+\item{report}{which kind of report must be generated, "global" or
+"transpiration"}
+
 \item{output_file}{file name for the output report}
 
 \item{output_dir}{destination folder (if it does not exist, it will be
