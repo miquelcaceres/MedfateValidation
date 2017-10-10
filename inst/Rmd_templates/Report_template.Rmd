@@ -213,8 +213,8 @@ Complex *vs.* Measured | `r SWC_stats$SWC_MAE_complex` | `r SWC_stats$SWC_r_sq_c
 Simple *vs.* Complex | `r SWC_stats$SWC_MAE_both` | `r SWC_stats$SWC_r_sq_both` | `r SWC_stats$SWC_bias_both`
 
 
-```{r plots_SWC, fig.height=6, fig.width=8, eval = TRUE}
-plot_res('SWC', models_dfs, soil_object, measuredData, params$transpMode)
+```{r plots_SWC, fig.height=6, fig.width=8}
+print(plot_res_gg('SWC', models_dfs, soil_object, measuredData, params$transpMode))
 ```
 
 ### Total Tranpiration
@@ -232,7 +232,7 @@ Simple *vs.* Complex | `r Eplanttot_stats$Eplanttot_MAE_both` | `r Eplanttot_sta
 
 
 ```{r plots_Eplanttot, fig.height=6, fig.width=8}
-plot_res('Eplanttot', models_dfs, soil_object, measuredData, params$transpMode)
+print(plot_res_gg('Eplanttot', models_dfs, soil_object, measuredData, params$transpMode))
 ```
 
 ### Transpiration by cohorts
@@ -268,8 +268,14 @@ rbind(
   knitr::kable(col.names = c('Statistics', Ecohorts_stats[['Cohort_name']]))
 ```
 
-```{r plots_Eplant_coh, fig.height=6, fig.width=8}
-plot_res('E_by_Cohort', models_dfs, soil_object, measuredData, params$transpMode)
+```{r plots_Eplant_coh, fig.height=3, fig.width=7}
+plots_cohorts <- plot_res_gg('E_by_Cohort', models_dfs, soil_object,
+                             measuredData, params$transpMode)
+
+purrr::walk(
+  plots_cohorts,
+  ~ print(.x)
+)
 ```
 
 ## Soil Info
@@ -284,16 +290,33 @@ if (params$transpMode %in% c('simple', 'both')) {
 }
 ```
 
+## SoilWaterBalance Input
+
+```{r swb_input}
+if (params$transpMode == 'simple') {
+  print(simple_input)
+} else {
+  if (params$transpMode == 'complex') {
+    print(complex_input)
+  } else {
+    print(simple_input)
+    print(complex_input)
+  }
+}
+```
+
 
 ## Session Info
 
 ```{r session_info}
+# saving objects
 file_name <- file.path('Output', packageVersion('medfate')[[1]],
                        params$code,
                        paste0(format(Sys.time(), "%Y%m%d_%H%M"),
                               '_', params$code, '_',
-                              'report_obects.RData'))
-save.image(file_name)
+                              'report_objects.RData'))
+save(list = ls(all.names = TRUE), file = file_name)
+# printing session info
 devtools::session_info()
 ```
 

@@ -407,9 +407,10 @@ plot_cohort_simple_gg <- function(models, measured_data) {
   dates <- models[['simple']][['Dates']]
 
   list_ecoh_plots <- vector("list", length(coh_names))
+  names(list_ecoh_plots) <- coh_names
   list_cor_plots <- vector("list", length(coh_names))
+  names(list_cor_plots) <- coh_names
 
-  n <- 1
   # loop by cohort
   for (cohort in coh_names) {
     E_vals_simple <- models[['simple']][[cohort]]
@@ -425,6 +426,7 @@ plot_cohort_simple_gg <- function(models, measured_data) {
     # empty plots
     cor_plot <- ggplot(data = plot_data,
                        aes(x = Simple, y = Measured)) +
+      labs(title = cohort) +
       theme_minimal()
 
 
@@ -433,6 +435,7 @@ plot_cohort_simple_gg <- function(models, measured_data) {
       ggplot(aes(x = Date, y = Ecoh, colour = Model)) +
       scale_color_manual(values = c('red', 'blue')) +
       scale_x_date(date_breaks = '4 months') +
+      labs(title = cohort) +
       theme_minimal() +
       theme(
         legend.position = 'top',
@@ -442,8 +445,8 @@ plot_cohort_simple_gg <- function(models, measured_data) {
     # check if there are measured vals, if not, return an empty plot
     if (all(is.na(E_vals_meas))) {
 
-      list_ecoh_plots[n] <- ecoh_plot
-      list_cor_plots[n] <- cor_plot
+      list_ecoh_plots[[cohort]] <- ecoh_plot
+      list_cor_plots[[cohort]] <- cor_plot
 
     } else {
       # build the limits
@@ -469,11 +472,9 @@ plot_cohort_simple_gg <- function(models, measured_data) {
         scale_y_continuous(limits = y_limits) +
         scale_x_continuous(limits = y_limits)
 
-      list_ecoh_plots[n] <- ecoh_plot
-      list_cor_plots[n] <- cor_plot
+      list_ecoh_plots[[cohort]] <- ecoh_plot
+      list_cor_plots[[cohort]] <- cor_plot
     }
-
-    n <- n+1
   }
 
   names(list_ecoh_plots) <- coh_names
@@ -494,9 +495,10 @@ plot_cohort_complex_gg <- function(models, measured_data) {
   dates <- models[['complex']][['Dates']]
 
   list_ecoh_plots <- vector("list", length(coh_names))
+  names(list_ecoh_plots) <- coh_names
   list_cor_plots <- vector("list", length(coh_names))
+  names(list_cor_plots) <- coh_names
 
-  n <- 1
   # loop by cohort
   for (cohort in coh_names) {
     E_vals_complex <- models[['complex']][[cohort]]
@@ -512,6 +514,7 @@ plot_cohort_complex_gg <- function(models, measured_data) {
     # empty plots
     cor_plot <- ggplot(data = plot_data,
                        aes(x = Complex, y = Measured)) +
+      labs(title = cohort) +
       theme_minimal()
 
 
@@ -520,6 +523,7 @@ plot_cohort_complex_gg <- function(models, measured_data) {
       ggplot(aes(x = Date, y = Ecoh, colour = Model)) +
       scale_color_manual(values = c('green', 'red')) +
       scale_x_date(date_breaks = '4 months') +
+      labs(title = cohort) +
       theme_minimal() +
       theme(
         legend.position = 'top',
@@ -529,8 +533,8 @@ plot_cohort_complex_gg <- function(models, measured_data) {
     # check if there are measured vals, if not, return an empty plot
     if (all(is.na(E_vals_meas))) {
 
-      list_ecoh_plots[n] <- ecoh_plot
-      list_cor_plots[n] <- cor_plot
+      list_ecoh_plots[[cohort]] <- ecoh_plot
+      list_cor_plots[[cohort]] <- cor_plot
 
     } else {
 
@@ -557,11 +561,9 @@ plot_cohort_complex_gg <- function(models, measured_data) {
         scale_y_continuous(limits = y_limits) +
         scale_x_continuous(limits = y_limits)
 
-      list_ecoh_plots[n] <- ecoh_plot
-      list_cor_plots[n] <- cor_plot
+      list_ecoh_plots[[cohort]] <- ecoh_plot
+      list_cor_plots[[cohort]] <- cor_plot
     }
-
-    n <- n+1
   }
 
   names(list_ecoh_plots) <- coh_names
@@ -582,13 +584,14 @@ plot_cohort_both_gg <- function(models, measured_data) {
   dates <- models[['simple']][['Dates']]
 
   list_ecoh_plots <- vector("list", length(coh_names))
+  names(list_ecoh_plots) <- coh_names
   list_cor_plots <- vector("list", length(coh_names))
+  names(list_cor_plots) <- coh_names
 
-  n <- 1
   # loop by cohort
   for (cohort in coh_names) {
     E_vals_simple <- models[['simple']][[cohort]]
-    E_vals_complex <- models[['cohort']][[cohort]]
+    E_vals_complex <- models[['complex']][[cohort]]
 
     plot_data <- data.frame(
       Date = as.Date(dates),
@@ -600,6 +603,7 @@ plot_cohort_both_gg <- function(models, measured_data) {
     # empty plots
     cor_plot <- ggplot(data = plot_data,
                        aes(x = Complex, y = Simple)) +
+      labs(title = cohort) +
       theme_minimal()
 
 
@@ -608,6 +612,7 @@ plot_cohort_both_gg <- function(models, measured_data) {
       ggplot(aes(x = Date, y = Ecoh, colour = Model)) +
       scale_color_manual(values = c('green', 'blue')) +
       scale_x_date(date_breaks = '4 months') +
+      labs(title = cohort) +
       theme_minimal() +
       theme(
         legend.position = 'top',
@@ -636,10 +641,8 @@ plot_cohort_both_gg <- function(models, measured_data) {
       scale_y_continuous(limits = y_limits) +
       scale_x_continuous(limits = y_limits)
 
-    list_ecoh_plots[n] <- ecoh_plot
-    list_cor_plots[n] <- cor_plot
-
-    n <- n+1
+    list_ecoh_plots[[cohort]] <- ecoh_plot
+    list_cor_plots[[cohort]] <- cor_plot
   }
 
   names(list_ecoh_plots) <- coh_names
@@ -664,7 +667,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       both <- plot_swc_both_gg(models, soil, measured_data)
 
       # build the cowplot
-      return(plot_grid(
+      return(cowplot::plot_grid(
         simple[['swc']], complex[['swc']], both[['swc']],
         simple[['cor']], complex[['cor']], both[['cor']],
         ncol = 3
@@ -676,7 +679,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       simple <- plot_swc_simple_gg(models, soil, measured_data)
 
       # build the cowplot
-      return(plot_grid(
+      return(cowplot::plot_grid(
         plotlist = simple, ncol = 1
       ))
     }
@@ -686,7 +689,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       complex <- plot_swc_complex_gg(models, soil, measured_data)
 
       # build the cowplot
-      return(plot_grid(
+      return(cowplot::plot_grid(
         plotlist = complex, ncol = 1
       ))
     }
@@ -701,7 +704,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       both <- plot_eplanttot_both_gg(models, measured_data)
 
       # build the cowplot
-      return(plot_grid(
+      return(cowplot::plot_grid(
         simple[['etot']], complex[['etot']], both[['etot']],
         simple[['cor']], complex[['cor']], both[['cor']],
         ncol = 3
@@ -713,7 +716,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       simple <- plot_eplanttot_simple_gg(models, measured_data)
 
       # build the cowplot
-      return(plot_grid(
+      return(cowplot::plot_grid(
         plotlist = simple, ncol = 1
       ))
     }
@@ -723,7 +726,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       complex <- plot_eplanttot_complex_gg(models, measured_data)
 
       # build the cowplot
-      return(plot_grid(
+      return(cowplot::plot_grid(
         plotlist = complex, ncol = 1
       ))
     }
@@ -741,32 +744,32 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       n_coh <- length(simple[['ecoh']])
 
       res <- list(
-        plot_grid(
+        simple_ecoh = cowplot::plot_grid(
           plotlist = simple[['ecoh']],
           ncol = if (n_coh < 4) {n_coh} else {3},
           nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
         ),
-        plot_grid(
+        simple_cor = cowplot::plot_grid(
           plotlist = simple[['cor']],
           ncol = if (n_coh < 4) {n_coh} else {3},
           nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
         ),
-        plot_grid(
+        complex_ecoh = cowplot::plot_grid(
           plotlist = complex[['ecoh']],
           ncol = if (n_coh < 4) {n_coh} else {3},
           nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
         ),
-        plot_grid(
+        complex_cor = cowplot::plot_grid(
           plotlist = complex[['cor']],
           ncol = if (n_coh < 4) {n_coh} else {3},
           nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
         ),
-        plot_grid(
+        both_ecoh = cowplot::plot_grid(
           plotlist = both[['ecoh']],
           ncol = if (n_coh < 4) {n_coh} else {3},
           nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
         ),
-        plot_grid(
+        both_cor = cowplot::plot_grid(
           plotlist = both[['cor']],
           ncol = if (n_coh < 4) {n_coh} else {3},
           nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
@@ -784,12 +787,12 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       n_coh <- length(simple[['ecoh']])
 
       res <- list(
-        plot_grid(
+        simple_ecoh = cowplot::plot_grid(
           plotlist = simple[['ecoh']],
           ncol = if (n_coh < 4) {n_coh} else {3},
           nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
         ),
-        plot_grid(
+        simple_cor = cowplot::plot_grid(
           plotlist = simple[['cor']],
           ncol = if (n_coh < 4) {n_coh} else {3},
           nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
@@ -807,12 +810,12 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       n_coh <- length(complex[['ecoh']])
 
       res <- list(
-        plot_grid(
+        complex_ecoh = cowplot::plot_grid(
           plotlist = complex[['ecoh']],
           ncol = if (n_coh < 4) {n_coh} else {3},
           nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
         ),
-        plot_grid(
+        complex_cor = cowplot::plot_grid(
           plotlist = complex[['cor']],
           ncol = if (n_coh < 4) {n_coh} else {3},
           nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
