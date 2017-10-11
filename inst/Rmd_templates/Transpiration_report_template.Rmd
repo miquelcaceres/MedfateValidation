@@ -82,7 +82,7 @@ if (params$transpMode %in% c('simple', 'both')) {
   control_obj$transpirationMode <- 'Simple'
   
   # input object
-  simple_input <- medfate::forest2swbInput(forest_object, soil_object,
+  simple_input <- medfate::forest2swbInput(forest_object, buildSoil(soilData),
                                            sp_params, control_obj)
   
   # input modifications (if any)
@@ -109,7 +109,7 @@ if (params$transpMode %in% c('complex', 'both')) {
   # input object
   # we also rebuild the soil_object to avoid using W data from the previous
   # runs
-  complex_input <- medfate::forest2swbInput(forest_object, soil_object,
+  complex_input <- medfate::forest2swbInput(forest_object, buildSoil(soilData),
                                             sp_params, control_obj)
   
   # input modifications (if any)
