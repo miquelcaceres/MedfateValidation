@@ -186,7 +186,7 @@ rbind(
   knitr::kable(col.names = c('Statistics', Ecohorts_stats[['Cohort_name']]))
 ```
 
-```{r plots_Eplant_coh, fig.height=3, fig.width=7}
+```{r plots_Eplant_coh, fig.height=5, fig.width=7}
 plots_cohorts <- plot_res_gg('E_by_Cohort', models_dfs, buildSoil(soilData),
                              measuredData, params$transpMode)
 
