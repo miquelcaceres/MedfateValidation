@@ -19,7 +19,7 @@ transp_day_by_day <- function(input, meteoData, soilData,
 
   # control values
   n_coh <- nrow(input[['cohorts']])
-  dates <- measuredData[['Date']]
+  dates <- rownames(meteoData)
 
   # empty objects to store res
   e_coh <- array(dim = c(length(dates), n_coh),
