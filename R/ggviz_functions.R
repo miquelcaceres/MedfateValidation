@@ -6,30 +6,49 @@
 
 plot_swc_simple_gg <- function(models, soil, measured_data) {
 
+  # get the measured layers
+  swc_vars <- c(
+    'SWC',
+    names(measured_data)[stringr::str_detect(names(measured_data), '^SWC_[0-9]$')]
+  )
+
+  dates <- character(0)
+  SWC_vals_simple <- numeric(0)
+  SWC_vals_meas <- numeric(0)
+  Layer <- character(0)
+
   # data
-  dates <- models[['simple']][['Dates']]
-  SWC_vals_simple <- models[['simple']][['W.1']] * soil$Theta_FC[[1]]
-  SWC_vals_meas <- measured_data[['SWC']]
+  for (name in swc_vars) {
+    index <- which(swc_vars == name)
+    dates <- c(dates, as.character(models[['simple']][['Dates']]))
+    SWC_vals_simple <- c(SWC_vals_simple,
+                         models[['simple']][[paste0('W.', index)]] * soil$Theta_FC[[index]])
+    SWC_vals_meas <- c(SWC_vals_meas, measured_data[[name]])
+    Layer <- c(Layer, rep(name, length(measured_data[[name]])))
+  }
 
   plot_data <- data.frame(
     Date = as.Date(dates),
     Simple = SWC_vals_simple,
     Measured  = SWC_vals_meas,
+    Layer = Layer,
     stringsAsFactors = FALSE
   )
 
   # empty plots
   cor_plot <- ggplot(data = plot_data,
                      aes(x = Simple, y = Measured)) +
-    theme_minimal()
+    facet_grid(Layer ~ .) +
+    theme_medfate()
 
 
   swc_plot <- plot_data %>%
-    tidyr::gather(key = Model, value = SWC, -Date) %>%
-    ggplot(aes(x = Date, y = SWC, colour = Model)) +
+    tidyr::gather(key = Model, value = SWC, -Date, -Layer) %>%
+    ggplot(aes(x = Date, y = SWC, colour = Model, linetype = Layer)) +
+    facet_grid(Layer ~ .) +
     scale_color_manual(values = c('red', 'blue')) +
     scale_x_date(date_breaks = '4 months') +
-    theme_minimal() +
+    theme_medfate() +
     theme(
       legend.position = 'top',
       axis.text.x = element_text(angle = 25)
@@ -55,6 +74,7 @@ plot_swc_simple_gg <- function(models, soil, measured_data) {
     # if there is measured values, populate the plots
     swc_plot <- swc_plot +
       geom_line(alpha = 0.4, size = 0.7) +
+      geom_point(shape = 20, alpha = 0.3, size = 2) +
       scale_y_continuous(limits = y_limits)
 
     cor_plot <- cor_plot +
@@ -75,30 +95,49 @@ plot_swc_simple_gg <- function(models, soil, measured_data) {
 
 plot_swc_complex_gg <- function(models, soil, measured_data) {
 
+  # get the measured layers
+  swc_vars <- c(
+    'SWC',
+    names(measured_data)[stringr::str_detect(names(measured_data), '^SWC_[0-9]$')]
+  )
+
+  dates <- character(0)
+  SWC_vals_complex <- numeric(0)
+  SWC_vals_meas <- numeric(0)
+  Layer <- character(0)
+
   # data
-  dates <- models[['complex']][['Dates']]
-  SWC_vals_complex <- models[['complex']][['W.1']] * soil$Theta_FC[[1]]
-  SWC_vals_meas <- measured_data[['SWC']]
+  for (name in swc_vars) {
+    index <- which(swc_vars == name)
+    dates <- c(dates, as.character(models[['complex']][['Dates']]))
+    SWC_vals_complex <- c(SWC_vals_complex,
+                         models[['complex']][[paste0('W.', index)]] * soil$Theta_FC[[index]])
+    SWC_vals_meas <- c(SWC_vals_meas, measured_data[[name]])
+    Layer <- c(Layer, rep(name, length(measured_data[[name]])))
+  }
 
   plot_data <- data.frame(
     Date = as.Date(dates),
     Complex = SWC_vals_complex,
     Measured  = SWC_vals_meas,
+    Layer = Layer,
     stringsAsFactors = FALSE
   )
 
   # empty plots
   cor_plot <- ggplot(data = plot_data,
                      aes(x = Complex, y = Measured)) +
-    theme_minimal()
+    facet_grid(Layer ~ .) +
+    theme_medfate()
 
 
   swc_plot <- plot_data %>%
-    tidyr::gather(key = Model, value = SWC, -Date) %>%
-    ggplot(aes(x = Date, y = SWC, colour = Model)) +
+    tidyr::gather(key = Model, value = SWC, -Date, -Layer) %>%
+    ggplot(aes(x = Date, y = SWC, colour = Model, linetype = Layer)) +
+    facet_grid(Layer ~ .) +
     scale_color_manual(values = c('green', 'red')) +
     scale_x_date(date_breaks = '4 months') +
-    theme_minimal() +
+    theme_medfate() +
     theme(
       legend.position = 'top',
       axis.text.x = element_text(angle = 25)
@@ -124,6 +163,7 @@ plot_swc_complex_gg <- function(models, soil, measured_data) {
     # if there is measured values, populate the plots
     swc_plot <- swc_plot +
       geom_line(alpha = 0.4, size = 0.7) +
+      geom_point(shape = 20, alpha = 0.3, size = 2) +
       scale_y_continuous(limits = y_limits)
 
     cor_plot <- cor_plot +
@@ -144,30 +184,50 @@ plot_swc_complex_gg <- function(models, soil, measured_data) {
 
 plot_swc_both_gg <- function(models, soil, measured_data) {
 
+  # get the measured layers
+  swc_vars <- c(
+    'SWC',
+    names(measured_data)[stringr::str_detect(names(measured_data), '^SWC_[0-9]$')]
+  )
+
+  dates <- character(0)
+  SWC_vals_complex <- numeric(0)
+  SWC_vals_simple <- numeric(0)
+  Layer <- character(0)
+
   # data
-  dates <- models[['simple']][['Dates']]
-  SWC_vals_complex <- models[['complex']][['W.1']] * soil$Theta_FC[[1]]
-  SWC_vals_simple <- models[['simple']][['W.1']] * soil$Theta_FC[[1]]
+  for (name in swc_vars) {
+    index <- which(swc_vars == name)
+    dates <- c(dates, as.character(models[['complex']][['Dates']]))
+    SWC_vals_complex <- c(SWC_vals_complex,
+                          models[['complex']][[paste0('W.', index)]] * soil$Theta_FC[[index]])
+    SWC_vals_simple <- c(SWC_vals_simple,
+                       models[['simple']][[paste0('W.', index)]] * soil$Theta_FC[[index]])
+    Layer <- c(Layer, rep(name, length(measured_data[[name]])))
+  }
 
   plot_data <- data.frame(
     Date = as.Date(dates),
     Complex = SWC_vals_complex,
     Simple  = SWC_vals_simple,
+    Layer = Layer,
     stringsAsFactors = FALSE
   )
 
   # empty plots
   cor_plot <- ggplot(data = plot_data,
                      aes(x = Complex, y = Simple)) +
-    theme_minimal()
+    facet_grid(Layer ~ .) +
+    theme_medfate()
 
 
   swc_plot <- plot_data %>%
-    tidyr::gather(key = Model, value = SWC, -Date) %>%
-    ggplot(aes(x = Date, y = SWC, colour = Model)) +
+    tidyr::gather(key = Model, value = SWC, -Date, -Layer) %>%
+    ggplot(aes(x = Date, y = SWC, colour = Model, linetype = Layer)) +
+    facet_grid(Layer ~ .) +
     scale_color_manual(values = c('green', 'blue')) +
     scale_x_date(date_breaks = '4 months') +
-    theme_minimal() +
+    theme_medfate() +
     theme(
       legend.position = 'top',
       axis.text.x = element_text(angle = 25)
@@ -186,6 +246,7 @@ plot_swc_both_gg <- function(models, soil, measured_data) {
 
   swc_plot <- swc_plot +
     geom_line(alpha = 0.4, size = 0.7) +
+    geom_point(shape = 20, alpha = 0.3, size = 2) +
     scale_y_continuous(limits = y_limits)
 
   cor_plot <- cor_plot +
@@ -220,7 +281,7 @@ plot_eplanttot_simple_gg <- function(models, measured_data) {
   # empty plots
   cor_plot <- ggplot(data = plot_data,
                      aes(x = Simple, y = Measured)) +
-    theme_minimal()
+    theme_medfate()
 
 
   etot_plot <- plot_data %>%
@@ -228,7 +289,7 @@ plot_eplanttot_simple_gg <- function(models, measured_data) {
     ggplot(aes(x = Date, y = Etot, colour = Model)) +
     scale_color_manual(values = c('red', 'blue')) +
     scale_x_date(date_breaks = '4 months') +
-    theme_minimal() +
+    theme_medfate() +
     theme(
       legend.position = 'top',
       axis.text.x = element_text(angle = 25)
@@ -289,7 +350,7 @@ plot_eplanttot_complex_gg <- function(models, measured_data) {
   # empty plots
   cor_plot <- ggplot(data = plot_data,
                      aes(x = Complex, y = Measured)) +
-    theme_minimal()
+    theme_medfate()
 
 
   etot_plot <- plot_data %>%
@@ -297,7 +358,7 @@ plot_eplanttot_complex_gg <- function(models, measured_data) {
     ggplot(aes(x = Date, y = Etot, colour = Model)) +
     scale_color_manual(values = c('green', 'red')) +
     scale_x_date(date_breaks = '4 months') +
-    theme_minimal() +
+    theme_medfate() +
     theme(
       legend.position = 'top',
       axis.text.x = element_text(angle = 25)
@@ -358,7 +419,7 @@ plot_eplanttot_both_gg <- function(models, measured_data) {
   # empty plots
   cor_plot <- ggplot(data = plot_data,
                      aes(x = Complex, y = Simple)) +
-    theme_minimal()
+    theme_medfate()
 
 
   etot_plot <- plot_data %>%
@@ -366,7 +427,7 @@ plot_eplanttot_both_gg <- function(models, measured_data) {
     ggplot(aes(x = Date, y = Etot, colour = Model)) +
     scale_color_manual(values = c('green', 'blue')) +
     scale_x_date(date_breaks = '4 months') +
-    theme_minimal() +
+    theme_medfate() +
     theme(
       legend.position = 'top',
       axis.text.x = element_text(angle = 25)
@@ -427,7 +488,7 @@ plot_cohort_simple_gg <- function(models, measured_data) {
     cor_plot <- ggplot(data = plot_data,
                        aes(x = Simple, y = Measured)) +
       labs(title = cohort) +
-      theme_minimal()
+      theme_medfate()
 
 
     ecoh_plot <- plot_data %>%
@@ -436,7 +497,7 @@ plot_cohort_simple_gg <- function(models, measured_data) {
       scale_color_manual(values = c('red', 'blue')) +
       scale_x_date(date_breaks = '4 months') +
       labs(title = cohort) +
-      theme_minimal() +
+      theme_medfate() +
       theme(
         legend.position = 'top',
         axis.text.x = element_text(angle = 25)
@@ -515,7 +576,7 @@ plot_cohort_complex_gg <- function(models, measured_data) {
     cor_plot <- ggplot(data = plot_data,
                        aes(x = Complex, y = Measured)) +
       labs(title = cohort) +
-      theme_minimal()
+      theme_medfate()
 
 
     ecoh_plot <- plot_data %>%
@@ -524,7 +585,7 @@ plot_cohort_complex_gg <- function(models, measured_data) {
       scale_color_manual(values = c('green', 'red')) +
       scale_x_date(date_breaks = '4 months') +
       labs(title = cohort) +
-      theme_minimal() +
+      theme_medfate() +
       theme(
         legend.position = 'top',
         axis.text.x = element_text(angle = 25)
@@ -604,7 +665,7 @@ plot_cohort_both_gg <- function(models, measured_data) {
     cor_plot <- ggplot(data = plot_data,
                        aes(x = Complex, y = Simple)) +
       labs(title = cohort) +
-      theme_minimal()
+      theme_medfate()
 
 
     ecoh_plot <- plot_data %>%
@@ -613,7 +674,7 @@ plot_cohort_both_gg <- function(models, measured_data) {
       scale_color_manual(values = c('green', 'blue')) +
       scale_x_date(date_breaks = '4 months') +
       labs(title = cohort) +
-      theme_minimal() +
+      theme_medfate() +
       theme(
         legend.position = 'top',
         axis.text.x = element_text(angle = 25)
@@ -668,9 +729,10 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       return(cowplot::plot_grid(
-        simple[['swc']], complex[['swc']], both[['swc']],
-        simple[['cor']], complex[['cor']], both[['cor']],
-        ncol = 3
+        simple[['swc']], simple[['cor']],
+        complex[['swc']], complex[['cor']],
+        both[['swc']], both[['cor']],
+        ncol = 2, align = 'h', axis = "tblr"
       ))
     }
 
@@ -680,7 +742,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       return(cowplot::plot_grid(
-        plotlist = simple, ncol = 1
+        plotlist = simple, ncol = 2, align = 'h', axis = "tblr"
       ))
     }
 
@@ -690,7 +752,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       return(cowplot::plot_grid(
-        plotlist = complex, ncol = 1
+        plotlist = complex, ncol = 2, align = 'h', axis = "tblr"
       ))
     }
   }
@@ -878,7 +940,7 @@ plot_swc_layers_gg <- function(models) {
     scale_color_manual(values = c('green', 'blue')) +
     scale_x_date(date_breaks = '4 months') +
     facet_grid(. ~ Model) +
-    theme_minimal() +
+    theme_medfate() +
     theme(
       legend.position = 'top',
       axis.text.x = element_text(angle = 25)
@@ -887,4 +949,78 @@ plot_swc_layers_gg <- function(models) {
   # return the plot
   return(swc_layers_plot)
 
+}
+
+#' ggplot2 theme for the reports plots
+#'
+#' @export
+
+theme_medfate <- function(base_size = 11, base_family = "")
+{
+  half_line <- base_size/2
+  theme(line = element_line(colour = "black", size = 0.5, linetype = 1,
+                            lineend = "butt"),
+        rect = element_rect(fill = NA,
+                            colour = "black", size = 0.5, linetype = 1),
+        text = element_text(family = base_family,
+                            face = "plain", colour = "black", size = base_size,
+                            lineheight = 0.9, hjust = 0.5, vjust = 0.5,
+                            angle = 0, margin = margin(), debug = FALSE),
+        title = element_text(),
+        axis.line = element_line(),
+        axis.line.x = element_blank(),
+        axis.line.y = element_blank(),
+        axis.text = element_text(size = rel(0.8)),
+        axis.text.x = element_text(margin = margin(t = 0.8 * half_line),
+                                   vjust = 1),
+        axis.text.y = element_text(margin = margin(r = 0.8 * half_line),
+                                   hjust = 1),
+        axis.ticks = element_line(colour = "black"),
+        axis.ticks.length = unit(half_line, "pt"),
+        axis.title.x = element_text(margin = margin(t = 0.2 * half_line,
+                                                    b = 0.2 * half_line),
+                                    hjust = 0.85),
+        axis.title.y = element_text(angle = 90,
+                                    margin = margin(r = 1.1 * half_line, l = 0.8 * half_line),
+                                    hjust = 0.85),
+        legend.background = element_rect(colour = NA),
+        legend.margin = margin(t = half_line/4, r = half_line/4,
+                               b = 0, l = half_line/4, unit = "pt"),
+        legend.key = element_rect(colour = NA),
+        legend.key.size = unit(1.2, "lines"),
+        legend.key.height = NULL,
+        legend.key.width = NULL,
+        legend.text = element_text(size = rel(0.8)),
+        legend.text.align = NULL,
+        legend.title = element_text(hjust = 0),
+        legend.title.align = NULL,
+        legend.position = "top",
+        legend.direction = "horizontal",
+        legend.justification = c(0.9,1),
+        legend.box = NULL,
+        # legend.spacing = unit(0.2, 'mm'),
+        # legend.spacing.x = unit(0.2, 'mm'),
+        # legend.spacing.y = NULL,
+        panel.background = element_rect(color = NA),
+        panel.border = element_rect(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.spacing = unit(half_line, "pt"),
+        panel.ontop = FALSE,
+        strip.background = element_rect(colour = NA),
+        strip.placement = 'inside',
+        strip.text = element_text(colour = "black", size = rel(0.8)),
+        strip.text.x = element_text(margin = margin(t = half_line, b = half_line)),
+        strip.text.y = element_text(angle = -90,
+                                    margin = margin(l = half_line, r = half_line)),
+        strip.switch.pad.grid = unit(0.1, "cm"),
+        strip.switch.pad.wrap = unit(0.1, "cm"),
+        plot.background = element_rect(colour = NA),
+        plot.title = element_text(size = rel(1.2),
+                                  margin = margin(b = half_line/2),
+                                  hjust = 0.95),
+        plot.subtitle = element_text(size = rel(0.8), hjust = 0.95,
+                                     margin = margin(b = half_line/2)),
+        plot.margin = margin(half_line, half_line, half_line, half_line),
+        complete = TRUE)
 }

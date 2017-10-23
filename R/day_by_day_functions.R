@@ -41,8 +41,8 @@ transp_day_by_day <- function(input, meteoData, soilData,
       loop_input <- input
 
       # generate the soil object replacing W with the measured value
-      soilData[['W']] <- measuredData[i, 'SWC']/soilData[['FC']]
       soil_object <- buildSoil(soilData)
+      # soil_object[['W']] <- measuredData[i, 'SWC']/soil_object[['Theta_FC']]
 
       # swb.day
       temp_res <- medfate::swb.day(

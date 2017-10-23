@@ -16,6 +16,8 @@ knitr::opts_chunk$set(error = TRUE)
 knitr::opts_chunk$set(message = FALSE)
 knitr::opts_chunk$set(warning = FALSE)
 knitr::opts_knit$set(root.dir = params$wd)
+
+# libraries
 library(medfate)
 library(MedfateValidation)
 library(dplyr)
@@ -60,6 +62,17 @@ if (params$SPParams == 'new') {
 if (!all(is.na((soilData[['FC']])))) {
   warning('Custom FC values has been provided: ', soilData[['FC']][1], ' ...')
 }
+
+# dinamic fig size for soilwater
+swc_vars <- c(
+  'SWC',
+  names(measuredData)[stringr::str_detect(names(measuredData), '^SWC_[0-9]$')]
+)
+
+constant_mode <- c('both' = 2, 'simple' = 1, 'complex' = 1)
+
+height_chunk <- 2.5*length(swc_vars)*constant_mode[[params$transpMode]]
+knitr::opts_chunk$set(fig.height = height_chunk)
 ```
 
 # General Info
@@ -199,27 +212,21 @@ if (params$transpMode %in% c('both')) {
 
 ## Models comparision
 
-### SWC in the first layer
+### SWC in the measured layers
 
-```{r statistics_SWC}
+```{r statistics_SWC, results='asis'}
 SWC_stats <- statistics_summary('SWC', models_dfs, measuredData,
                                 soil_object)
+knitr::kable(SWC_stats, row.names = FALSE)
 ```
 
-Comparision | MAE | r² | Bias
-------------|-----|----|-------
-Simple *vs.* Measured | `r SWC_stats$SWC_MAE_simple` | `r SWC_stats$SWC_r_sq_simple` | `r SWC_stats$SWC_bias_simple`
-Complex *vs.* Measured | `r SWC_stats$SWC_MAE_complex` | `r SWC_stats$SWC_r_sq_complex` | `r SWC_stats$SWC_bias_complex`
-Simple *vs.* Complex | `r SWC_stats$SWC_MAE_both` | `r SWC_stats$SWC_r_sq_both` | `r SWC_stats$SWC_bias_both`
-
-
-```{r plots_SWC, fig.height=6, fig.width=8}
+```{r plots_SWC, fig.width=8}
 print(plot_res_gg('SWC', models_dfs, soil_object, measuredData, params$transpMode))
 ```
 
 ### SWC in all layers
 
-```{r plots_SWC_layers, fig.height=6, fig.width=7}
+```{r plots_SWC_layers, fig.height=4, fig.width=8}
 print(plot_swc_layers_gg(models_dfs))
 ```
 

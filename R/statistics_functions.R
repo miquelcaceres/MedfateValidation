@@ -88,14 +88,52 @@ statistics_summary <- function(var, models, measured_data, soil) {
   # if SWC
   if (var == 'SWC') {
 
+    # get the measured layers
+    swc_vars <- c(
+      'SWC',
+      names(measured_data)[stringr::str_detect(names(measured_data), '^SWC_[0-9]$')]
+    )
+
     # check which models have been performed and get the statistics
     if (!is.null(models[['simple']])) {
-      SWC_MAE_simple <- MAE_calculator(measured_data[['SWC']],
-                                       models[['simple']][['W.1']] * soil$Theta_FC[[1]])
-      SWC_r_sq_simple <- r_squared_calculator(measured_data[['SWC']],
-                                              models[['simple']][['W.1']] * soil$Theta_FC[[1]])
-      SWC_bias_simple <- bias_calculator(measured_data[['SWC']],
-                                         models[['simple']][['W.1']] * soil$Theta_FC[[1]])
+
+      SWC_MAE_simple <- vapply(
+        swc_vars,
+        function(x) {
+          index <- which(swc_vars == x)
+          MAE_calculator(measured_data[[x]],
+                         models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+        },
+        numeric(1)
+      )
+
+      SWC_r_sq_simple <- vapply(
+        swc_vars,
+        function(x) {
+          index <- which(swc_vars == x)
+          r_squared_calculator(measured_data[[x]],
+                               models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+        },
+        numeric(1)
+      )
+
+      SWC_bias_simple <- vapply(
+        swc_vars,
+        function(x) {
+          index <- which(swc_vars == x)
+          bias_calculator(measured_data[[x]],
+                          models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+        },
+        numeric(1)
+      )
+
+      # SWC_MAE_simple <- MAE_calculator(measured_data[['SWC']],
+      #                                  models[['simple']][['W.1']] * soil$Theta_FC[[1]])
+      # SWC_r_sq_simple <- r_squared_calculator(measured_data[['SWC']],
+      #                                         models[['simple']][['W.1']] * soil$Theta_FC[[1]])
+      # SWC_bias_simple <- bias_calculator(measured_data[['SWC']],
+      #                                    models[['simple']][['W.1']] * soil$Theta_FC[[1]])
+
     } else {
       # if the model is not performed, the statistics are NAs
       SWC_MAE_simple <- NA
@@ -104,12 +142,43 @@ statistics_summary <- function(var, models, measured_data, soil) {
     }
 
     if (!is.null(models[['complex']])) {
-      SWC_MAE_complex <- MAE_calculator(measured_data[['SWC']],
-                                        models[['complex']][['W.1']] * soil$Theta_FC[[1]])
-      SWC_r_sq_complex <- r_squared_calculator(measured_data[['SWC']],
-                                               models[['complex']][['W.1']] * soil$Theta_FC[[1]])
-      SWC_bias_complex <- bias_calculator(measured_data[['SWC']],
-                                          models[['complex']][['W.1']] * soil$Theta_FC[[1]])
+
+      SWC_MAE_complex <- vapply(
+        swc_vars,
+        function(x) {
+          index <- which(swc_vars == x)
+          MAE_calculator(measured_data[[x]],
+                         models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+        },
+        numeric(1)
+      )
+
+      SWC_r_sq_complex <- vapply(
+        swc_vars,
+        function(x) {
+          index <- which(swc_vars == x)
+          r_squared_calculator(measured_data[[x]],
+                               models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+        },
+        numeric(1)
+      )
+
+      SWC_bias_complex <- vapply(
+        swc_vars,
+        function(x) {
+          index <- which(swc_vars == x)
+          bias_calculator(measured_data[[x]],
+                          models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+        },
+        numeric(1)
+      )
+
+      # SWC_MAE_complex <- MAE_calculator(measured_data[['SWC']],
+      #                                   models[['complex']][['W.1']] * soil$Theta_FC[[1]])
+      # SWC_r_sq_complex <- r_squared_calculator(measured_data[['SWC']],
+      #                                          models[['complex']][['W.1']] * soil$Theta_FC[[1]])
+      # SWC_bias_complex <- bias_calculator(measured_data[['SWC']],
+      #                                     models[['complex']][['W.1']] * soil$Theta_FC[[1]])
     } else {
       SWC_MAE_complex <- NA
       SWC_r_sq_complex <- NA
@@ -117,12 +186,43 @@ statistics_summary <- function(var, models, measured_data, soil) {
     }
 
     if (!is.null(models[['simple']]) & !is.null(models[['complex']])) {
-      SWC_MAE_both <- MAE_calculator(models[['complex']][['W.1']] * soil$Theta_FC[[1]],
-                                     models[['simple']][['W.1']] * soil$Theta_FC[[1]])
-      SWC_r_sq_both <- r_squared_calculator(models[['complex']][['W.1']] * soil$Theta_FC[[1]],
-                                            models[['simple']][['W.1']] * soil$Theta_FC[[1]])
-      SWC_bias_both <- bias_calculator(models[['complex']][['W.1']] * soil$Theta_FC[[1]],
-                                       models[['simple']][['W.1']] * soil$Theta_FC[[1]])
+
+      SWC_MAE_both <- vapply(
+        swc_vars,
+        function(x) {
+          index <- which(swc_vars == x)
+          MAE_calculator(models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index],
+                         models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+        },
+        numeric(1)
+      )
+
+      SWC_r_sq_both <- vapply(
+        swc_vars,
+        function(x) {
+          index <- which(swc_vars == x)
+          r_squared_calculator(models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index],
+                               models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+        },
+        numeric(1)
+      )
+
+      SWC_bias_both <- vapply(
+        swc_vars,
+        function(x) {
+          index <- which(swc_vars == x)
+          bias_calculator(models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index],
+                          models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+        },
+        numeric(1)
+      )
+
+      # SWC_MAE_both <- MAE_calculator(models[['complex']][['W.1']] * soil$Theta_FC[[1]],
+      #                                models[['simple']][['W.1']] * soil$Theta_FC[[1]])
+      # SWC_r_sq_both <- r_squared_calculator(models[['complex']][['W.1']] * soil$Theta_FC[[1]],
+      #                                       models[['simple']][['W.1']] * soil$Theta_FC[[1]])
+      # SWC_bias_both <- bias_calculator(models[['complex']][['W.1']] * soil$Theta_FC[[1]],
+      #                                  models[['simple']][['W.1']] * soil$Theta_FC[[1]])
     } else {
       SWC_MAE_both <- NA
       SWC_r_sq_both <- NA
@@ -130,16 +230,18 @@ statistics_summary <- function(var, models, measured_data, soil) {
     }
 
     # build the res object and return it!
-    res <- list(
-      SWC_MAE_simple = SWC_MAE_simple,
-      SWC_r_sq_simple = SWC_r_sq_simple,
-      SWC_bias_simple = SWC_bias_simple,
-      SWC_MAE_complex = SWC_MAE_complex,
-      SWC_r_sq_complex = SWC_r_sq_complex,
-      SWC_bias_complex = SWC_bias_complex,
-      SWC_MAE_both = SWC_MAE_both,
-      SWC_r_sq_both = SWC_r_sq_both,
-      SWC_bias_both = SWC_bias_both
+    res <- data.frame(
+      stringsAsFactors = FALSE,
+      Layer = swc_vars,
+      R_sq_simple = round(SWC_r_sq_simple, 3),
+      Bias_simple = round(SWC_bias_simple, 3),
+      MAE_simple = round(SWC_MAE_simple, 3),
+      R_sq_complex = round(SWC_r_sq_complex, 3),
+      Bias_complex = round(SWC_bias_complex, 3),
+      MAE_complex = round(SWC_MAE_complex, 3),
+      R_sq_both = round(SWC_r_sq_both, 3),
+      Bias_both = round(SWC_bias_both, 3),
+      MAE_both = round(SWC_MAE_both, 3)
     )
 
     return(res)
