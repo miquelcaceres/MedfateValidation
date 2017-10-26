@@ -253,7 +253,12 @@ if (params$transpMode %in% c('both', 'simple')) {
   ncoh <- ncol(res_complex[["PlantTranspiration"]])
 }
 
-height_chunk <- 2.5*ceiling(ncoh/4)
+if (ncoh < 4) {
+  height_chunk = 3
+} else {
+  height_chunk <- 3*ceiling(ncoh/3)
+}
+
 knitr::opts_chunk$set(fig.height = height_chunk)
 ```
 
