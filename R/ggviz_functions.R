@@ -769,7 +769,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
       return(cowplot::plot_grid(
         simple[['etot']], complex[['etot']], both[['etot']],
         simple[['cor']], complex[['cor']], both[['cor']],
-        ncol = 3
+        ncol = 3, align = 'h', axis = "tblr"
       ))
     }
 
@@ -779,7 +779,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       return(cowplot::plot_grid(
-        plotlist = simple, ncol = 1
+        plotlist = simple, ncol = 1, align = 'h', axis = "tblr"
       ))
     }
 
@@ -789,7 +789,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       return(cowplot::plot_grid(
-        plotlist = complex, ncol = 1
+        plotlist = complex, ncol = 1, align = 'h', axis = "tblr"
       ))
     }
   }
@@ -809,32 +809,38 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
         simple_ecoh = cowplot::plot_grid(
           plotlist = simple[['ecoh']],
           ncol = if (n_coh < 4) {n_coh} else {3},
-          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)},
+          align = 'h', axis = "tblr"
         ),
         simple_cor = cowplot::plot_grid(
           plotlist = simple[['cor']],
           ncol = if (n_coh < 4) {n_coh} else {3},
-          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)},
+          align = 'h', axis = "tblr"
         ),
         complex_ecoh = cowplot::plot_grid(
           plotlist = complex[['ecoh']],
           ncol = if (n_coh < 4) {n_coh} else {3},
-          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)},
+          align = 'h', axis = "tblr"
         ),
         complex_cor = cowplot::plot_grid(
           plotlist = complex[['cor']],
           ncol = if (n_coh < 4) {n_coh} else {3},
-          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)},
+          align = 'h', axis = "tblr"
         ),
         both_ecoh = cowplot::plot_grid(
           plotlist = both[['ecoh']],
           ncol = if (n_coh < 4) {n_coh} else {3},
-          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)},
+          align = 'h', axis = "tblr"
         ),
         both_cor = cowplot::plot_grid(
           plotlist = both[['cor']],
           ncol = if (n_coh < 4) {n_coh} else {3},
-          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)},
+          align = 'h', axis = "tblr"
         )
       )
 
@@ -852,12 +858,14 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
         simple_ecoh = cowplot::plot_grid(
           plotlist = simple[['ecoh']],
           ncol = if (n_coh < 4) {n_coh} else {3},
-          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)},
+          align = 'h', axis = "tblr"
         ),
         simple_cor = cowplot::plot_grid(
           plotlist = simple[['cor']],
           ncol = if (n_coh < 4) {n_coh} else {3},
-          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)},
+          align = 'h', axis = "tblr"
         )
       )
 
@@ -875,12 +883,14 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
         complex_ecoh = cowplot::plot_grid(
           plotlist = complex[['ecoh']],
           ncol = if (n_coh < 4) {n_coh} else {3},
-          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)},
+          align = 'h', axis = "tblr"
         ),
         complex_cor = cowplot::plot_grid(
           plotlist = complex[['cor']],
           ncol = if (n_coh < 4) {n_coh} else {3},
-          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)}
+          nrow = if (n_coh < 4) {1} else {ceiling(n_coh/3)},
+          align = 'h', axis = "tblr"
         )
       )
 
