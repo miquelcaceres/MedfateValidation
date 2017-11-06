@@ -240,7 +240,7 @@ report_widget <- function(data, wd) {
         file.copy(file_name, 'www/report.html', overwrite = TRUE)
 
         tags$a(paste0('Link to the detailed report of ', input$dataset, ' site'),
-               href = 'www/report.html', target = '_blank')
+               href = 'http://10.1.2.24:8787/file_show?path=%2Fsrv%2Fshiny-server%2Fmedfatevalidation_report%2Fwww%2Freport.html', target = '_blank')
       })
 
       output$swc_plot <- renderPlot({
