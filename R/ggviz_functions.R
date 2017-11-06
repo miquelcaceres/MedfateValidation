@@ -767,9 +767,10 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       return(cowplot::plot_grid(
-        simple[['etot']], complex[['etot']], both[['etot']],
-        simple[['cor']], complex[['cor']], both[['cor']],
-        ncol = 3, align = 'h', axis = "tblr"
+        simple[['etot']], simple[['cor']],
+        complex[['etot']], complex[['cor']],
+        both[['etot']], both[['cor']],
+        ncol = 2, align = 'h', axis = "tblr"
       ))
     }
 
@@ -779,7 +780,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       return(cowplot::plot_grid(
-        plotlist = simple, ncol = 1, align = 'h', axis = "tblr"
+        plotlist = simple, ncol = 2, align = 'h', axis = "tblr"
       ))
     }
 
@@ -789,7 +790,7 @@ plot_res_gg <- function(variable, models, soil, measured_data, mode) {
 
       # build the cowplot
       return(cowplot::plot_grid(
-        plotlist = complex, ncol = 1, align = 'h', axis = "tblr"
+        plotlist = complex, ncol = 2, align = 'h', axis = "tblr"
       ))
     }
   }
@@ -987,8 +988,8 @@ theme_medfate <- function(base_size = 11, base_family = "")
                                    hjust = 1),
         axis.ticks = element_line(colour = "black"),
         axis.ticks.length = unit(half_line, "pt"),
-        axis.title.x = element_text(margin = margin(t = 0.2 * half_line,
-                                                    b = 0.2 * half_line),
+        axis.title.x = element_text(margin = margin(t = 0.8 * half_line,
+                                                    b = 0.8 * half_line),
                                     hjust = 0.85),
         axis.title.y = element_text(angle = 90,
                                     margin = margin(r = 1.1 * half_line, l = 0.8 * half_line),
@@ -1028,8 +1029,8 @@ theme_medfate <- function(base_size = 11, base_family = "")
         plot.background = element_rect(colour = NA),
         plot.title = element_text(size = rel(1.2),
                                   margin = margin(b = half_line/2),
-                                  hjust = 0.95),
-        plot.subtitle = element_text(size = rel(0.8), hjust = 0.95,
+                                  hjust = 0.1),
+        plot.subtitle = element_text(size = rel(0.8), hjust = 0.1,
                                      margin = margin(b = half_line/2)),
         plot.margin = margin(half_line, half_line, half_line, half_line),
         complete = TRUE)

@@ -244,26 +244,20 @@ Complex *vs.* Measured | `r Eplanttot_stats$Eplanttot_MAE_complex` | `r Eplantto
 Simple *vs.* Complex | `r Eplanttot_stats$Eplanttot_MAE_both` | `r Eplanttot_stats$Eplanttot_r_sq_both` | `r Eplanttot_stats$Eplanttot_bias_both`
 
 
-```{r fig_setup_E}
-# dinamic fig size for transpiration
+```{r fig_setup_Etot}
+# dinamic fig size for total transpiration
 
-if (params$transpMode %in% c('both', 'simple')) {
-  ncoh <- ncol(res_simple[["PlantTranspiration"]])
+if (params$transpMode == 'both') {
+  height_chunk <- 9
 } else {
-  ncoh <- ncol(res_complex[["PlantTranspiration"]])
-}
-
-if (ncoh < 4) {
-  height_chunk = 3
-} else {
-  height_chunk <- 3*ceiling(ncoh/3)
+  height_chunk <- 3
 }
 
 knitr::opts_chunk$set(fig.height = height_chunk)
 ```
 
 
-```{r plots_Eplanttot, fig.height=6, fig.width=8}
+```{r plots_Eplanttot, fig.width=8}
 print(plot_res_gg('Eplanttot', models_dfs, soil_object, measuredData, params$transpMode))
 ```
 
@@ -299,6 +293,25 @@ rbind(
   as.data.frame() %>%
   knitr::kable(col.names = c('Statistics', Ecohorts_stats[['Cohort_name']]))
 ```
+
+```{r fig_setup_Ecoh}
+# dinamic fig size for total transpiration
+
+if (params$transpMode %in% c('both', 'simple')) {
+  ncoh <- ncol(res_simple[["PlantTranspiration"]])
+} else {
+  ncoh <- ncol(res_complex[["PlantTranspiration"]])
+}
+
+if (ncoh < 4) {
+  height_chunk = 3
+} else {
+  height_chunk <- 3*ceiling(ncoh/3)
+}
+
+knitr::opts_chunk$set(fig.height = height_chunk)
+```
+
 
 ```{r plots_Eplant_coh, fig.width=8}
 plots_cohorts <- plot_res_gg('E_by_Cohort', models_dfs, soil_object,
