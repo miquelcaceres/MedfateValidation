@@ -238,7 +238,7 @@ report_widget <- function(data, wd) {
         file_name <- row.names(file_creation_info)[file_index]
 
         tags$a(paste0('Link to the detailed report of ', input$dataset, ' site'),
-               href = paste0('file://', wd, '/', file_name), target = '_blank')
+               href = paste0('file://', file_name), target = '_blank')
       })
 
       output$swc_plot <- renderPlot({
