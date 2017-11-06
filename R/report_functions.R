@@ -175,9 +175,11 @@ load_rdatas <- function() {
 #' @param data List with the environments where the report objects are located,
 #'   generated with \code{\link{load_rdatas}}.
 #'
+#' @param wd character indicating the working directory
+#'
 #' @export
 
-report_widget <- function(data) {
+report_widget <- function(data, wd) {
 
   shinyApp(
     options = list(height = 1000),
@@ -226,7 +228,7 @@ report_widget <- function(data) {
         stamp <- Sys.time()
 
         file_creation_info <- file.info(
-          list.files(file.path('Output', packageVersion('medfate')[[1]], input$dataset),
+          list.files(file.path(wd, 'Output', packageVersion('medfate')[[1]], input$dataset),
                      pattern = 'html', full.names = TRUE)
         )
 
@@ -236,7 +238,7 @@ report_widget <- function(data) {
         file_name <- row.names(file_creation_info)[file_index]
 
         tags$a(paste0('Link to the detailed report of ', input$dataset, ' site'),
-               href = paste0('file://', getwd(), '/', file_name), target = '_blank')
+               href = paste0('file://', wd, '/', file_name), target = '_blank')
       })
 
       output$swc_plot <- renderPlot({
