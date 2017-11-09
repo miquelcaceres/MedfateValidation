@@ -11,6 +11,7 @@
 \alias{load_measuredData}
 \alias{load_terrainData}
 \alias{load_customParams}
+\alias{load_remarks}
 \title{Loading data functions}
 \usage{
 load_treeData(site)
@@ -32,6 +33,8 @@ load_measuredData(site)
 load_terrainData(site)
 
 load_customParams(site)
+
+load_remarks(site)
 }
 \arguments{
 \item{site}{Character indicating site code to load.}
@@ -58,5 +61,7 @@ This functions search and load the data for the corresponding site
 \item \code{load_terrainData}: 
 
 \item \code{load_customParams}: 
+
+\item \code{load_remarks}: 
 }}
 

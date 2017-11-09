@@ -12,12 +12,15 @@
 #'
 #' @param site_code character with the site/plot code name
 #'
+#' @param write boolean indicating if tables must be written in disk, default to
+#'   TRUE
+#'
 #' @importFrom magrittr %>%
 #'
 #' @export
 
 saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
-                    site_code) {
+                    site_code, write = TRUE) {
 
   # empty list to store the model data frame results for later use
   # (plots and statistics)
@@ -53,8 +56,11 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
                            paste0(format(Sys.time(), "%Y%m%d_%H%M"),
                                   '_', site_code, '_',
                                   'simple_model_res.txt'))
-    write.table(simple_to_save, file_name, row.names = FALSE,
-                col.names = TRUE, fileEncoding = 'UTF-8')
+
+    if (write) {
+      write.table(simple_to_save, file_name, row.names = FALSE,
+                  col.names = TRUE, fileEncoding = 'UTF-8')
+    }
 
     models_dfs[['simple']] <- simple_to_save
 
@@ -92,8 +98,11 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
                            paste0(format(Sys.time(), "%Y%m%d_%H%M"),
                                   '_', site_code, '_',
                                   'complex_model_res.txt'))
-    write.table(complex_to_save, file_name, row.names = FALSE,
-                col.names = TRUE, fileEncoding = 'UTF-8')
+
+    if (write) {
+      write.table(complex_to_save, file_name, row.names = FALSE,
+                  col.names = TRUE, fileEncoding = 'UTF-8')
+    }
 
     models_dfs[['complex']] <- complex_to_save
 
@@ -111,8 +120,10 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
   # filtering to obtain only the ones we want
   spParams <- spParams[spParams$SpIndex %in% indexes, ]
 
-  write.table(spParams, params_file, row.names = FALSE, col.names = TRUE,
-              fileEncoding = 'UTF-8')
+  if (write) {
+    write.table(spParams, params_file, row.names = FALSE, col.names = TRUE,
+                fileEncoding = 'UTF-8')
+  }
 
   # returning the lis with the models dfs to later use
   return(models_dfs)

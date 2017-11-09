@@ -4,7 +4,8 @@
 \alias{saveRes}
 \title{Save results}
 \usage{
-saveRes(simple_res = NULL, complex_res = NULL, spParams = NULL, site_code)
+saveRes(simple_res = NULL, complex_res = NULL, spParams = NULL, site_code,
+  write = TRUE)
 }
 \arguments{
 \item{simple_res}{swb object with the simple model results}
@@ -14,6 +15,9 @@ saveRes(simple_res = NULL, complex_res = NULL, spParams = NULL, site_code)
 \item{spParams}{data.frame containing the species parameters used in the model}
 
 \item{site_code}{character with the site/plot code name}
+
+\item{write}{boolean indicating if tables must be written in disk, default to
+TRUE}
 }
 \description{
 Function to save model results in txt files, one for each model mode

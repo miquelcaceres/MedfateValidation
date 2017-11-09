@@ -7,7 +7,9 @@ params:
   code: ''
   transpMode: 'both'
   SPParams: 'old'
-output: html_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -37,6 +39,7 @@ meteoData <- load_meteoData(code)
 miscData <- load_miscData(code)
 soilData <- load_soilData(code)
 terrainData <- load_terrainData(code)
+remarks <- load_remarks(code)
 
 # model objects
 forest_object <- buildForest(treeData, shrubData, seedData, miscData)
@@ -77,17 +80,22 @@ knitr::opts_chunk$set(fig.height = height_chunk)
 
 # General Info
 
-```{r gen_info, results='asis'}
-knitr::kable(
-  data.frame(
+```{r gen_info}
+data.frame(
     Pkg_version  = as.character(packageVersion('medfate')),
     Site = params$code,
     Date = format(Sys.Date())
   )
-)
 ```
 
-## *Simple* Model
+## Remarks
+
+```{r remarks, max.print=10}
+remarks
+```
+
+
+# *Simple* Model
 
 ```{r simple_model, eval=TRUE, message=FALSE}
 # check if simple mode has to be performed
@@ -137,7 +145,7 @@ if (params$transpMode %in% c('simple', 'both')) {
 }
 ```
 
-## *Complex* Model
+# *Complex* Model
 
 ```{r complex_model}
 # check if complex mode has to be performed
@@ -210,9 +218,9 @@ if (params$transpMode %in% c('both')) {
 }
 ```
 
-## Models comparision
+# Models comparision
 
-### SWC in the measured layers
+## SWC in the measured layers
 
 ```{r statistics_SWC, results='asis'}
 SWC_stats <- statistics_summary('SWC', models_dfs, measuredData,
@@ -224,13 +232,13 @@ knitr::kable(SWC_stats, row.names = FALSE)
 print(plot_res_gg('SWC', models_dfs, soil_object, measuredData, params$transpMode))
 ```
 
-### SWC in all layers
+## SWC in all layers
 
 ```{r plots_SWC_layers, fig.height=3, fig.width=8}
 print(plot_swc_layers_gg(models_dfs))
 ```
 
-### Total Tranpiration
+## Total Tranpiration
 
 ```{r statistics_Eplanttot}
 Eplanttot_stats <- statistics_summary('Eplanttot', models_dfs, measuredData,
@@ -261,7 +269,7 @@ knitr::opts_chunk$set(fig.height = height_chunk)
 print(plot_res_gg('Eplanttot', models_dfs, soil_object, measuredData, params$transpMode))
 ```
 
-### Transpiration by cohorts
+## Transpiration by cohorts
 
 ```{r statistics_E_cohorts, results='asis'}
 Ecohorts_stats <- statistics_summary('E_by_Cohort', models_dfs, measuredData,
@@ -323,7 +331,7 @@ purrr::walk(
 )
 ```
 
-## Soil Info
+# Soil Info
 
 ```{r soil_info}
 if (params$transpMode %in% c('simple', 'both')) {
@@ -335,9 +343,9 @@ if (params$transpMode %in% c('simple', 'both')) {
 }
 ```
 
-## SoilWaterBalance Input
+# SoilWaterBalance Input
 
-```{r swb_input}
+```{r swb_input, collapse=FALSE}
 if (params$transpMode == 'simple') {
   print(simple_input)
 } else {
@@ -351,7 +359,7 @@ if (params$transpMode == 'simple') {
 ```
 
 
-## Session Info
+# Session Info
 
 ```{r session_info}
 # saving objects

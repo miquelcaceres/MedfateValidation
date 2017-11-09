@@ -175,3 +175,25 @@ load_customParams <- function(site) {
   # return data frame
   return(custom_params)
 }
+
+
+#' @describeIn load_treeData
+#'
+#' @export
+
+load_remarks <- function(site) {
+  # file route
+  location <- file.path('Sites_data', site, paste0(site, '_remarks.txt'))
+
+  # check if file exists, if not return NULL (in order to avoid errors in the
+  # workflow)
+  if (!file.exists(location)) {
+    return(NULL)
+  }
+
+  # load data
+  remarks <- read.table(location, header = TRUE, sep = '\t', dec = '.',
+                        stringsAsFactors = FALSE)
+  # return data frame
+  return(remarks)
+}
