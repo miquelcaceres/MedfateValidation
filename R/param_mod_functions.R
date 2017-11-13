@@ -76,11 +76,16 @@ inputMod <- function(swbInput, customParams) {
   for (param in custom) {
     # check if the param exists in above
     if (param %in% above_par) {
-      # subsitute it! but by sp index, as the order is important
-      for (sp in swbInput[['cohorts']][['SP']]) {
-        sp_code <- rownames(swbInput[["cohorts"]][swbInput[["cohorts"]][['SP']] == sp, ])
-        swbInput[["above"]][sp_code, param] <- customParams[customParams[['SpIndex']] == sp, param]
+      # subsitute it! but by sp code, as the order is important
+
+      for (sp in customParams[['Spcode']]) {
+        swbInput[['above']][[sp, param]] <- customParams[customParams[['Spcode']] == sp, param]
       }
+
+      # for (sp in swbInput[['cohorts']][['SP']]) {
+      #   sp_code <- rownames(swbInput[["cohorts"]][swbInput[["cohorts"]][['SP']] == sp, ])
+      #   swbInput[["above"]][sp_code, param] <- customParams[customParams[['SpIndex']] == sp, param]
+      # }
     }
 
     # check if the param exists in below
