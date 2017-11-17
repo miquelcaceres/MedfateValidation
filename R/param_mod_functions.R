@@ -21,7 +21,7 @@ SpParams_mod <- function(SpParams, customParams) {
   }
 
   # get the names of the custom params and the SpParams
-  custom <- names(customParams)
+  custom <- names(customParams)[-1]
   sp_par <- names(SpParams)
 
   # iterate between the custom params exisiting in SpParams
@@ -34,7 +34,7 @@ SpParams_mod <- function(SpParams, customParams) {
       for (sp in customParams[['SpIndex']]) {
 
         # subsitute it!
-        SpParams[which(SpParams[['SpIndex']] == sp), param] <- customParams[which(customParams[['SpIndex']] == sp), param]
+        SpParams[which(SpParams[['SpIndex']] == sp), param] <- customParams[which(customParams[['SpIndex']] == sp), param][1]
       }
     }
   }
