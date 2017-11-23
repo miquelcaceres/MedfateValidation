@@ -56,6 +56,21 @@ report_render <- function(report = 'global',
                       quiet = TRUE)
   }
 
+  if (report == 'temperature') {
+    # render the template with the code indicated in the ... argument
+    rmarkdown::render(input = system.file("Rmd_templates",
+                                          "Temperature_report_template.Rmd",
+                                          package = "MedfateValidation"),
+                      output_format = c('html_document'),
+                      output_file = output_file,
+                      output_dir = output_dir,
+                      runtime = 'auto',
+                      clean = TRUE,
+                      params = list(...),
+                      run_pandoc = TRUE,
+                      quiet = TRUE)
+  }
+
 }
 
 #' Main function to do the calibration/validation
@@ -102,10 +117,13 @@ global_process <- function(sites, wd, transpMode, SPParams = 'old') {
 transpiration_process <- function(sites, wd, transpMode, SPParams = 'old') {
 
   for (code in sites) {
+
+    subcode <- strsplit(code, '/', fixed = TRUE)[[1]][2]
+
     report_name <- file.path('Output', packageVersion('medfate')[[1]],
                              code,
                              paste0(format(Sys.time(), "%Y%m%d_%H%M"),
-                                    '_', code, '_',
+                                    '_', subcode, '_',
                                     'transp_report.html'))
 
     report_folder <- file.path('Output', packageVersion('medfate')[[1]],
@@ -113,6 +131,36 @@ transpiration_process <- function(sites, wd, transpMode, SPParams = 'old') {
 
     report_render('transpiration', report_name, report_folder, wd = wd,
                   code = code, transpMode = transpMode, SPParams = SPParams)
+  }
+}
+
+#' Main function to do the Temperature
+#'
+#' Validate a list of sites/plots
+#'
+#' @param sites A character vector with the sites codes
+#'
+#' @param wd Complete path to the validation directory
+#'
+#' @param transpMode Character string indicating the transpiration mode to use
+#'
+#' @export
+
+temperature_process <- function(sites, wd, transpMode = 'complex',
+                                SPParams = 'new') {
+
+  for (code in sites) {
+    report_name <- file.path('Output', packageVersion('medfate')[[1]],
+                             code,
+                             paste0(format(Sys.time(), "%Y%m%d_%H%M"),
+                                    '_', code, '_',
+                                    'temperature_report.html'))
+
+    report_folder <- file.path('Output', packageVersion('medfate')[[1]],
+                               code)
+
+    report_render('temperature', report_name, report_folder, wd = wd, code = code,
+                  transpMode = transpMode, SPParams = SPParams)
   }
 }
 
@@ -167,6 +215,8 @@ load_rdatas <- function() {
 
   return(genv)
 }
+
+
 
 #' Shiny widget for the Status Rmd
 #'

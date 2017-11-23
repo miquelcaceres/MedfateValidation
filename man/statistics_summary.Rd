@@ -4,7 +4,8 @@
 \alias{statistics_summary}
 \title{Statistics summary for a given variable}
 \usage{
-statistics_summary(var, models, measured_data, soil)
+statistics_summary(var, models, measured_data, soil = NULL,
+  meteo_data = NULL)
 }
 \arguments{
 \item{var}{Character with the variable name}
@@ -15,6 +16,8 @@ result of \code{\link{saveRes}}}
 \item{measured_data}{Data frame with the "real" data}
 
 \item{soil}{Soil object needed to calculate SWC from W}
+
+\item{meteo_data}{Data frame with the meterological measures, for Temperature stats}
 }
 \description{
 This function calculates the different statistics for a given variable

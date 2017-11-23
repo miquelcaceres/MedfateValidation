@@ -74,7 +74,7 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
   } else {
 
     # dates
-    Dates <- rownames(simple_res[['DailyBalance']])
+    Dates <- rownames(complex_res[['DailyBalance']])
 
     # total plant transpiration
     Eplanttot <- complex_res[['DailyBalance']][['Eplanttot']]
@@ -87,9 +87,12 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
     soilWater <- complex_res[["SoilWaterBalance"]] %>%
       dplyr::select(dplyr::starts_with('W.'))
 
+    # temperature
+    Temperature <- complex_res[['TemperatureBalance']]
+
     # final data.frame to save
     complex_to_save <- cbind(
-      Dates, Eplanttot, SP_transp, soilWater
+      Dates, Eplanttot, SP_transp, soilWater, Temperature
     )
 
     # save

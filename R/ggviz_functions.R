@@ -712,6 +712,179 @@ plot_cohort_both_gg <- function(models, measured_data) {
   return(list(ecoh = list_ecoh_plots, cor = list_cor_plots))
 }
 
+#' Plot canopy temperature measured vs modelled
+#'
+#' @param models
+#'
+#' @param measured_data
+#'
+#' @param meteo_data
+#'
+#' @export
+
+plot_temp_complex_gg <- function(models, measured_data, meteo_data) {
+
+  max_data <- data.frame(
+    stringsAsFactors = FALSE,
+    Date = as.Date(models[['complex']][['Dates']]),
+    Measured = measured_data[['Temp_max']],
+    Complex = models[['complex']][['Tcan_max']],
+    Meteo = meteo_data[['MaxTemperature']]
+  )
+
+  y_limits <- c(
+    min(min(max_data['Complex'], na.rm = TRUE),
+        min(max_data[['Measured']], na.rm = TRUE),
+        min(max_data[['Meteo']])) - (min(min(max_data['Complex'], na.rm = TRUE),
+                                         min(max_data[['Measured']], na.rm = TRUE),
+                                         min(max_data[['Meteo']])))*0.05,
+    max(max(max_data['Complex'], na.rm = TRUE),
+        max(max_data[['Measured']], na.rm = TRUE),
+        max(max_data[['Meteo']])) + (max(max(max_data['Complex'], na.rm = TRUE),
+                                         max(max_data[['Measured']], na.rm = TRUE),
+                                         max(max_data[['Meteo']])))*0.05
+  )
+
+  # plots
+  max_cor_plot <- ggplot(data = max_data,
+                     aes(x = Complex, y = Measured)) +
+    labs(title = 'Max Temp.', y = 'Canopy (Black) / Atm (gray)') +
+    geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
+    geom_point(shape = 20, alpha = 0.8, colour = 'black') +
+    stat_smooth(method = 'lm', colour = 'black',
+                size = 1, se = FALSE, alpha = 0.4) +
+    geom_point(aes(y = Meteo), shape = 15, colour = 'grey', alpha = 0.8) +
+    stat_smooth(aes(y = Meteo), method = 'lm', colour = 'grey', size = 1,
+                se = FALSE, alpha = 0.4) +
+    scale_y_continuous(limits = y_limits) +
+    scale_x_continuous(limits = y_limits) +
+    theme_medfate()
+
+
+  max_plot <- max_data %>%
+    tidyr::gather(key = Model, value = Temperature, -Date) %>%
+    ggplot(aes(x = Date, y = Temperature, colour = Model)) +
+    scale_color_manual(values = c('green', 'red', 'blue')) +
+    scale_x_date(date_breaks = '4 months') +
+    labs(title = 'Max Temp.') +
+    theme_medfate() +
+    theme(
+      legend.position = 'top',
+      axis.text.x = element_text(angle = 25)
+    ) +
+    geom_line(alpha = 0.4, size = 0.7) +
+    scale_y_continuous(limits = y_limits)
+
+  min_data <- data.frame(
+    stringsAsFactors = FALSE,
+    Date = as.Date(models[['complex']][['Dates']]),
+    Measured = measured_data[['Temp_min']],
+    Complex = models[['complex']][['Tcan_min']],
+    Meteo = meteo_data[['MinTemperature']]
+  )
+
+  y_limits <- c(
+    min(min(min_data['Complex'], na.rm = TRUE),
+        min(min_data[['Measured']], na.rm = TRUE),
+        min(min_data[['Meteo']])) - (min(min(min_data['Complex'], na.rm = TRUE),
+                                         min(min_data[['Measured']], na.rm = TRUE),
+                                         min(min_data[['Meteo']])))*0.05,
+    max(max(min_data['Complex'], na.rm = TRUE),
+        max(min_data[['Measured']], na.rm = TRUE),
+        max(min_data[['Meteo']])) + (max(max(min_data['Complex'], na.rm = TRUE),
+                                         max(min_data[['Measured']], na.rm = TRUE),
+                                         max(min_data[['Meteo']])))*0.05
+  )
+
+  # empty plots
+  min_cor_plot <- ggplot(data = min_data,
+                         aes(x = Complex, y = Measured)) +
+    labs(title = 'Min Temp.', y = 'Canopy (Black) / Atm (gray)') +
+    geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
+    geom_point(shape = 20, alpha = 0.8, colour = 'black') +
+    stat_smooth(method = 'lm', colour = 'black',
+                size = 1, se = FALSE, alpha = 0.4) +
+    geom_point(aes(y = Meteo), shape = 15, colour = 'grey', alpha = 0.8) +
+    stat_smooth(aes(y = Meteo), method = 'lm', colour = 'grey', size = 1,
+                se = FALSE, alpha = 0.4) +
+    scale_y_continuous(limits = y_limits) +
+    scale_x_continuous(limits = y_limits) +
+    theme_medfate()
+
+
+  min_plot <- min_data %>%
+    tidyr::gather(key = Model, value = Temperature, -Date) %>%
+    ggplot(aes(x = Date, y = Temperature, colour = Model)) +
+    scale_color_manual(values = c('green', 'red', 'blue')) +
+    scale_x_date(date_breaks = '4 months') +
+    labs(title = 'Min Temp.') +
+    theme_medfate() +
+    theme(
+      legend.position = 'top',
+      axis.text.x = element_text(angle = 25)
+    ) +
+    geom_line(alpha = 0.4, size = 0.7) +
+    scale_y_continuous(limits = y_limits)
+
+  mean_data <- data.frame(
+    stringsAsFactors = FALSE,
+    Date = as.Date(models[['complex']][['Dates']]),
+    Measured = measured_data[['Temp_mean']],
+    Complex = models[['complex']][['Tcan_mean']],
+    Meteo  = meteo_data[['MeanTemperature']]
+  )
+
+  y_limits <- c(
+    min(min(mean_data['Complex'], na.rm = TRUE),
+        min(mean_data[['Measured']], na.rm = TRUE),
+        min(mean_data[['Meteo']])) - (min(min(mean_data['Complex'], na.rm = TRUE),
+                                         min(mean_data[['Measured']], na.rm = TRUE),
+                                         min(mean_data[['Meteo']])))*0.05,
+    max(max(mean_data['Complex'], na.rm = TRUE),
+        max(mean_data[['Measured']], na.rm = TRUE),
+        max(mean_data[['Meteo']])) + (max(max(mean_data['Complex'], na.rm = TRUE),
+                                         max(mean_data[['Measured']], na.rm = TRUE),
+                                         max(mean_data[['Meteo']])))*0.05
+  )
+
+  # empty plots
+  mean_cor_plot <- ggplot(data = mean_data,
+                         aes(x = Complex, y = Measured)) +
+    labs(title = 'Mean Temp.', y = 'Canopy (Black) / Atm (gray)') +
+    geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
+    geom_point(shape = 20, alpha = 0.8, colour = 'black') +
+    stat_smooth(method = 'lm', colour = 'black',
+                size = 1, se = FALSE, alpha = 0.4) +
+    geom_point(aes(y = Meteo), shape = 15, colour = 'grey', alpha = 0.8) +
+    stat_smooth(aes(y = Meteo), method = 'lm', colour = 'grey', size = 1,
+                se = FALSE, alpha = 0.4) +
+    scale_y_continuous(limits = y_limits) +
+    scale_x_continuous(limits = y_limits) +
+    theme_medfate()
+
+
+  mean_plot <- mean_data %>%
+    tidyr::gather(key = Model, value = Temperature, -Date) %>%
+    ggplot(aes(x = Date, y = Temperature, colour = Model)) +
+    scale_color_manual(values = c('green', 'red', 'blue')) +
+    scale_x_date(date_breaks = '4 months') +
+    labs(title = 'Mean Temp.') +
+    theme_medfate() +
+    theme(
+      legend.position = 'top',
+      axis.text.x = element_text(angle = 25)
+    ) +
+    geom_line(alpha = 0.4, size = 0.7) +
+    scale_y_continuous(limits = y_limits)
+
+  list_temp_plots <- list(Min = min_plot, Max = max_plot, Mean = mean_plot)
+  list_cor_plots <- list(Min = min_cor_plot, Max = max_cor_plot, Mean = mean_cor_plot)
+
+
+  return(list(temp = list_temp_plots, cor = list_cor_plots))
+}
+
+
 #' @describeIn plot_res
 #'
 #' @export

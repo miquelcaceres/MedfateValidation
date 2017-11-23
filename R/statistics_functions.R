@@ -81,9 +81,12 @@ bias_calculator <- function(real, predicted) {
 #'
 #' @param soil Soil object needed to calculate SWC from W
 #'
+#' @param meteo_data Data frame with the meterological measures, for Temperature stats
+#'
 #' @export
 
-statistics_summary <- function(var, models, measured_data, soil) {
+statistics_summary <- function(var, models, measured_data,
+                               soil = NULL, meteo_data = NULL) {
 
   # if SWC
   if (var == 'SWC') {
@@ -425,4 +428,81 @@ statistics_summary <- function(var, models, measured_data, soil) {
 
     return(res)
   }
+
+  if (var == 'Temperature') {
+    # check if compelx has been performed
+    if (!is.null(models[['complex']])) {
+
+      MAE_min_temp <- MAE_calculator(measured_data[['Temp_min']],
+                                     models[['complex']][['Tcan_min']])
+
+      MAE_max_temp <- MAE_calculator(measured_data[['Temp_max']],
+                                     models[['complex']][['Tcan_max']])
+
+      MAE_mean_temp <- MAE_calculator(measured_data[['Temp_mean']],
+                                     models[['complex']][['Tcan_mean']])
+
+      MAE_min_temp_atm <- MAE_calculator(meteo_data[['MinTemperature']],
+                                         models[['complex']][['Tcan_min']])
+
+      MAE_max_temp_atm <- MAE_calculator(meteo_data[['MaxTemperature']],
+                                         models[['complex']][['Tcan_max']])
+
+      MAE_mean_temp_atm <- MAE_calculator(meteo_data[['MeanTemperature']],
+                                          models[['complex']][['Tcan_mean']])
+
+      r_squared_min_temp <- r_squared_calculator(measured_data[['Temp_min']],
+                                                 models[['complex']][['Tcan_min']])
+
+      r_squared_max_temp <- r_squared_calculator(measured_data[['Temp_max']],
+                                                 models[['complex']][['Tcan_max']])
+
+      r_squared_mean_temp <- r_squared_calculator(measured_data[['Temp_mean']],
+                                                  models[['complex']][['Tcan_mean']])
+
+      r_squared_min_temp_atm <- r_squared_calculator(meteo_data[['MinTemperature']],
+                                         models[['complex']][['Tcan_min']])
+
+      r_squared_max_temp_atm <- r_squared_calculator(meteo_data[['MaxTemperature']],
+                                         models[['complex']][['Tcan_max']])
+
+      r_squared_mean_temp_atm <- r_squared_calculator(meteo_data[['MeanTemperature']],
+                                          models[['complex']][['Tcan_mean']])
+
+      bias_min_temp <- bias_calculator(measured_data[['Temp_min']],
+                                       models[['complex']][['Tcan_min']])
+
+      bias_max_temp <- bias_calculator(measured_data[['Temp_max']],
+                                       models[['complex']][['Tcan_max']])
+
+      bias_mean_temp <- bias_calculator(measured_data[['Temp_mean']],
+                                        models[['complex']][['Tcan_mean']])
+
+      bias_min_temp_atm <- bias_calculator(meteo_data[['MinTemperature']],
+                                         models[['complex']][['Tcan_min']])
+
+      bias_max_temp_atm <- bias_calculator(meteo_data[['MaxTemperature']],
+                                         models[['complex']][['Tcan_max']])
+
+      bias_mean_temp_atm <- bias_calculator(meteo_data[['MeanTemperature']],
+                                          models[['complex']][['Tcan_mean']])
+
+      res <- data.frame(
+        Temperature = c('Min', 'Max', 'Mean'),
+        MAE_measured = c(MAE_min_temp, MAE_max_temp, MAE_mean_temp),
+        Rsq_measured = c(r_squared_min_temp, r_squared_max_temp, r_squared_mean_temp),
+        Bias_measured = c(bias_min_temp, bias_max_temp, bias_mean_temp),
+        MAE_atm = c(MAE_min_temp_atm, MAE_max_temp_atm, MAE_mean_temp_atm),
+        Rsq_atm = c(r_squared_min_temp_atm, r_squared_max_temp_atm, r_squared_mean_temp_atm),
+        Bias_atm = c(bias_min_temp_atm, bias_max_temp_atm, bias_mean_temp_atm)
+      )
+
+      return(res)
+
+    } else {
+      # If there is no complex, nothing to do
+      stop('The  Simple model generates no temperature data')
+    }
+  }
 }
+
