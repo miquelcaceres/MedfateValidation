@@ -748,13 +748,13 @@ plot_temp_complex_gg <- function(models, measured_data, meteo_data) {
   # plots
   max_cor_plot <- ggplot(data = max_data,
                      aes(x = Complex, y = Measured)) +
-    labs(title = 'Max Temp.', y = 'Canopy (Black) / Atm (gray)') +
+    labs(title = 'Max Temp.', x = 'Complex (Black) / Atm (blue)') +
     geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
     geom_point(shape = 20, alpha = 0.8, colour = 'black') +
     stat_smooth(method = 'lm', colour = 'black',
                 size = 1, se = FALSE, alpha = 0.4) +
-    geom_point(aes(y = Meteo), shape = 15, colour = 'grey', alpha = 0.8) +
-    stat_smooth(aes(y = Meteo), method = 'lm', colour = 'grey', size = 1,
+    geom_point(aes(x = Meteo), shape = 15, colour = 'blue', alpha = 0.8) +
+    stat_smooth(aes(x = Meteo), method = 'lm', colour = 'blue', size = 1,
                 se = FALSE, alpha = 0.4) +
     scale_y_continuous(limits = y_limits) +
     scale_x_continuous(limits = y_limits) +
@@ -799,13 +799,13 @@ plot_temp_complex_gg <- function(models, measured_data, meteo_data) {
   # empty plots
   min_cor_plot <- ggplot(data = min_data,
                          aes(x = Complex, y = Measured)) +
-    labs(title = 'Min Temp.', y = 'Canopy (Black) / Atm (gray)') +
+    labs(title = 'Min Temp.', x = 'Complex (Black) / Atm (blue)') +
     geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
     geom_point(shape = 20, alpha = 0.8, colour = 'black') +
     stat_smooth(method = 'lm', colour = 'black',
                 size = 1, se = FALSE, alpha = 0.4) +
-    geom_point(aes(y = Meteo), shape = 15, colour = 'grey', alpha = 0.8) +
-    stat_smooth(aes(y = Meteo), method = 'lm', colour = 'grey', size = 1,
+    geom_point(aes(y = Meteo), shape = 15, colour = 'blue', alpha = 0.8) +
+    stat_smooth(aes(y = Meteo), method = 'lm', colour = 'blue', size = 1,
                 se = FALSE, alpha = 0.4) +
     scale_y_continuous(limits = y_limits) +
     scale_x_continuous(limits = y_limits) +
@@ -850,13 +850,13 @@ plot_temp_complex_gg <- function(models, measured_data, meteo_data) {
   # empty plots
   mean_cor_plot <- ggplot(data = mean_data,
                          aes(x = Complex, y = Measured)) +
-    labs(title = 'Mean Temp.', y = 'Canopy (Black) / Atm (gray)') +
+    labs(title = 'Mean Temp.', x = 'Complex (Black) / Atm (blue)') +
     geom_abline(slope = 1, intercept = 0, colour = 'lightgreen', size = 0.8) +
     geom_point(shape = 20, alpha = 0.8, colour = 'black') +
     stat_smooth(method = 'lm', colour = 'black',
                 size = 1, se = FALSE, alpha = 0.4) +
-    geom_point(aes(y = Meteo), shape = 15, colour = 'grey', alpha = 0.8) +
-    stat_smooth(aes(y = Meteo), method = 'lm', colour = 'grey', size = 1,
+    geom_point(aes(y = Meteo), shape = 15, colour = 'blue', alpha = 0.8) +
+    stat_smooth(aes(y = Meteo), method = 'lm', colour = 'blue', size = 1,
                 se = FALSE, alpha = 0.4) +
     scale_y_continuous(limits = y_limits) +
     scale_x_continuous(limits = y_limits) +
