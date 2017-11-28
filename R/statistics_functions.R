@@ -83,10 +83,13 @@ bias_calculator <- function(real, predicted) {
 #'
 #' @param meteo_data Data frame with the meterological measures, for Temperature stats
 #'
+#' @param trunc Numeric vector indicating the subset of data to be compared
+#'
 #' @export
 
 statistics_summary <- function(var, models, measured_data,
-                               soil = NULL, meteo_data = NULL) {
+                               soil = NULL, meteo_data = NULL,
+                               trunc = NULL) {
 
   # if SWC
   if (var == 'SWC') {
@@ -433,59 +436,59 @@ statistics_summary <- function(var, models, measured_data,
     # check if compelx has been performed
     if (!is.null(models[['complex']])) {
 
-      MAE_min_temp <- MAE_calculator(measured_data[['Temp_min']],
-                                     models[['complex']][['Tcan_min']])
+      MAE_min_temp <- MAE_calculator(measured_data[['Temp_min']][trunc],
+                                     models[['complex']][['Tcan_min']][trunc])
 
-      MAE_max_temp <- MAE_calculator(measured_data[['Temp_max']],
-                                     models[['complex']][['Tcan_max']])
+      MAE_max_temp <- MAE_calculator(measured_data[['Temp_max']][trunc],
+                                     models[['complex']][['Tcan_max']][trunc])
 
-      MAE_mean_temp <- MAE_calculator(measured_data[['Temp_mean']],
-                                      models[['complex']][['Tcan_mean']])
+      MAE_mean_temp <- MAE_calculator(measured_data[['Temp_mean']][trunc],
+                                      models[['complex']][['Tcan_mean']][trunc])
 
-      MAE_min_temp_atm <- MAE_calculator(measured_data[['Temp_min']],
-                                         meteo_data[['MinTemperature']])
+      MAE_min_temp_atm <- MAE_calculator(measured_data[['Temp_min']][trunc],
+                                         meteo_data[['MinTemperature']][trunc])
 
-      MAE_max_temp_atm <- MAE_calculator(measured_data[['Temp_max']],
-                                         meteo_data[['MaxTemperature']])
+      MAE_max_temp_atm <- MAE_calculator(measured_data[['Temp_max']][trunc],
+                                         meteo_data[['MaxTemperature']][trunc])
 
-      MAE_mean_temp_atm <- MAE_calculator(measured_data[['Temp_mean']],
-                                          meteo_data[['MeanTemperature']])
+      MAE_mean_temp_atm <- MAE_calculator(measured_data[['Temp_mean']][trunc],
+                                          meteo_data[['MeanTemperature']][trunc])
 
-      r_squared_min_temp <- r_squared_calculator(measured_data[['Temp_min']],
-                                                 models[['complex']][['Tcan_min']])
+      r_squared_min_temp <- r_squared_calculator(measured_data[['Temp_min']][trunc],
+                                                 models[['complex']][['Tcan_min']][trunc])
 
-      r_squared_max_temp <- r_squared_calculator(measured_data[['Temp_max']],
-                                                 models[['complex']][['Tcan_max']])
+      r_squared_max_temp <- r_squared_calculator(measured_data[['Temp_max']][trunc],
+                                                 models[['complex']][['Tcan_max']][trunc])
 
-      r_squared_mean_temp <- r_squared_calculator(measured_data[['Temp_mean']],
-                                                  models[['complex']][['Tcan_mean']])
+      r_squared_mean_temp <- r_squared_calculator(measured_data[['Temp_mean']][trunc],
+                                                  models[['complex']][['Tcan_mean']][trunc])
 
-      r_squared_min_temp_atm <- r_squared_calculator(measured_data[['Temp_min']],
-                                                     meteo_data[['MinTemperature']])
+      r_squared_min_temp_atm <- r_squared_calculator(measured_data[['Temp_min']][trunc],
+                                                     meteo_data[['MinTemperature']][trunc])
 
-      r_squared_max_temp_atm <- r_squared_calculator(measured_data[['Temp_max']],
-                                                     meteo_data[['MaxTemperature']])
+      r_squared_max_temp_atm <- r_squared_calculator(measured_data[['Temp_max']][trunc],
+                                                     meteo_data[['MaxTemperature']][trunc])
 
-      r_squared_mean_temp_atm <- r_squared_calculator(measured_data[['Temp_mean']],
-                                                      meteo_data[['MeanTemperature']])
+      r_squared_mean_temp_atm <- r_squared_calculator(measured_data[['Temp_mean']][trunc],
+                                                      meteo_data[['MeanTemperature']][trunc])
 
-      bias_min_temp <- bias_calculator(measured_data[['Temp_min']],
-                                       models[['complex']][['Tcan_min']])
+      bias_min_temp <- bias_calculator(measured_data[['Temp_min']][trunc],
+                                       models[['complex']][['Tcan_min']][trunc])
 
-      bias_max_temp <- bias_calculator(measured_data[['Temp_max']],
-                                       models[['complex']][['Tcan_max']])
+      bias_max_temp <- bias_calculator(measured_data[['Temp_max']][trunc],
+                                       models[['complex']][['Tcan_max']][trunc])
 
-      bias_mean_temp <- bias_calculator(measured_data[['Temp_mean']],
-                                        models[['complex']][['Tcan_mean']])
+      bias_mean_temp <- bias_calculator(measured_data[['Temp_mean']][trunc],
+                                        models[['complex']][['Tcan_mean']][trunc])
 
-      bias_min_temp_atm <- bias_calculator(measured_data[['Temp_min']],
-                                           meteo_data[['MinTemperature']])
+      bias_min_temp_atm <- bias_calculator(measured_data[['Temp_min']][trunc],
+                                           meteo_data[['MinTemperature']][trunc])
 
-      bias_max_temp_atm <- bias_calculator(measured_data[['Temp_max']],
-                                           meteo_data[['MaxTemperature']])
+      bias_max_temp_atm <- bias_calculator(measured_data[['Temp_max']][trunc],
+                                           meteo_data[['MaxTemperature']][trunc])
 
-      bias_mean_temp_atm <- bias_calculator(measured_data[['Temp_mean']],
-                                            meteo_data[['MeanTemperature']])
+      bias_mean_temp_atm <- bias_calculator(measured_data[['Temp_mean']][trunc],
+                                            meteo_data[['MeanTemperature']][trunc])
 
       res <- data.frame(
         Temperature = c('Min', 'Max', 'Mean'),

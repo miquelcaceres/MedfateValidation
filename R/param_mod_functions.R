@@ -69,6 +69,7 @@ inputMod <- function(swbInput, customParams) {
   # get the names of the custom params and the input tables
   custom <- names(customParams)
   above_par <- names(swbInput[['above']])
+  canopy_par <- names(swbInput[['canopy']])
   # below_par <- names(swbInput$below)
 
 
@@ -86,6 +87,11 @@ inputMod <- function(swbInput, customParams) {
       #   sp_code <- rownames(swbInput[["cohorts"]][swbInput[["cohorts"]][['SP']] == sp, ])
       #   swbInput[["above"]][sp_code, param] <- customParams[customParams[['SpIndex']] == sp, param]
       # }
+    }
+
+    # check if param exists in canopy
+    if (param %in% canopy_par) {
+      swbInput[['canopy']][[param]] <- customParams[[param]][1]
     }
 
     # check if the param exists in below

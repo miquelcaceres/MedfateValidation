@@ -102,6 +102,8 @@ if (params$transpMode %in% c('complex', 'both')) {
 }
 ```
 
+## Model SWB plots
+
 ```{r plot_complex, eval = TRUE, fig.height=6, fig.width=8}
 # show the plot only if simple mode must be performed
 if (params$transpMode %in% c('complex', 'both')) {
@@ -122,6 +124,22 @@ if (params$transpMode %in% c('complex', 'both')) {
 }
 ```
 
+## Model TB plots
+
+```{r complex_temp_plots, fig.height=6, fig.width=8}
+if (params$transpMode %in% c('complex', 'both')) {
+  # config layout
+  par(mfrow = c(2,1))
+  # SoilEnergyBalance
+  plot(res_complex, 'SoilEnergyBalance')
+  # CanopyEnergyBalance
+  plot(res_complex, type = 'CanopyEnergyBalance')
+  # reset layout
+  par(mfrow = c(1,1))
+}
+```
+
+
 ```{r saving_txt_results}
 if (params$transpMode %in% c('both')) {
   sp_names <- paste0('E_sp', simple_input$above$SP)
@@ -140,13 +158,21 @@ if (params$transpMode %in% c('both')) {
 }
 ```
 
-# Temperature Comparision
+# Temperature Validation
 
 ## Temp stats
 
+  > IMPORTANT! Temperature statistics are truncated to start in January to
+    avoid `meteoland` wind prediction problems in the first months
+
+
 ```{r statistics_Temp, results='asis'}
+trunc_st <- which(meteoData$DOY == 1)
+trunc_end <- length(meteoData$DOY)
+
 Temp_stats <- statistics_summary('Temperature', models_dfs,
-                                 measuredData, meteo_data = meteoData)
+                                 measuredData, meteo_data = meteoData,
+                                 trunc = trunc_st:trunc_end)
 knitr::kable(Temp_stats, row.names = FALSE)
 ```
 

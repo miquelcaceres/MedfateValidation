@@ -5,7 +5,7 @@
 \title{Statistics summary for a given variable}
 \usage{
 statistics_summary(var, models, measured_data, soil = NULL,
-  meteo_data = NULL)
+  meteo_data = NULL, trunc = NULL)
 }
 \arguments{
 \item{var}{Character with the variable name}
@@ -18,6 +18,8 @@ result of \code{\link{saveRes}}}
 \item{soil}{Soil object needed to calculate SWC from W}
 
 \item{meteo_data}{Data frame with the meterological measures, for Temperature stats}
+
+\item{trunc}{Numeric vector indicating the subset of data to be compared}
 }
 \description{
 This function calculates the different statistics for a given variable
