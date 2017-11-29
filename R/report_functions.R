@@ -164,60 +164,6 @@ temperature_process <- function(sites, wd, transpMode = 'complex',
   }
 }
 
-#' Load all the RData's generated in the validation process
-#'
-#' This function will be used in the general report with all sites data
-#'
-#' @export
-
-load_rdatas <- function() {
-
-  # prepare the environments where we will store the RData's objects
-  genv <- list(
-    "210PSYL" = new.env(),
-    "32PSYL" = new.env(),
-    "302PPIN" = new.env(),
-    "307CPPIN" = new.env(),
-    "CANBALASC" = new.env(),
-    "ESPALTARM" = new.env(),
-    "ESPRIN" = new.env(),
-    "FRAHES" = new.env(),
-    "FRAPUE" = new.env(),
-    "ISRYAT" = new.env(),
-    "PRADES" = new.env(),
-    "PVALLCEBRE" = new.env(),
-    "QVALLCEBRE" = new.env()
-  )
-
-  # now time stamp, to get the diff and the newest RDatas for each site
-  stamp <- Sys.time()
-
-  # sites names
-  sites <- names(genv)
-
-  for (site in sites) {
-    file_creation_info <- file.info(
-      list.files(file.path('Output', packageVersion('medfate')[[1]], site),
-                 pattern = 'RData', full.names = TRUE)
-    )
-
-    file_index <- which(as.numeric(stamp - file_creation_info$mtime) ==
-                          as.numeric(min(stamp - file_creation_info$mtime)))
-
-    file_name <- row.names(file_creation_info)[file_index]
-
-    if (length(file_name) == 0) {
-      next()
-    } else {
-      load(file_name, envir = genv[[site]])
-    }
-  }
-
-  return(genv)
-}
-
-
-
 #' Shiny widget for the Status Rmd
 #'
 #' This function generates the shiny widget to inspect sites individually

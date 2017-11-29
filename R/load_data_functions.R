@@ -197,3 +197,107 @@ load_remarks <- function(site) {
   # return data frame
   return(remarks)
 }
+
+#' Load all the RData's generated in the validation process
+#'
+#' This function will be used in the general report with all sites data
+#'
+#' @param type Character indicating which data to load ("Global" or "Temperature")
+#'
+#' @export
+
+load_rdatas <- function(type = 'Global') {
+
+  if (type == "Global") {
+    # prepare the environments where we will store the RData's objects
+    genv <- list(
+      "210PSYL" = new.env(),
+      "32PSYL" = new.env(),
+      "302PPIN" = new.env(),
+      "307CPPIN" = new.env(),
+      "CANBALASC" = new.env(),
+      "ESPALTARM" = new.env(),
+      "ESPRIN" = new.env(),
+      "FRAHES" = new.env(),
+      "FRAPUE" = new.env(),
+      "ISRYAT" = new.env(),
+      "PRADES" = new.env(),
+      "PVALLCEBRE" = new.env(),
+      "QVALLCEBRE" = new.env()
+    )
+
+    # now time stamp, to get the diff and the newest RDatas for each site
+    stamp <- Sys.time()
+
+    # sites names
+    sites <- names(genv)
+
+    for (site in sites) {
+      file_creation_info <- file.info(
+        list.files(file.path('Output', packageVersion('medfate')[[1]], site),
+                   pattern = 'RData', full.names = TRUE)
+      )
+
+      file_index <- which(as.numeric(stamp - file_creation_info$mtime) ==
+                            as.numeric(min(stamp - file_creation_info$mtime)))
+
+      file_name <- row.names(file_creation_info)[file_index]
+
+      if (length(file_name) == 0) {
+        next()
+      } else {
+        load(file_name, envir = genv[[site]])
+      }
+    }
+
+    return(genv)
+  }
+
+  if (type == 'Temperature') {
+    # prepare the environments where we will store the RData's objects
+    genv <- list(
+      "Plot_1" = new.env(),
+      "Plot_11" = new.env(),
+      "Plot_12" = new.env(),
+      "Plot_13" = new.env(),
+      "Plot_14" = new.env(),
+      "Plot_18" = new.env(),
+      "Plot_2" = new.env(),
+      "Plot_24" = new.env(),
+      "Plot_3" = new.env(),
+      "Plot_36" = new.env(),
+      "Plot_39" = new.env(),
+      "Plot_40" = new.env(),
+      "Plot_6" = new.env(),
+      "Plot_7" = new.env(),
+      "Plot_9" = new.env()
+    )
+
+    # now time stamp, to get the diff and the newest RDatas for each site
+    stamp <- Sys.time()
+
+    # sites names
+    sites <- names(genv)
+
+    for (site in sites) {
+      file_creation_info <- file.info(
+        list.files(file.path('Output', packageVersion('medfate')[[1]], site),
+                   pattern = 'RData', full.names = TRUE)
+      )
+
+      file_index <- which(as.numeric(stamp - file_creation_info$mtime) ==
+                            as.numeric(min(stamp - file_creation_info$mtime)))
+
+      file_name <- row.names(file_creation_info)[file_index]
+
+      if (length(file_name) == 0) {
+        next()
+      } else {
+        load(file_name, envir = genv[[site]])
+      }
+    }
+
+    return(genv)
+  }
+
+}
