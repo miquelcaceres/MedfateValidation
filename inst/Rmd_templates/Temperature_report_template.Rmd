@@ -77,10 +77,18 @@ data.frame(
 ```{r complex_model}
 # check if complex mode has to be performed
 if (params$transpMode %in% c('complex', 'both')) {
+  
+  # get the mean wind value for correct dates
+  wind_start <- which(meteoData$DOY == 1)
+  wind_end <- length(meteoData$DOY)
+  
+  wind_mean <- mean(meteoData$WindSpeed[wind_start:wind_end], na.rm = TRUE)
+  
   # control object
   control_obj <- medfate::defaultControl()
   control_obj$verbose <- FALSE
   control_obj$transpirationMode <- 'Complex'
+  control_obj$defaultWindSpeed <- wind_mean
   
   # input object
   # we also rebuild the soil_object to avoid using W data from the previous
@@ -104,11 +112,11 @@ if (params$transpMode %in% c('complex', 'both')) {
 
 ## Model SWB plots
 
-```{r plot_complex, eval = TRUE, fig.height=6, fig.width=8}
+```{r plot_complex, eval = TRUE, fig.height=9, fig.width=8}
 # show the plot only if simple mode must be performed
 if (params$transpMode %in% c('complex', 'both')) {
   # config layout
-  par(mfrow = c(2,2))
+  par(mfrow = c(3,2))
   # P/PET plot
   plot(res_complex, yearAxis = TRUE)
   # ET plot
@@ -119,6 +127,10 @@ if (params$transpMode %in% c('complex', 'both')) {
        col = 'black', ylab = 'SWC', xlab = 'Days (absolute)')
   # Stress plot
   plot(res_complex, type = 'PlantStress', yearAxis = TRUE)
+  # radiation plot
+  plot(meteoData$DOY, meteoData$Radiation)
+  # wind plot
+  barplot(meteoData$WindSpeed)
   # reset layout
   par(mfrow = c(1,1))
 }
