@@ -41,6 +41,20 @@ report_render <- function(report = 'global',
                       quiet = TRUE)
   }
 
+  if (report == 'kmax') {
+    # render the template with the code indicated in the ... argument
+    rmarkdown::render(input = system.file("Rmd_templates", "Global_report_template_kmax_factor.Rmd",
+                                          package = "MedfateValidation"),
+                      output_format = c('html_document'),
+                      output_file = output_file,
+                      output_dir = output_dir,
+                      runtime = 'auto',
+                      clean = TRUE,
+                      params = list(...),
+                      run_pandoc = TRUE,
+                      quiet = TRUE)
+  }
+
   if (report == 'transpiration') {
     # render the template with the code indicated in the ... argument
     rmarkdown::render(input = system.file("Rmd_templates",
@@ -98,6 +112,35 @@ global_process <- function(sites, wd, transpMode, SPParams = 'old') {
                                code)
 
     report_render('global', report_name, report_folder, wd = wd, code = code,
+                  transpMode = transpMode, SPParams = SPParams)
+  }
+}
+
+#' Main function to do the calibration/validation
+#'
+#' Validate a list of sites/plots
+#'
+#' @param sites A character vector with the sites codes
+#'
+#' @param wd Complete path to the validation directory
+#'
+#' @param transpMode Character string indicating the transpiration mode to use
+#'
+#' @export
+
+global_kmax_factor_process <- function(sites, wd, transpMode, SPParams = 'old') {
+
+  for (code in sites) {
+    report_name <- file.path('Output', packageVersion('medfate')[[1]],
+                             code,
+                             paste0(format(Sys.time(), "%Y%m%d_%H%M"),
+                                    '_', code, '_',
+                                    'global_report.html'))
+
+    report_folder <- file.path('Output', packageVersion('medfate')[[1]],
+                               code)
+
+    report_render('kmax', report_name, report_folder, wd = wd, code = code,
                   transpMode = transpMode, SPParams = SPParams)
   }
 }
