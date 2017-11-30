@@ -88,7 +88,7 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
       dplyr::select(dplyr::starts_with('W.'))
 
     # temperature
-    Temperature <- complex_res[['EnergyBalance']]
+    Temperature <- complex_res[['Temperature']]
 
     # final data.frame to save
     complex_to_save <- cbind(
