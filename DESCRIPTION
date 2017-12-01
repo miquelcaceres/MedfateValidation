@@ -18,5 +18,6 @@ Imports:
     purrr,
     rmarkdown
 Suggests:
-    knitr
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr

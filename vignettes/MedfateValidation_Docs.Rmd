@@ -1,0 +1,480 @@
+---
+title: "MedfateValidation Docs"
+author: "Víctor Granda"
+date: "`r Sys.Date()`"
+params:
+  wd: '/home/malditobarbudo/Documentos/00_Trabajo/CTFC/calibration_validation_medfate/work_structure/Validation'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+knitr::opts_knit$set(root.dir = params$wd)
+```
+
+## Load data and build medfate objects
+
+`MedfateValidation` package provides methods to load the sites data and build
+the needed `medfate` objects:
+
+### Load data
+
+  - `load_treeData(site)`
+  - `load_shrubData(site)`
+  - `load_seedData(site)`
+  - `load_miscData(site)`
+  - `load_meteoData(site)`
+  - `load_soilData(site)`
+  - `load_soilDataUnilayer(site)`
+  - `load_measuredData(site)`
+  - `load_terrainData(site)`
+  - `load_customParams(site)`
+  - `load_remarks(site)`
+
+These functions try to load the corresponding data from the specified site,
+indicated by the site code as character (i.e. `'PRADES'`). If the specified
+data does not exist (some data are optional) the function will return `NULL`,
+as expected by the build functions.
+
+  - `load_rdatas(type = 'Global')`
+
+This function allows for load the rdatas containing all the objects produced
+along the validation process for all sites. It returns a list of environments
+with the objects, that can be accessed as nested lists:  
+
+```{r load_rdatas, eval = FALSE}
+objects_reports <- load_rdatas(type = 'Global')
+objects_reports$`PRADES`$terrainData$elevation
+```
+
+`type` argument indicates which reports to read the data from, "Global" for
+the global validation and "Temperature" for the temperature validation.
+
+  > All the load functions are expected to work with the **Validation** folder
+    as the root directory. In the case of load_rdatas fuction, it also looks
+    for the rdata files generated with the **installed version** of medfate
+    (see `packageVersion('medfate')` to know which ones is going to be loaded)
+
+### Build objects
+
+  - `buildForest(treeData, shrubData, seedData, miscData)`
+  - `buildSoil(soilData)`
+
+These functions allows to build the `forest` and `soil` objects from `medfate`
+package starting on the site data. `treeData`, `miscData` and `soilData` are the
+only mandatory arguments, as the remaining can be `NULL` if they are not
+available (see sites_data_structure vignette for more info about the site
+data objects).
+
+### Examples
+
+If we want to work with the PRADES site, we can load the data and build the
+objects to see a summary of them:
+
+```{r load_example}
+# load the packages
+library(medfate)
+library(MedfateValidation)
+
+# site/plot code
+code <- 'PRADES'
+
+# params
+data('newParams')
+
+# raw data
+treeData <- load_treeData(code)
+shrubData <- load_shrubData(code)
+seedData <- load_seedData(code)
+customParams <- load_customParams(code)
+measuredData <- load_measuredData(code)
+meteoData <- load_meteoData(code)
+miscData <- load_miscData(code)
+soilData <- load_soilData(code)
+terrainData <- load_terrainData(code)
+remarks <- load_remarks(code)
+
+# model objects
+forest_object <- buildForest(treeData, shrubData, seedData, miscData)
+soil_object <- buildSoil(soilData)
+
+summary(forest_object, newParams)
+soil_object
+```
+
+And, in the case of being interested to dive deep in the report for PRADES
+site we can load the rdatas and inspect PRADES site:
+
+```{r rdatas_example}
+objects_reports <- load_rdatas('Global')
+names(objects_reports)
+
+PRADES <- objects_reports$`PRADES`
+names(PRADES)
+plot(PRADES$res_complex, 'LAI')
+
+# lets remove the objects_reports to avoid conflicts with the following code in
+# this vignette
+rm(objects_reports)
+```
+
+## Parameters
+
+`MedfateValidation` provides a new table of parameters (`newParams`) equivalent
+to the `SpParamsMED` provided by `medfate`. In this case, parameters are
+obtained from `SpParamsMED` and modificated by those appearing in the HydraTRY
+project (courtesy of T. Rosas, M. Mencuccini and JM Vilalta) and the Quercus
+monography chapter by EMS Robert, JM Vilalta and M. Mencuccini.
+The inclusion here of this table, not open to everyone as the one in `medfate`
+is due to the not yet clarified terms of use of TRY derivative works.
+For more info about the process of building the `newParams` table, see the
+Parametrization vignette.
+
+```{r newParams}
+data('newParams', package = 'MedfateValidation')
+head(newParams)
+```
+
+### Modification of parameters "on the fly"
+
+Along the validation process sometimes is necessary to modify some of the
+parameters present in `newParams`, but only for that site in that run. Site data
+has a table named `customParams` with the values to modify (see
+sites_data_structure vignette). `MedfateValidation` provides a method to modify
+`newParams` based on `customParams` called `SpParams_mod`:
+
+```{r params_mod}
+# lets modify customParams, as in this site there is no modifications
+customParams$xylem_kmax <- c(0.5, 0.8)
+
+# look at the original values of newParams for xylem_kmax
+newParams[newParams$Name %in% c('Pinus sylvestris', 'Quercus ilex'), 'xylem_kmax']
+
+# modify the params
+sp_params <- SpParams_mod(newParams, customParams)
+
+# check if params have been correctly modified
+sp_params[sp_params$Name %in% c('Pinus sylvestris', 'Quercus ilex'), 'xylem_kmax']
+```
+
+### Modification of swb.input object "on the fly"
+
+`customParams` can also contain `swb.input` parameters to be modified (i.e. if
+the plot has the LAI measured for the cohorts). Instead of using these parameters
+calculated by the model, we can modify the `swb.input` by means of the
+`inputMod` function. At the moment, only parameters of the sections `above` and
+`canopy` from the input can be modified:
+
+```{r inputMod_example}
+# lets add some modifications to customParams
+customParams$LAI_live <- c(1.1, 2.70)
+
+# create the input object from medfate
+control_obj <- medfate::defaultControl()
+control_obj$verbose <- FALSE
+control_obj$transpirationMode <- 'Simple'
+# input object
+simple_input <- medfate::forest2swbInput(forest_object, soil_object,
+                                         sp_params, control_obj)
+
+# check the input values for above
+simple_input$above
+
+# and we can now modify it
+simple_input <- inputMod(simple_input, customParams)
+
+# check if the modification has been done correctly
+simple_input$above
+
+# lets modify also the "canopy" slot from input object
+customParams$gdd <- 250
+
+simple_input$canopy
+
+simple_input <- inputMod(simple_input, customParams)
+
+simple_input$canopy
+```
+
+
+## Saving the results of modelling
+
+`medfate` stores the result of the model run in a `swb` class object which can
+be used to plot the model results or to get the different data ouputs
+(soil water balance, energy balance...):
+
+```{r res_example, fig.show='hold'}
+# run the simple model with the soil and meteo generated previously and a new
+# input (as the gdd value is incorrect now)
+control_obj <- medfate::defaultControl()
+control_obj$verbose <- FALSE
+control_obj$transpirationMode <- 'Simple'
+# input object
+simple_input <- medfate::forest2swbInput(forest_object, soil_object,
+                                         sp_params, control_obj)
+simple_input <- inputMod(simple_input, customParams)
+
+res <- swb(simple_input, soil_object, meteoData)
+
+# take a look to the class of the res object
+class(res)
+
+# lets see the soil water balance for example
+head(res$SoilWaterBalance)
+
+# now some plots (SWC, Transpiration)
+plot(res, 'Theta')
+plot(res, 'ET')
+```
+
+To be able to perform the validation of the model, the results must be compared
+with the *"real"* data (`measuredData`). To make that easier, `MedfateValidation`
+provides a function, `saveRes`, with two main tasks:
+
+  1. Combine the complex and simple main data outputs in one single object, a
+     list containing two data.frames, one for each model.
+  
+  2. Write on disk those data.frames as well as the parameter table used in the
+     models, for reproducibility purposes.
+     
+`saveRes` function allows to save only one model, with the other setted to
+`NULL`, which is the expected for the statistics functions that will be explained
+later:
+
+```{r saveRes_example}
+models_dfs <- saveRes(simple_res = res, complex_res = NULL, spParams = sp_params,
+                      site_code = 'PRADES', write = FALSE)
+
+names(models_dfs)
+
+head(models_dfs$simple)
+```
+
+
+`write = FALSE` argument indicates if the results must be written to disk, useful
+when debugging some site and there is no necessity of files to be written.
+
+## Statistics functions
+
+Validation, in a nutshell, consists in comparing the model results with the
+field measures in order to detect model logic and parametrization problems.
+For that, some statistics need to be generated to be able to compare objectively
+the model output.  
+`MedfateValidation` calculates three different kinds of statistics, Mean Absolute
+Error (MAE), Bias and Correlation (r²). Those are performed with three simple
+functions:
+
+  - `MAE_calculator`, which takes two vectors, the measured and the model output
+     and calculates the mean difference in absolute value.
+  - `bias_calculator`, which takes the measured data and the model output and
+     calculates the mean difference, with the sign of the bias.
+  - `r_squared_calculator`, which takes the measured data and the model output,
+     performs a linear model and retrieve the r² value.
+     
+```{r stats_bricks}
+MAE_calculator(measuredData$SWC, models_dfs$simple$W.1)
+bias_calculator(measuredData$SWC, models_dfs$simple$W.1)
+r_squared_calculator(measuredData$SWC, models_dfs$simple$W.1)
+```
+
+These are the *"basic units"* to build the `statistics_summary` function. This
+function performs the three statistics for a given variable (SWC, Total/By cohort
+transpiration and Temperature) comparing model output with measured values
+and also comparing both models, one to each other, to see differences in
+performance.  
+To see `statistics_summary` function working at full, lets go to generate first
+the results of the complex model:
+
+```{r complex_res, cache=TRUE}
+control_obj <- medfate::defaultControl()
+control_obj$verbose <- FALSE
+control_obj$transpirationMode <- 'Complex'
+
+# input object
+soil_object <- buildSoil(soilData)
+complex_input <- medfate::forest2swbInput(forest_object, soil_object,
+                                          sp_params, control_obj)
+  
+# input modifications (if any)
+complex_input <- inputMod(complex_input, customParams)
+  
+# model run
+res_complex <- medfate::swb(complex_input, soil_object, meteoData,
+                            terrainData$latitude, terrainData$elevation,
+                            terrainData$slope, terrainData$aspect)
+
+models_dfs <- saveRes(res, res_complex, sp_params, 'PRADES', write = FALSE)
+```
+
+Now `models_dfs` has results of both models stored and `statistics_summary` can
+work with both:
+
+```{r stats_summary, results='asis'}
+SWC_stats <- statistics_summary(var = 'SWC', models = models_dfs,
+                                measured_data = measuredData, soil = soil_object,
+                                meteo_data = NULL, trunc = NULL)
+
+knitr::kable(SWC_stats)
+```
+
+In this case the statistics for soil water content are showed. The `var` argument
+tells the function which stastistics must be performed. The values allowed are:
+
+  - 'SWC': This var needs the soil object to work properly
+  - 'Eplanttot': This var only needs the models and the measured data and instead
+     of a table, generates a list.
+  - 'E_by_Cohort': This var only needs the models and the measured data and instead
+     of a table, generates a list.
+  - 'Temperature': This var needs the meteo data to work properly, and can use the
+    `trunc` argument to subset the data to compare.
+
+```{r stats_summary_2}
+Eplanttot_stats <- statistics_summary('Eplanttot', models_dfs, measuredData,
+                                      soil_object)
+
+str(Eplanttot_stats)
+```
+
+```{r stats_summary_3, results='asis'}
+library(dplyr)
+
+Ecohorts_stats <- statistics_summary('E_by_Cohort', models_dfs, measuredData,
+                                     soil_object)
+
+rbind(
+  round(Ecohorts_stats[["Esp_MAE_simple"]], 5),
+  round(Ecohorts_stats[["Esp_r_sq_simple"]], 5),
+  round(Ecohorts_stats[["Esp_bias_simple"]], 5),
+  round(Ecohorts_stats[["Esp_MAE_complex"]], 5),
+  round(Ecohorts_stats[["Esp_r_sq_complex"]], 5),
+  round(Ecohorts_stats[["Esp_bias_complex"]], 5),
+  round(Ecohorts_stats[["Esp_MAE_both"]], 5),
+  round(Ecohorts_stats[["Esp_r_sq_both"]], 5),
+  round(Ecohorts_stats[["Esp_bias_both"]], 5)
+) %>%
+  cbind(
+    c('MAE Simple vs. Measured',
+      'rsq Simple vs. Measured',
+      'Bias Simple vs. Measured',
+      'MAE Complex vs. Measured',  
+      'rsq Complex vs. Measured',  
+      'Bias Complex vs. Measured',
+      'MAE Simple vs. Complex',
+      'rsq Simple vs. Complex',
+      'Bias Simple vs. Complex'),
+    .
+  ) %>%
+  as.data.frame() %>%
+  knitr::kable(col.names = c('Statistics', Ecohorts_stats[['Cohort_name']]))
+
+```
+
+  > Temperature stats must be done in other set of sites (Albert Vila plots)
+    as they are the only ones with measured canopy temperature
+
+
+## Visualization
+
+`medfate` provides custom `plot` methods for visualize the results of the model,
+but for the validation process we need new functions that generates the plots
+comparing the measured data and the modelled data. `MedfateValidation` provides
+several functions that are in charge of this visualization task, for each
+combination of model type and variable:
+
+  - `plot_swc_simple_gg`
+  - `plot_swc_complex_gg`
+  - `plot_swc_both_gg`
+  - `plot_eplanttot_simple_gg`
+  - `plot_eplanttot_complex_gg`
+  - `plot_eplanttot_both_gg`
+  - `plot_cohort_simple_gg`
+  - `plot_cohort_complex_gg`
+  - `plot_cohort_both_gg`
+
+These functions are intended to being used inside of the wrapper function
+`plot_res_gg`, which is feeded with the variable and models to plot and
+generate the visualization:
+
+```{r swc_plot, fig.width=8, fig.height=10.5, warnings = FALSE}
+plot_res_gg(variable = 'SWC', models = models_dfs, soil = soil_object,
+            measured_data = measuredData, mode = 'both')
+```
+
+`variable` argument values are the same as in `statistics_summary` function (except
+for the 'Temperature' as it has its own method), and the `mode` argument expects
+one of the following:
+
+  - 'both': Plot the simple, complex and the comparision of both models
+  - 'simple': Plot the simple model
+  - 'complex': Plot the complex model
+
+```{r plots_etot, fig.width=8, fig.height=10.5}
+plot_res_gg(variable = 'Eplanttot', models = models_dfs, soil = soil_object,
+            measured_data = measuredData, mode = 'both')
+```
+
+  > When plotting cohort transpiration, the function returns a list of plots,
+    therefore the use of purrr::walk to plotting all in one
+
+```{r plots_ecoh, fig.width=8, fig.height=3.5}
+plots_cohorts <- plot_res_gg('E_by_Cohort', models_dfs, soil_object,
+                             measuredData, 'both')
+
+purrr::walk(
+  plots_cohorts,
+  ~ print(.x)
+)
+```
+
+### SWC by layers
+
+`medfate` can plot the SWC by layer with its custom `plot` method, but
+`MedfateValidation` also have a method to perform this, generating both models
+plot side by side to easy comparision with the function `plot_swc_layers_gg`:
+
+```{r swc_layers, fig.width=8}
+plot_swc_layers_gg(models_dfs)
+```
+
+## Reports
+
+Validation process is done by means of html reports generated with Rmarkdown.
+This allows for running the code only once, generating the output needed to
+visualize the validation site by site, but also allowing for debugging sites
+simply using the code contained in the Rmd templates and the RData file
+generated with all the objects created in the report. These templates are located
+in the folder where the package is installed
+(`MedfateValidation/inst/Rmd_templates`). To generate the reports, `MedfateValidation`
+provides some wrappers and a internal function. The wrappers are:
+
+  - `global_process`
+  - `global_kmax_factor_process`
+  - `transpiration_process`
+  - `temperature_process`
+
+Each of this wrappers generate a different kind of report. Global processes
+generates the global validation process (SWC and Transpiration), with or without
+the kmax fixed factor to reduce the transpiration. Transpiration process generates
+the report for transpiration taking the real SWC from the measuredData as well as
+using a simpler soil conception (only one layer). And, finally, temperature process
+runs the report to validate the canopy temperatures.  
+All these wrappers share the same arguments:
+
+  - `sites` a vector with site codes to run
+  - `wd` the path to the `Validation` folder where all the validation is done
+  - `transpMode` a character indicating the models to run, simple, complex or both
+  - `SPParams` a character indicating if it will use the "old" SpParamsMED table or
+     the  "new" newParams table.
+
+All the functions call internally the `report_render` function, a customization of
+`rmarkdown::render`.
+
