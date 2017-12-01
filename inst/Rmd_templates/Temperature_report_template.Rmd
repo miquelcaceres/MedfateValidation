@@ -72,6 +72,10 @@ data.frame(
   )
 ```
 
+# Remarks
+
+Site Aspect: `r terrainData$aspect`
+
 # *Complex* Model
 
 ```{r complex_model}
