@@ -1,13 +1,20 @@
 ---
-title: "Validation Sites Data Structure"
-author: "medfate Team"
+title: "Sites Data Structure"
+author: "Víctor Granda"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Validation Sites Data Structure}
+  %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 In this vignette the sites/plots data structure needed for the automated
 calibration/validation of the medfate model is explained.
@@ -129,6 +136,8 @@ Variables:
 
 This file contains the metereological data series, with as many rows as days
 which must be modelled. It must have the following columns:
+
+Variables:
 
   : **Date** Day date in the ISO format `YYYY-MM-DD`
   : **DOY** Day of year (Julian day)
