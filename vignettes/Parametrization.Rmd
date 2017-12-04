@@ -1,0 +1,80 @@
+---
+title: "Parametrization newParams"
+author: "Víctor Granda"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## General Info
+
+We have used as starting point the SpParamsMED table created by Miquel de
+Cáceres. We realized that in this table some default values for hydraulic
+and/or photosynthetic parameters were not really adequate (i.e.
+$K_{xyl,max} = 0.15$). In order to get more adequate values
+for some of the parameters used in the Sperry model we have used the
+**HidraTRY** database (Rosas *et al.* in preparation) and the *Quercus*
+revision by Robert *et al.* (in preparation).
+
+
+## HydraTRY database
+
+HydraTRY was used to update/create the values for the following variables:
+
+1. Vmax298
+1. Jmax
+1. VCstem_d
+1. PItlp
+1. xylem_kmax
+1. Al2As
+1. SLA
+1. LeafDuration
+1. WoodDens
+1. Narea
+1. Hmax
+1. Zmean
+
+The default values of these variables were substituted by the HydraTRY
+provided values **only** for those species present in both tables, SpParamsMED
+and HydraTRY.
+
+## Default unknown parameters
+
+In order to obtain more "real" values for those parameters in the species not
+present in HydraTRY database or without values, we perform three different
+imputations:
+
+### 1. *Quercus* genus
+
+Lies *et al.* book chapter ("The xylem anatomy and function of oaks") was used to
+impute parameters values for the *Quercus* species not present in HydraTRY or 
+without values in this database by taking the medians of all the genus.  
+
+In these case only four variables were updated:
+
+1. xylem_kmax
+1. VCstem_d
+1. Al2As
+1. WoodDensity
+
+### 2. *Pinus* genus
+
+In this case, all pine species present in HydraTRY database were used to calculate
+the genus medians for all parameters used from HydraTRY and used to subtitute
+default values for that parameters in those species without real values.
+
+### 3. Functional groups
+
+For the rest of the species not included in the previous genus, they were divided
+in Angyosperms and Gimnosperms and the median value for the hydraulic variables
+were obtained from HydraTRY database.
