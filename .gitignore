@@ -4,3 +4,4 @@
 inst/doc
 data-raw/*
 data/*
+vignettes/Parametrization.Rmd
