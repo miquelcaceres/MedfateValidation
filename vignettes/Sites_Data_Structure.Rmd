@@ -58,9 +58,9 @@ Species | N | DBH | Height | Z50 | Z95
 Variables:
 
   : **Species** A numeric code as found in the SpParams data from the `medfate` package
-  : **N** Species density
-  : **DBH** Mean diameter at breast height for the species
-  : **Height** Mean height for the species
+  : **N** Species density [trees/ha]
+  : **DBH** Mean diameter at breast height for the species [cm]
+  : **Height** Mean height for the species [cm]
   : **Z50** Depth in mm enclosing the 50% of the roots
   : **Z95** Depth in mm enclosing the 95% of the roots
 
@@ -83,8 +83,8 @@ Species | Cover | Height | Z
 Variables:
 
   : **Species** A numeric code as found in the SpParams data from the `medfate` package
-  : **Cover** Percent cover of the species
-  : **Height** Mean height for the species
+  : **Cover** Percent cover of the species [%]
+  : **Height** Mean height for the species [cm]
   : **Z** Depth in mm of the root system for the species
 
 ## seedData
@@ -108,7 +108,7 @@ Species | Abundance
 Variables:
 
   : **Species** A numeric code as found in the SpParams data from the `medfate` package
-  : **Abundance** Abundance class??
+  : **Abundance** Abundance class
 
 ## miscData
 
@@ -118,9 +118,9 @@ Variables:
 This file contains the single value elements of the forest object and must have
 4 columns and one single row:
 
-ID | patchsize | herbCover | herbHeight
----|-----------|-----------|------------
-FOO | 10000 | 10 | 20
+ID | patchsize | herbCover | herbHeight | Validation
+---|-----------|-----------|------------|-------------
+FOO | 10000 | 10 | 20 | global
 
 Variables:
 
@@ -128,6 +128,8 @@ Variables:
   : **patchsize** The area of the forest stand in square meters
   : **herbCover** Percent cover of the herb layer
   : **herbHeight** Mean height in cm of the herb layer
+  : **Validation** Validation to perform with this site, can be one of the
+    following: "global", "global_transp" and "temperature"
 
 ## meteoData
 
@@ -145,6 +147,7 @@ Variables:
   : **MeanTemperature** Mean temperature (in degrees Celsius)
   : **MinTemperature** Minimum temperature (in degrees Celsius)
   : **MaxTemperature** Maximum temperature (in degrees Celsius)
+  : **MeanRelativeHumidity** Mean relative humidity (in percent)
   : **MinRelativeHumidity** Minimum relative humidity (in percent)
   : **MaxRelativeHumidity** Maximum relative humidity (in percent)
   : **Radiation** Solar radiation (in MJ/m2/day)
@@ -159,10 +162,10 @@ Variables:
 This file must have 8 columns and as many rows as soil layers present in the
 site/plot:
 
-widths | clay | sand | macro | rfc | Gsoil | Ksoil | W
--------|------|------|-------|-----|-------|-------|----
-300 | 25 | 25 | 0.1 | 30 | 0.5 | 0.05 | 1
-700 | 25 | 25 | 0.1 | 60 | 0.5 | 0.05 | 1
+widths | clay | sand | macro | rfc | Gsoil | Ksoil | W | FC
+-------|------|------|-------|-----|-------|-------|---|-----
+300 | 25 | 25 | 0.1 | 30 | 0.5 | 0.05 | 1 | NA
+700 | 25 | 25 | 0.1 | 60 | 0.5 | 0.05 | 1 | NA
 
 Variables:
 
@@ -174,6 +177,7 @@ Variables:
   : **Gsoil** Gamma parameter for infiltration (same value for all layers)
   : **Ksoil** Kappa parameter for infiltration (same value for all layers)
   : **W** Initial water content of each soil layer in proportion (0-1)
+  : **FC** Field capacity value in case of change from internal calculation
 
 ## terrainData
 
@@ -205,28 +209,35 @@ This file is optional if no custom/optimized/measured parameters are provided
 for the site.
 
 It can contain any number of columns, and these must have the same names as in
-the SpParamsMED dataset from `medfate` package or the `above` slot of the
-swbInput object from the `medfate` package (see `medfate::forest2swbInput` help
-function). Also a mandatory column, **SpIndex** with the code of the species
-in the SpParams table. As an example:
+the SpParamsMED dataset from `medfate` package or the `above` and `canopy` slots
+of the swbInput object from the `medfate` package (see `medfate::forest2swbInput`
+help function). Also it must have two columns, **SpIndex** and **Spcode**. The
+first indicates the numeric code of the species as it appears in SpParamsMED
+dataset and the second indicates the species code as used internally in `medfate`
+(i.e. "T1_54"). As an example:
 
-SpIndex | xylem_kmax | Vmax298
---------|------------|---------
-54 | 0.1089123 | 160.9927
-68 | 0.1089123 | 160.9927
+SpIndex | Spcode | xylem_kmax | Vmax298
+--------|--------|------------|---------
+54 | T1_54 | 0.4082 | 121.4565
+68 | T2_68 | 0.1089 | 160.9927
 
 ## measuredData
 
 > Name: FOO_measuredData.txt  
   Location: Sites_data/FOO/
 
-This file must have the same number of rows as the meteoData file corresponding
-to the dates measured (again, the same as in the meteoData). Also it must have
-3 colums for the SWC and total E plus as many columns as species for E:
+This file **must have** the same number of rows as the meteoData file,
+corresponding to the measured dates. After that the content depends on the kind
+of validation the file is for.
+For `global` and `global_transp` validations, it must have the measured values
+for SWC (SWC for the first layer, SWC_2 for the second layer, and so on...) and
+the values for transpiration (Eplanttot for total transpiration, and E_Tx_xx for
+the different cohorts, being "Tx_xx" or "Sx_xx" the internal sp code used in
+`medfate`). Also, there is an optional column "SWC_err" indicating the error
+value for SWC content measure.
+For example:
 
-SWC | SWC_err | E_tot | E_sp54 | E_sp65 | E_sp68 | E_sp78
-----|---------|-------|--------|--------|--------|--------
-0.3037281 | NA | 0.3550796 | 0.1466177 | 0.1481117 | 0.01155866 | 0.04879147
-... | ... | ... | ... | ... | ... | ...
-
+Date | SWC | SWC_err | SWC_2 | SWC_3 | Eplanttot | E_T1_54 | E_T2_64
+-----|-----|---------|-------|-------|-----------|---------|---------
+... | ... | ... | ... | ... | ... | ... | ... 
 
