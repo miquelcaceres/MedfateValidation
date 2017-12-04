@@ -21,28 +21,28 @@ list_sites <- function(validation) {
 
   if (validation == 'global') {
     sites_misc_info %>%
-      filter(Validation %in% c('global', 'global_transp')) %>%
-      pull(ID) -> res
+      dplyr::filter(Validation %in% c('global', 'global_transp')) %>%
+      dplyr::pull(ID) -> res
     return(res)
   }
 
   if (validation == 'temperature') {
     sites_misc_info %>%
-      filter(Validation == 'temperature') %>%
-      pull(ID) -> res
+      dplyr::filter(Validation == 'temperature') %>%
+      dplyr::pull(ID) -> res
     return(res)
   }
 
   if (validation == 'transpiration') {
     sites_misc_info %>%
-      filter(Validation == 'global_transp') %>%
-      pull(ID) -> res
+      dplyr::filter(Validation == 'global_transp') %>%
+      dplyr::pull(ID) -> res
     return(res)
   }
 
   if (validation == 'all') {
     sites_misc_info %>%
-      select(ID, Validation) -> res
+      dplyr::select(ID, Validation) -> res
     return(res)
   }
 
