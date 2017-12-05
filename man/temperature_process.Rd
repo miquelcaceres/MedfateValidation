@@ -4,7 +4,8 @@
 \alias{temperature_process}
 \title{Main function to do the Temperature}
 \usage{
-temperature_process(sites, wd, transpMode = "complex", SPParams = "new")
+temperature_process(sites, wd, transpMode = "complex", SPParams = "new",
+  tapering = TRUE)
 }
 \arguments{
 \item{sites}{A character vector with the sites codes}
@@ -12,6 +13,13 @@ temperature_process(sites, wd, transpMode = "complex", SPParams = "new")
 \item{wd}{Complete path to the validation directory}
 
 \item{transpMode}{Character string indicating the transpiration mode to use}
+
+\item{SPParams}{Character indicating which SpParams table to use. "old" for
+the SpParamsMED table from medfate and "new" for the newParams table of
+MedfateValidation}
+
+\item{tapering}{Logical indicating if use the taper factor (TRUE) or not
+(FALSE)}
 }
 \description{
 Validate a list of sites/plots

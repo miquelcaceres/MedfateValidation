@@ -7,6 +7,7 @@ params:
   code: ''
   transpMode: 'complex'
   SPParams: 'new'
+  tapering: TRUE
 output:
   html_document:
     df_print: paged
@@ -93,6 +94,7 @@ if (params$transpMode %in% c('complex', 'both')) {
   control_obj$verbose <- FALSE
   control_obj$transpirationMode <- 'Complex'
   control_obj$defaultWindSpeed <- wind_mean
+  control_obj$taper <- params$tapering
   
   # input object
   # we also rebuild the soil_object to avoid using W data from the previous

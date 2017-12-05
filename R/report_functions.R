@@ -97,9 +97,17 @@ report_render <- function(report = 'global',
 #'
 #' @param transpMode Character string indicating the transpiration mode to use
 #'
+#' @param SPParams Character indicating which SpParams table to use. "old" for
+#'   the SpParamsMED table from medfate and "new" for the newParams table of
+#'   MedfateValidation
+#'
+#' @param tapering Logical indicating if use the taper factor (TRUE) or not
+#'   (FALSE)
+#'
 #' @export
 
-global_process <- function(sites, wd, transpMode, SPParams = 'old') {
+global_process <- function(sites, wd, transpMode, SPParams = 'old',
+                           tapering = TRUE) {
 
   for (code in sites) {
     report_name <- file.path('Output', packageVersion('medfate')[[1]],
@@ -112,7 +120,8 @@ global_process <- function(sites, wd, transpMode, SPParams = 'old') {
                                code)
 
     report_render('global', report_name, report_folder, wd = wd, code = code,
-                  transpMode = transpMode, SPParams = SPParams)
+                  transpMode = transpMode, SPParams = SPParams,
+                  tapering = tapering)
   }
 }
 
@@ -126,9 +135,17 @@ global_process <- function(sites, wd, transpMode, SPParams = 'old') {
 #'
 #' @param transpMode Character string indicating the transpiration mode to use
 #'
+#' @param SPParams Character indicating which SpParams table to use. "old" for
+#'   the SpParamsMED table from medfate and "new" for the newParams table of
+#'   MedfateValidation
+#'
+#' @param tapering Logical indicating if use the taper factor (TRUE) or not
+#'   (FALSE)
+#'
 #' @export
 
-global_kmax_factor_process <- function(sites, wd, transpMode, SPParams = 'old') {
+global_kmax_factor_process <- function(sites, wd, transpMode, SPParams = 'old',
+                                       tapering = TRUE) {
 
   for (code in sites) {
     report_name <- file.path('Output', packageVersion('medfate')[[1]],
@@ -141,7 +158,7 @@ global_kmax_factor_process <- function(sites, wd, transpMode, SPParams = 'old') 
                                code)
 
     report_render('kmax', report_name, report_folder, wd = wd, code = code,
-                  transpMode = transpMode, SPParams = SPParams)
+                  transpMode = transpMode, SPParams = SPParams, tapering = tapering)
   }
 }
 
@@ -187,10 +204,17 @@ transpiration_process <- function(sites, wd, transpMode, SPParams = 'old') {
 #'
 #' @param transpMode Character string indicating the transpiration mode to use
 #'
+#' @param SPParams Character indicating which SpParams table to use. "old" for
+#'   the SpParamsMED table from medfate and "new" for the newParams table of
+#'   MedfateValidation
+#'
+#' @param tapering Logical indicating if use the taper factor (TRUE) or not
+#'   (FALSE)
+#'
 #' @export
 
 temperature_process <- function(sites, wd, transpMode = 'complex',
-                                SPParams = 'new') {
+                                SPParams = 'new', tapering = TRUE) {
 
   for (code in sites) {
     report_name <- file.path('Output', packageVersion('medfate')[[1]],
@@ -203,7 +227,8 @@ temperature_process <- function(sites, wd, transpMode = 'complex',
                                code)
 
     report_render('temperature', report_name, report_folder, wd = wd, code = code,
-                  transpMode = transpMode, SPParams = SPParams)
+                  transpMode = transpMode, SPParams = SPParams,
+                  tapering = tapering)
   }
 }
 

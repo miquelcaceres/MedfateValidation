@@ -7,6 +7,7 @@ params:
   code: ''
   transpMode: 'both'
   SPParams: 'old'
+  tapering: TRUE
 output:
   html_document:
     df_print: paged
@@ -104,6 +105,7 @@ if (params$transpMode %in% c('simple', 'both')) {
   control_obj <- medfate::defaultControl()
   control_obj$verbose <- FALSE
   control_obj$transpirationMode <- 'Simple'
+  control_obj$taper <- params$tapering
   
   # input object
   simple_input <- medfate::forest2swbInput(forest_object, soil_object,
@@ -147,6 +149,7 @@ if (params$transpMode %in% c('complex', 'both')) {
   control_obj <- medfate::defaultControl()
   control_obj$verbose <- FALSE
   control_obj$transpirationMode <- 'Complex'
+  control_obj$taper <- params$tapering
   
   # input object
   # we also rebuild the soil_object to avoid using W data from the previous

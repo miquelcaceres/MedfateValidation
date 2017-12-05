@@ -4,7 +4,8 @@
 \alias{global_kmax_factor_process}
 \title{Main function to do the calibration/validation}
 \usage{
-global_kmax_factor_process(sites, wd, transpMode, SPParams = "old")
+global_kmax_factor_process(sites, wd, transpMode, SPParams = "old",
+  tapering = TRUE)
 }
 \arguments{
 \item{sites}{A character vector with the sites codes}
@@ -12,6 +13,13 @@ global_kmax_factor_process(sites, wd, transpMode, SPParams = "old")
 \item{wd}{Complete path to the validation directory}
 
 \item{transpMode}{Character string indicating the transpiration mode to use}
+
+\item{SPParams}{Character indicating which SpParams table to use. "old" for
+the SpParamsMED table from medfate and "new" for the newParams table of
+MedfateValidation}
+
+\item{tapering}{Logical indicating if use the taper factor (TRUE) or not
+(FALSE)}
 }
 \description{
 Validate a list of sites/plots
