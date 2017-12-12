@@ -171,11 +171,11 @@ if (params$transpMode %in% c('complex', 'both')) {
 }
 ```
 
-```{r plot_complex, eval = TRUE, fig.height=9, fig.width=8}
+```{r plot_complex, eval = TRUE, fig.height=12, fig.width=8}
 # show the plot only if simple mode must be performed
 if (params$transpMode %in% c('complex', 'both')) {
   # config layout
-  par(mfrow = c(3,2))
+  par(mfrow = c(4,2))
   # P/PET plot
   plot(res_complex, yearAxis = TRUE)
   # ET plot
@@ -189,6 +189,10 @@ if (params$transpMode %in% c('complex', 'both')) {
   # Canopy Temp plot
   plot(res_complex, type = 'CanopyTemperature')
   plot(res_complex, type = 'AirTemperature', lty = 2, add = TRUE)
+  # Short wave radiation leaf
+  plot(res_complex, type = 'PlantAbsorbedSWRLeaf')
+  # plant transpiration by leaf
+  plot(res_complex, type = 'PlantTranspirationLeaf')
   # reset layout
   par(mfrow = c(1,1))
 }

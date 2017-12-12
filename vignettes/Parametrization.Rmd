@@ -33,7 +33,7 @@ HydraTRY was used to update/create the values for the following variables:
 
 1. Vmax298
 1. Jmax
-1. VCstem_d
+1. Psi50
 1. PItlp
 1. xylem_kmax
 1. Al2As
@@ -47,6 +47,18 @@ HydraTRY was used to update/create the values for the following variables:
 The default values of these variables were substituted by the HydraTRY
 provided values **only** for those species present in both tables, SpParamsMED
 and HydraTRY.
+
+### Psi50 and VCstem_d
+
+We use the Psi50 value to calculate the VCstem_d value (as explained in the
+medfate vignette "Complex model: Hydraulics, stomatal conductance and photosynthesis"),
+by the following formula:
+
+$$
+\Psi_{50} / 0.69314^{1/c}
+$$
+
+where $c$ is the VCstem_c value.
 
 ## Default unknown parameters
 
@@ -63,7 +75,7 @@ without values in this database by taking the medians of all the genus.
 In these case only four variables were updated:
 
 1. xylem_kmax
-1. VCstem_d
+1. Psi50
 1. Al2As
 1. WoodDensity
 
