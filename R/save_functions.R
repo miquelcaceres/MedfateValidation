@@ -41,13 +41,20 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
     SP_transp <- as.data.frame(simple_res[['PlantTranspiration']])
     names(SP_transp) <- paste0('E_', names(SP_transp))
 
+    # total LAI
+    LAI_tot <- simple_res[['DailyBalance']][['LAIcell']]
+
+    # sp's transpiration normalized by leaf area
+    LAI_cohorts <- as.data.frame(simple_res[['PlantLAI']])
+    names(LAI_cohorts) <- paste0('LAI_', names(LAI_cohorts))
+
     # soilwater content
     soilWater <- simple_res[["SoilWaterBalance"]] %>%
       dplyr::select(dplyr::starts_with('W.'))
 
     # final data.frame to save
     simple_to_save <- cbind(
-      Dates, Eplanttot, SP_transp, soilWater
+      Dates, Eplanttot, SP_transp, soilWater, LAI_tot, LAI_cohorts
     )
 
     # save
@@ -83,6 +90,13 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
     SP_transp <- as.data.frame(complex_res[['PlantTranspiration']])
     names(SP_transp) <- paste0('E_', names(SP_transp))
 
+    # total LAI
+    LAI_tot <- complex_res[['DailyBalance']][['LAIcell']]
+
+    # sp's transpiration normalized by leaf area
+    LAI_cohorts <- as.data.frame(complex_res[['PlantLAI']])
+    names(LAI_cohorts) <- paste0('LAI_', names(LAI_cohorts))
+
     # soilwater content
     soilWater <- complex_res[["SoilWaterBalance"]] %>%
       dplyr::select(dplyr::starts_with('W.'))
@@ -92,7 +106,7 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
 
     # final data.frame to save
     complex_to_save <- cbind(
-      Dates, Eplanttot, SP_transp, soilWater, Temperature
+      Dates, Eplanttot, SP_transp, soilWater, Temperature,  LAI_tot, LAI_cohorts
     )
 
     # save
