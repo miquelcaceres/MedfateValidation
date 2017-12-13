@@ -266,6 +266,14 @@ knitr::opts_chunk$set(fig.height = height_chunk)
 print(plot_res_gg('Eplanttot', models_dfs, soil_object, measuredData, params$transpMode))
 ```
 
+### Total transpiration normalized to leaf area
+
+```{r plots_Etot_norm, fig.width=8}
+print(plot_res_gg('Eplanttot', models_dfs, soil_object,
+                  measuredData, params$transpMode, leaf_norm = TRUE))
+```
+
+
 ## Transpiration by cohorts
 
 ```{r statistics_E_cohorts, results='asis'}
