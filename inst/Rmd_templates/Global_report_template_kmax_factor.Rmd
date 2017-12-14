@@ -129,7 +129,7 @@ if (params$transpMode %in% c('simple', 'both')) {
 # show the plot only if simple mode must be performed
 if (params$transpMode %in% c('simple', 'both')) {
   # config layout
-  par(mfrow = c(2,2))
+  par(mfrow = c(3,2))
   # P/PET plot
   plot(res_simple, yearAxis = TRUE)
   # ET plot
@@ -138,6 +138,10 @@ if (params$transpMode %in% c('simple', 'both')) {
   plot(res_simple, 'Theta')
   # Stress plot
   plot(res_simple, type = 'PlantStress', yearAxis = TRUE)
+  # Short wave radiation leaf
+  plot(res_simple, type = 'PlantAbsorbedSWRLeaf')
+  # plant transpiration by leaf
+  plot(res_simple, type = 'PlantTranspirationLeaf')
   # reset layout
   par(mfrow = c(1,1))
 }
@@ -178,7 +182,7 @@ if (params$transpMode %in% c('complex', 'both')) {
 # show the plot only if simple mode must be performed
 if (params$transpMode %in% c('complex', 'both')) {
   # config layout
-  par(mfrow = c(3,2))
+  par(mfrow = c(4,2))
   # P/PET plot
   plot(res_complex, yearAxis = TRUE)
   # ET plot
@@ -192,24 +196,36 @@ if (params$transpMode %in% c('complex', 'both')) {
   # Canopy Temp plot
   plot(res_complex, type = 'CanopyTemperature')
   plot(res_complex, type = 'AirTemperature', lty = 2, add = TRUE)
+  # Short wave radiation leaf
+  plot(res_complex, type = 'PlantAbsorbedSWRLeaf')
+  # plant transpiration by leaf
+  plot(res_complex, type = 'PlantTranspirationLeaf')
   # reset layout
   par(mfrow = c(1,1))
 }
 ```
 
 ```{r saving_txt_results}
+e_meas <- measuredData %>%
+  dplyr::summarize_all(funs(all(is.na(.)))) %>%
+  as.logical()
+
+e_measured_coh <- names(measuredData)[!e_meas]
+
 if (params$transpMode %in% c('both')) {
   sp_names <- paste0('E_sp', simple_input$above$SP)
-  models_dfs <- saveRes(res_simple, res_complex, spParams = sp_params,
+  models_dfs <- saveRes(res_simple, res_complex, e_measured_coh,
+                        spParams = sp_params,
                         site_code = params$code)
 } else {
   if (params$transpMode %in% c('simple')) {
     sp_names <- paste0('E_sp', simple_input$above$SP)
-    models_dfs <- saveRes(res_simple, spParams = sp_params,
+    models_dfs <- saveRes(res_simple, e_measured_coh,
+                          spParams = sp_params,
                           site_code = params$code)
   } else {
     sp_names <- paste0('E_sp', complex_input$above$SP)
-    models_dfs <- saveRes(complex_res = res_complex,
+    models_dfs <- saveRes(complex_res = res_complex, e_measured_coh,
                           spParams = sp_params, site_code = params$code)
   }
 }
@@ -372,7 +388,7 @@ file_name <- file.path('Output', packageVersion('medfate')[[1]],
                        params$code,
                        paste0(format(Sys.time(), "%Y%m%d_%H%M"),
                               '_', params$code, '_',
-                              'global_report_objects.RData'))
+                              'global_kmax_factor_report_objects.RData'))
 save(list = ls(all.names = TRUE), file = file_name)
 # printing session info
 devtools::session_info()
