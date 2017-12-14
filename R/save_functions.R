@@ -44,18 +44,28 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
     ) %>%
       stringr::str_sub(3)
 
-    Eplanttot <- as.numeric(
-      base::rowSums(simple_res[['PlantTranspiration']][,coh_meas])
-    )
+    # if only one cohort measured, total is the cohort transp (rowSums throws
+    # an error with less than 2 dimensions)
+    if (length(coh_meas) < 2) {
+      Eplanttot <- as.numeric(simple_res[['PlantTranspiration']][,coh_meas])
+    } else {
+      Eplanttot <- as.numeric(
+        base::rowSums(simple_res[['PlantTranspiration']][,coh_meas])
+      )
+    }
 
     # sp's transpiration
     SP_transp <- as.data.frame(simple_res[['PlantTranspiration']])
     names(SP_transp) <- paste0('E_', names(SP_transp))
 
     # total LAI (only those cohorts measured)
-    LAI_tot <- as.numeric(
-      base::rowSums(simple_res[['PlantLAI']][, coh_meas])
-    )
+    if (length(coh_meas) < 2) {
+      LAI_tot <- as.numeric(simple_res[['PlantLAI']][, coh_meas])
+    } else {
+      LAI_tot <- as.numeric(
+        base::rowSums(simple_res[['PlantLAI']][, coh_meas])
+      )
+    }
 
     # LAI cohorts
     LAI_cohorts <- as.data.frame(simple_res[['PlantLAI']])
@@ -102,18 +112,28 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
     ) %>%
       stringr::str_sub(3)
 
-    Eplanttot <- as.numeric(
-      base::rowSums(complex_res[['PlantTranspiration']][,coh_meas])
-    )
+    # if only one cohort measured, total is the cohort transp (rowSums throws
+    # an error with less than 2 dimensions)
+    if (length(coh_meas) < 2) {
+      Eplanttot <- as.numeric(complex_res[['PlantTranspiration']][,coh_meas])
+    } else {
+      Eplanttot <- as.numeric(
+        base::rowSums(complex_res[['PlantTranspiration']][,coh_meas])
+      )
+    }
 
     # sp's transpiration
     SP_transp <- as.data.frame(complex_res[['PlantTranspiration']])
     names(SP_transp) <- paste0('E_', names(SP_transp))
 
     # total LAI (only those cohorts measured)
-    LAI_tot <- as.numeric(
-      base::rowSums(complex_res[['PlantLAI']][, coh_meas])
-    )
+    if (length(coh_meas) < 2) {
+      LAI_tot <- as.numeric(complex_res[['PlantLAI']][, coh_meas])
+    } else {
+      LAI_tot <- as.numeric(
+        base::rowSums(complex_res[['PlantLAI']][, coh_meas])
+      )
+    }
 
     # sp's transpiration normalized by leaf area
     LAI_cohorts <- as.data.frame(complex_res[['PlantLAI']])
