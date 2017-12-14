@@ -199,20 +199,27 @@ if (params$transpMode %in% c('complex', 'both')) {
 ```
 
 ```{r saving_txt_results}
+
+e_meas <- measuredData %>%
+  dplyr::summarize_all(funs(all(is.na(.)))) %>%
+  as.logical()
+
+e_measured_coh <- names(measuredData)[!e_meas]
+
 if (params$transpMode %in% c('both')) {
   sp_names <- paste0('E_sp', simple_input$above$SP)
-  models_dfs <- saveRes(res_simple, res_complex, names(measuredData),
+  models_dfs <- saveRes(res_simple, res_complex, e_measured_coh,
                         spParams = sp_params,
                         site_code = params$code)
 } else {
   if (params$transpMode %in% c('simple')) {
     sp_names <- paste0('E_sp', simple_input$above$SP)
-    models_dfs <- saveRes(res_simple, names(measuredData),
+    models_dfs <- saveRes(res_simple, e_measured_coh,
                           spParams = sp_params,
                           site_code = params$code)
   } else {
     sp_names <- paste0('E_sp', complex_input$above$SP)
-    models_dfs <- saveRes(complex_res = res_complex, names(measuredData),
+    models_dfs <- saveRes(complex_res = res_complex, e_measured_coh,
                           spParams = sp_params, site_code = params$code)
   }
 }

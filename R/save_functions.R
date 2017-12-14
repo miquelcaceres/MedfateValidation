@@ -96,15 +96,24 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
     # dates
     Dates <- rownames(complex_res[['DailyBalance']])
 
-    # total plant transpiration
-    Eplanttot <- complex_res[['DailyBalance']][['Eplanttot']]
+    # total plant transpiration (only from those cohorts measured)
+    coh_meas <- as.character(
+      na.omit(stringr::str_extract(measured_vars, '^E_.+'))
+    ) %>%
+      stringr::str_sub(3)
+
+    Eplanttot <- as.numeric(
+      base::rowSums(complex_res[['PlantTranspiration']][,coh_meas])
+    )
 
     # sp's transpiration
     SP_transp <- as.data.frame(complex_res[['PlantTranspiration']])
     names(SP_transp) <- paste0('E_', names(SP_transp))
 
-    # total LAI
-    LAI_tot <- complex_res[['DailyBalance']][['LAIcell']]
+    # total LAI (only those cohorts measured)
+    LAI_tot <- as.numeric(
+      base::rowSums(complex_res[['PlantLAI']][, coh_meas])
+    )
 
     # sp's transpiration normalized by leaf area
     LAI_cohorts <- as.data.frame(complex_res[['PlantLAI']])
