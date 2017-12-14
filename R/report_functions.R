@@ -152,7 +152,7 @@ global_kmax_factor_process <- function(sites, wd, transpMode, SPParams = 'old',
                              code,
                              paste0(format(Sys.time(), "%Y%m%d_%H%M"),
                                     '_', code, '_',
-                                    'global_report.html'))
+                                    'global_kmax_factor_report.html'))
 
     report_folder <- file.path('Output', packageVersion('medfate')[[1]],
                                code)
