@@ -4,13 +4,16 @@
 \alias{saveRes}
 \title{Save results}
 \usage{
-saveRes(simple_res = NULL, complex_res = NULL, spParams = NULL, site_code,
-  write = TRUE)
+saveRes(simple_res = NULL, complex_res = NULL, measured_vars = NULL,
+  spParams = NULL, site_code, write = TRUE)
 }
 \arguments{
 \item{simple_res}{swb object with the simple model results}
 
 \item{complex_res}{swb object with the complex model results}
+
+\item{measured_vars}{character vector with the names of the variables in
+measuredData data frame.}
 
 \item{spParams}{data.frame containing the species parameters used in the model}
 

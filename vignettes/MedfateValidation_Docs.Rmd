@@ -259,9 +259,19 @@ names(models_dfs)
 head(models_dfs$simple)
 ```
 
-
 `write = FALSE` argument indicates if the results must be written to disk, useful
 when debugging some site and there is no necessity of files to be written.
+
+### Plant total transpiration in `saveRes`
+
+Despite the model calculates the total transpiration for all cohorts, in the
+comparision report it is necessary to compare the measured total transpiration
+(the sum of the measured cohorts) with the total modelled **only** for
+measured cohorts. In this way, `saveRes` function generates a Eplanttot variable
+with only the measured cohorts.  
+
+This will impact the plot and statistics functions, as they report only for
+measured cohorts, not total of cohorts present in the plot.
 
 ## Statistics functions
 

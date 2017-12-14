@@ -8,6 +8,9 @@
 #'
 #' @param complex_res swb object with the complex model results
 #'
+#' @param measured_vars character vector with the names of the variables in
+#'   measuredData data frame.
+#'
 #' @param spParams data.frame containing the species parameters used in the model
 #'
 #' @param site_code character with the site/plot code name
@@ -19,7 +22,8 @@
 #'
 #' @export
 
-saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
+saveRes <- function(simple_res = NULL, complex_res = NULL,
+                    measured_vars = NULL, spParams = NULL,
                     site_code, write = TRUE) {
 
   # empty list to store the model data frame results for later use
@@ -34,17 +38,26 @@ saveRes <- function(simple_res = NULL, complex_res = NULL, spParams = NULL,
     # dates
     Dates <- rownames(simple_res[['DailyBalance']])
 
-    # total plant transpiration
-    Eplanttot <- simple_res[['DailyBalance']][['Eplanttot']]
+    # total plant transpiration (only from those cohorts measured)
+    coh_meas <- as.character(
+      na.omit(stringr::str_extract(measured_vars, '^E_.+'))
+    ) %>%
+      stringr::str_sub(-2)
+
+    Eplanttot <- as.numeric(
+      base::rowSums(simple_res[['PlantTranspiration']][,coh_meas])
+    )
 
     # sp's transpiration
     SP_transp <- as.data.frame(simple_res[['PlantTranspiration']])
     names(SP_transp) <- paste0('E_', names(SP_transp))
 
-    # total LAI
-    LAI_tot <- simple_res[['DailyBalance']][['LAIcell']]
+    # total LAI (only those cohorts measured)
+    LAI_tot <- as.numeric(
+      base::rowSums(simple_res[['PlantLAI']][, coh_meas])
+    )
 
-    # sp's transpiration normalized by leaf area
+    # LAI cohorts
     LAI_cohorts <- as.data.frame(simple_res[['PlantLAI']])
     names(LAI_cohorts) <- paste0('LAI_', names(LAI_cohorts))
 
