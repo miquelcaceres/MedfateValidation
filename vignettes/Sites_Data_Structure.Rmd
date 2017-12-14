@@ -116,11 +116,11 @@ Variables:
   Location: Sites_data/FOO/
 
 This file contains the single value elements of the forest object and must have
-4 columns and one single row:
+6 columns and one single row:
 
-ID | patchsize | herbCover | herbHeight | Validation
----|-----------|-----------|------------|-------------
-FOO | 10000 | 10 | 20 | global
+ID | patchsize | herbCover | herbHeight | Validation | Definitive
+---|-----------|-----------|------------|------------|------------
+FOO | 10000 | 10 | 20 | global | No
 
 Variables:
 
@@ -130,6 +130,8 @@ Variables:
   : **herbHeight** Mean height in cm of the herb layer
   : **Validation** Validation to perform with this site, can be one of the
     following: "global", "global_transp" and "temperature"
+  : **Definitive** Is this site in the definitive list of sites for Validation?
+    'Yes' or 'No'.
 
 ## meteoData
 
