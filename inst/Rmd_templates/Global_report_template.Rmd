@@ -201,16 +201,18 @@ if (params$transpMode %in% c('complex', 'both')) {
 ```{r saving_txt_results}
 if (params$transpMode %in% c('both')) {
   sp_names <- paste0('E_sp', simple_input$above$SP)
-  models_dfs <- saveRes(res_simple, res_complex, spParams = sp_params,
+  models_dfs <- saveRes(res_simple, res_complex, names(measuredData),
+                        spParams = sp_params,
                         site_code = params$code)
 } else {
   if (params$transpMode %in% c('simple')) {
     sp_names <- paste0('E_sp', simple_input$above$SP)
-    models_dfs <- saveRes(res_simple, spParams = sp_params,
+    models_dfs <- saveRes(res_simple, names(measuredData),
+                          spParams = sp_params,
                           site_code = params$code)
   } else {
     sp_names <- paste0('E_sp', complex_input$above$SP)
-    models_dfs <- saveRes(complex_res = res_complex,
+    models_dfs <- saveRes(complex_res = res_complex, names(measuredData),
                           spParams = sp_params, site_code = params$code)
   }
 }

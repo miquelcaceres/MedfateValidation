@@ -42,7 +42,7 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
     coh_meas <- as.character(
       na.omit(stringr::str_extract(measured_vars, '^E_.+'))
     ) %>%
-      stringr::str_sub(-2)
+      stringr::str_sub(3)
 
     Eplanttot <- as.numeric(
       base::rowSums(simple_res[['PlantTranspiration']][,coh_meas])
