@@ -126,7 +126,7 @@ if (params$transpMode %in% c('simple', 'both')) {
 # show the plot only if simple mode must be performed
 if (params$transpMode %in% c('simple', 'both')) {
   # config layout
-  par(mfrow = c(2,2))
+  par(mfrow = c(3,2))
   # P/PET plot
   plot(res_simple, yearAxis = TRUE)
   # ET plot
@@ -135,6 +135,10 @@ if (params$transpMode %in% c('simple', 'both')) {
   plot(res_simple, 'Theta')
   # Stress plot
   plot(res_simple, type = 'PlantStress', yearAxis = TRUE)
+  # Short wave radiation leaf
+  plot(res_simple, type = 'PlantAbsorbedSWRLeaf')
+  # plant transpiration by leaf
+  plot(res_simple, type = 'PlantTranspirationLeaf')
   # reset layout
   par(mfrow = c(1,1))
 }
