@@ -336,16 +336,17 @@ purrr::walk(
 )
 ```
 
-# Soil Info
+### Transpiration by cohorts normalized to leaf area
 
-```{r soil_info}
-if (params$transpMode %in% c('simple', 'both')) {
-  print(soil_object)
-  simple_input[['below']]
-} else {
-  print(soil_object)
-  complex_input[['below']]
-}
+```{r plots_cohorts_norm, fig.width=8}
+plots_cohorts_norm <- plot_res_gg('E_by_Cohort', models_dfs, soil_object,
+                                  measuredData, params$transpMode,
+                                  leaf_norm = TRUE)
+
+purrr::walk(
+  plots_cohorts_norm,
+  ~ print(.x)
+)
 ```
 
 # SoilWaterBalance Input
@@ -362,7 +363,6 @@ if (params$transpMode == 'simple') {
   }
 }
 ```
-
 
 # Session Info
 
