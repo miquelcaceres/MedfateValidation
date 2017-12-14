@@ -4,10 +4,13 @@
 \alias{list_sites}
 \title{List the appropriate sites for a given validation}
 \usage{
-list_sites(validation)
+list_sites(validation, definitive = FALSE)
 }
 \arguments{
 \item{validation}{Character indicating for which validation sites are ready}
+
+\item{definitive}{Boolean indicating if only the definitive sites must be
+returned. Default to FALSE.}
 }
 \value{
 A character vector with the site names for the given validation, except
