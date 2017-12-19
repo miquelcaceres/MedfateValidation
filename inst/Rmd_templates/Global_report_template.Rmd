@@ -136,7 +136,7 @@ if (params$transpMode %in% c('simple', 'both')) {
   # Stress plot
   plot(res_simple, type = 'PlantStress', yearAxis = TRUE)
   # Short wave radiation leaf
-  plot(res_simple, type = 'PlantAbsorbedSWRLeaf')
+  plot(res_simple, type = 'PlantPhotosynthesisLeaf')
   # plant transpiration by leaf
   plot(res_simple, type = 'PlantTranspirationLeaf')
   # reset layout
@@ -151,7 +151,7 @@ if (params$transpMode %in% c('simple', 'both')) {
 if (params$transpMode %in% c('complex', 'both')) {
   # control object
   control_obj <- medfate::defaultControl()
-  control_obj$verbose <- FALSE
+  control_obj$verbose <- TRUE
   control_obj$transpirationMode <- 'Complex'
   control_obj$taper <- params$tapering
   
@@ -360,6 +360,12 @@ purrr::walk(
   plots_cohorts_norm,
   ~ print(.x)
 )
+```
+
+# Soil Info
+
+```{r soil_info}
+print(soil_object)
 ```
 
 # SoilWaterBalance Input
