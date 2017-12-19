@@ -104,10 +104,12 @@ report_render <- function(report = 'global',
 #' @param tapering Logical indicating if use the taper factor (TRUE) or not
 #'   (FALSE)
 #'
+#' @param rhizosphere Number indicating the rhizosphere resistance percentage
+#'
 #' @export
 
 global_process <- function(sites, wd, transpMode, SPParams = 'old',
-                           tapering = TRUE) {
+                           tapering = TRUE, rhizosphere = 0.15) {
 
   for (code in sites) {
     report_name <- file.path('Output', packageVersion('medfate')[[1]],
@@ -121,7 +123,7 @@ global_process <- function(sites, wd, transpMode, SPParams = 'old',
 
     report_render('global', report_name, report_folder, wd = wd, code = code,
                   transpMode = transpMode, SPParams = SPParams,
-                  tapering = tapering)
+                  tapering = tapering, rhizosphere = rhizosphere)
   }
 }
 

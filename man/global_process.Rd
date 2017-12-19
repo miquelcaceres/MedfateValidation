@@ -4,7 +4,8 @@
 \alias{global_process}
 \title{Main function to do the calibration/validation}
 \usage{
-global_process(sites, wd, transpMode, SPParams = "old", tapering = TRUE)
+global_process(sites, wd, transpMode, SPParams = "old", tapering = TRUE,
+  rhizosphere = 0.15)
 }
 \arguments{
 \item{sites}{A character vector with the sites codes}
@@ -19,6 +20,8 @@ MedfateValidation}
 
 \item{tapering}{Logical indicating if use the taper factor (TRUE) or not
 (FALSE)}
+
+\item{rhizosphere}{Number indicating the rhizosphere resistance percentage}
 }
 \description{
 Validate a list of sites/plots
