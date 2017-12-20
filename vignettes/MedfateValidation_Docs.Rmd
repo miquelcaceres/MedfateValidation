@@ -485,7 +485,10 @@ All these wrappers share the same arguments:
   - `SPParams` a character indicating if it will use the "old" SpParamsMED table or
      the  "new" newParams table.
   - `tapering` a logical indicating if the `control` parameter `taper` must be
-     performed (default) or not
+     performed (default) or not.
+  - `rhizosphere` a numeric input indicating the average rhizosphere resistance
+     in proportion. This value is used to change the control object from
+     default value to the desired value.
 
 All the functions call internally the `report_render` function, a customization of
 `rmarkdown::render`.
