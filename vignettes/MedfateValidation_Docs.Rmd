@@ -45,19 +45,20 @@ indicated by the site code as character (i.e. `'PRADES'`). If the specified
 data does not exist (some data are optional) the function will return `NULL`,
 as expected by the build functions.
 
-  - `load_rdatas(type = 'Global')`
+  - `load_rdatas(type = 'Definitive')`
 
 This function allows for load the rdatas containing all the objects produced
 along the validation process for all sites. It returns a list of environments
 with the objects, that can be accessed as nested lists:  
 
 ```{r load_rdatas, eval = FALSE}
-objects_reports <- load_rdatas(type = 'Global')
+objects_reports <- load_rdatas(type = 'Definitive')
 objects_reports$`PRADES`$terrainData$elevation
 ```
 
 `type` argument indicates which reports to read the data from, "Global" for
-the global validation and "Temperature" for the temperature validation.
+the global validation, "Temperature" for the temperature validation and
+"Definitive" for the five definitive sites.
 
   > All the load functions are expected to work with the **Validation** folder
     as the root directory. In the case of load_rdatas fuction, it also looks
@@ -268,10 +269,7 @@ head(models_dfs$simple)
 ```
 
 `write = FALSE` argument indicates if the results must be written to disk, useful
-when debugging some site and there is no necessity of files to be written. 
-`measured_vars` argument must be a character vector with the transpiration
-variables measured, allowing for comparing the total E measured in the plots with
-the total E modelled only for those cohorts measured.
+when debugging some site and there is no necessity of files to be written.  
 
 ### Plant total transpiration in `saveRes`
 
@@ -279,10 +277,12 @@ Despite the model calculates the total transpiration for all cohorts, in the
 comparision report it is necessary to compare the measured total transpiration
 (the sum of the measured cohorts) with the total modelled **only** for
 measured cohorts. In this way, `saveRes` function generates a Eplanttot variable
-with only the measured cohorts.  
+with only the measured cohorts, using the `measured_vars` argument. It must be a
+character vector with the transpiration variables measured.
 
 This will impact the plot and statistics functions, as they report only for
-measured cohorts, not total of cohorts present in the plot.
+measured cohorts, not model output and results, as they have the total
+transpiration for all cohorts modelled.
 
 ## Statistics functions
 

@@ -7,7 +7,8 @@
 load_rdatas(type = "Global")
 }
 \arguments{
-\item{type}{Character indicating which data to load ("Global" or "Temperature")}
+\item{type}{Character indicating which data to load ("Global", "Temperature"
+and "Definitive")}
 }
 \description{
 This function will be used in the general report with all sites data
