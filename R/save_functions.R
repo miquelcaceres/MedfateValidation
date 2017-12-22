@@ -75,6 +75,9 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
     soilWater <- simple_res[["SoilWaterBalance"]] %>%
       dplyr::select(dplyr::starts_with('W.'))
 
+    if(length(Eplanttot)==0) Eplanttot = rep(NA, length(Dates))
+    if(length(LAI_tot)==0) LAI_tot = rep(NA, length(Dates))
+
     # final data.frame to save
     simple_to_save <- cbind(
       Dates, Eplanttot, SP_transp, soilWater, LAI_tot, LAI_cohorts
@@ -145,6 +148,10 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
 
     # temperature
     Temperature <- complex_res[['Temperature']]
+
+
+    if(length(Eplanttot)==0) Eplanttot = rep(NA, length(Dates))
+    if(length(LAI_tot)==0) LAI_tot = rep(NA, length(Dates))
 
     # final data.frame to save
     complex_to_save <- cbind(

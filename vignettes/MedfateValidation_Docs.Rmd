@@ -3,7 +3,7 @@ title: "MedfateValidation Docs"
 author: "Víctor Granda"
 date: "`r Sys.Date()`"
 params:
-  wd: '/home/malditobarbudo/Documentos/00_Trabajo/CTFC/calibration_validation_medfate/work_structure/Validation'
+  wd: 'D:/Rpackages/medfate/validation'
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
