@@ -11,3 +11,5 @@ survival
 fitdistrplus
 qmap
 meteoland
+dplyr
+bindrcpp
