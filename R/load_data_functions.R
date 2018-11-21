@@ -7,7 +7,16 @@
 #' @param site Character indicating site code to load.
 #'
 #' @export
-
+load_forest<-function(site) {
+  treeData <- load_treeData(site)
+  shrubData <- load_shrubData(site)
+  miscData <- load_miscData(site)
+  seedData <- load_seedData(site)
+  return(buildForest(treeData, shrubData, seedData, miscData))
+}
+#' @describeIn load_forest
+#'
+#' @export
 load_treeData <- function(site) {
   # file route
   location <- file.path('Sites_data', site, paste0(site, '_treeData.txt'))
@@ -18,7 +27,7 @@ load_treeData <- function(site) {
   return(tree_data)
 }
 
-#' @describeIn load_treeData
+#' @describeIn load_forest
 #'
 #' @export
 
@@ -39,7 +48,7 @@ load_shrubData <- function(site) {
   return(shrub_data)
 }
 
-#' @describeIn load_treeData
+#' @describeIn load_forest
 #'
 #' @export
 
@@ -60,7 +69,7 @@ load_seedData <- function(site) {
   return(seed_data)
 }
 
-#' @describeIn load_treeData
+#' @describeIn load_forest
 #'
 #' @export
 
@@ -74,7 +83,7 @@ load_miscData <- function(site) {
   return(misc_data)
 }
 
-#' @describeIn load_treeData
+#' @describeIn load_forest
 #'
 #' @export
 
@@ -92,7 +101,7 @@ load_meteoData <- function(site) {
   return(meteo_data)
 }
 
-#' @describeIn load_treeData
+#' @describeIn load_forest
 #'
 #' @export
 
@@ -106,7 +115,7 @@ load_soilData <- function(site) {
   return(soil_data)
 }
 
-#' @describeIn load_treeData
+#' @describeIn load_forest
 #'
 #' @export
 
@@ -120,7 +129,7 @@ load_soilDataUnilayer <- function(site) {
   return(soil_data)
 }
 
-#' @describeIn load_treeData
+#' @describeIn load_forest
 #'
 #' @export
 
@@ -134,7 +143,7 @@ load_measuredData <- function(site) {
   return(measured_data)
 }
 
-#' @describeIn load_treeData
+#' @describeIn load_forest
 #'
 #' @export
 
@@ -155,7 +164,7 @@ load_terrainData <- function(site) {
   return(terrain_data)
 }
 
-#' @describeIn load_treeData
+#' @describeIn load_forest
 #'
 #' @export
 
@@ -177,7 +186,7 @@ load_customParams <- function(site) {
 }
 
 
-#' @describeIn load_treeData
+#' @describeIn load_forest
 #'
 #' @export
 

@@ -25,3 +25,4 @@ TRUE}
 \description{
 Function to save model results in txt files, one for each model mode
 }
+\concept{Save}

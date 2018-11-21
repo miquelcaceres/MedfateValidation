@@ -20,3 +20,4 @@ customParams.txt file
 \seealso{
 Other CustomMods: \code{\link{inputMod}}
 }
+\concept{CustomMods}

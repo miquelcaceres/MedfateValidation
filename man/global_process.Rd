@@ -4,8 +4,8 @@
 \alias{global_process}
 \title{Main function to do the calibration/validation}
 \usage{
-global_process(sites, wd, transpMode, SPParams = "old", tapering = TRUE,
-  rhizosphere = 0.15)
+global_process(sites, wd, transpMode, SPParams = "old",
+  tapering = TRUE, rhizosphere = 0.15)
 }
 \arguments{
 \item{sites}{A character vector with the sites codes}

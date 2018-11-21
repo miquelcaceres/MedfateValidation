@@ -4,7 +4,8 @@
 \alias{plot_res_gg}
 \title{Plotting the models results}
 \usage{
-plot_res_gg(variable, models, soil, measured_data, mode, leaf_norm = FALSE)
+plot_res_gg(variable, models, soil, measured_data, mode,
+  leaf_norm = FALSE)
 }
 \arguments{
 \item{variable}{Character indicating the variable to visualize}

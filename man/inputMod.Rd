@@ -21,3 +21,4 @@ supplied in the customParams.txt file
 \seealso{
 Other CustomMods: \code{\link{SpParams_mod}}
 }
+\concept{CustomMods}

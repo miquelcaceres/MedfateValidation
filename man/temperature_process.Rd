@@ -4,8 +4,8 @@
 \alias{temperature_process}
 \title{Main function to do the Temperature}
 \usage{
-temperature_process(sites, wd, transpMode = "complex", SPParams = "new",
-  tapering = TRUE)
+temperature_process(sites, wd, transpMode = "complex",
+  SPParams = "new", tapering = TRUE)
 }
 \arguments{
 \item{sites}{A character vector with the sites codes}
