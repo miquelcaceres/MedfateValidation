@@ -91,6 +91,7 @@ statistics_summary <- function(var, models, measured_data,
                                soil = NULL, meteo_data = NULL,
                                trunc = NULL) {
 
+  thetaFC = medfate::soil.thetaFC(soil)
   # if SWC
   if (var == 'SWC') {
 
@@ -108,7 +109,7 @@ statistics_summary <- function(var, models, measured_data,
         function(x) {
           index <- which(swc_vars == x)
           MAE_calculator(measured_data[[x]],
-                         models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+                         models[['simple']][[paste0('W.', index)]] * thetaFC[index])
         },
         numeric(1)
       )
@@ -118,7 +119,7 @@ statistics_summary <- function(var, models, measured_data,
         function(x) {
           index <- which(swc_vars == x)
           r_squared_calculator(measured_data[[x]],
-                               models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+                               models[['simple']][[paste0('W.', index)]] * thetaFC[index])
         },
         numeric(1)
       )
@@ -128,7 +129,7 @@ statistics_summary <- function(var, models, measured_data,
         function(x) {
           index <- which(swc_vars == x)
           bias_calculator(measured_data[[x]],
-                          models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+                          models[['simple']][[paste0('W.', index)]] * thetaFC[index])
         },
         numeric(1)
       )
@@ -154,7 +155,7 @@ statistics_summary <- function(var, models, measured_data,
         function(x) {
           index <- which(swc_vars == x)
           MAE_calculator(measured_data[[x]],
-                         models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+                         models[['complex']][[paste0('W.', index)]] * thetaFC[index])
         },
         numeric(1)
       )
@@ -164,7 +165,7 @@ statistics_summary <- function(var, models, measured_data,
         function(x) {
           index <- which(swc_vars == x)
           r_squared_calculator(measured_data[[x]],
-                               models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+                               models[['complex']][[paste0('W.', index)]] * thetaFC[index])
         },
         numeric(1)
       )
@@ -174,7 +175,7 @@ statistics_summary <- function(var, models, measured_data,
         function(x) {
           index <- which(swc_vars == x)
           bias_calculator(measured_data[[x]],
-                          models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+                          models[['complex']][[paste0('W.', index)]] * thetaFC[index])
         },
         numeric(1)
       )
@@ -197,8 +198,8 @@ statistics_summary <- function(var, models, measured_data,
         swc_vars,
         function(x) {
           index <- which(swc_vars == x)
-          MAE_calculator(models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index],
-                         models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+          MAE_calculator(models[['complex']][[paste0('W.', index)]] *thetaFC[index],
+                         models[['simple']][[paste0('W.', index)]] *thetaFC[index])
         },
         numeric(1)
       )
@@ -207,8 +208,8 @@ statistics_summary <- function(var, models, measured_data,
         swc_vars,
         function(x) {
           index <- which(swc_vars == x)
-          r_squared_calculator(models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index],
-                               models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+          r_squared_calculator(models[['complex']][[paste0('W.', index)]] *thetaFC[index],
+                               models[['simple']][[paste0('W.', index)]] *thetaFC[index])
         },
         numeric(1)
       )
@@ -217,8 +218,8 @@ statistics_summary <- function(var, models, measured_data,
         swc_vars,
         function(x) {
           index <- which(swc_vars == x)
-          bias_calculator(models[['complex']][[paste0('W.', index)]] * soil[['Theta_FC']][index],
-                          models[['simple']][[paste0('W.', index)]] * soil[['Theta_FC']][index])
+          bias_calculator(models[['complex']][[paste0('W.', index)]] *thetaFC[index],
+                          models[['simple']][[paste0('W.', index)]] *thetaFC[index])
         },
         numeric(1)
       )
@@ -299,15 +300,15 @@ statistics_summary <- function(var, models, measured_data,
 
     # build the res object and return it!
     res <- list(
-      Eplanttot_MAE_simple = Eplanttot_MAE_simple,
-      Eplanttot_r_sq_simple = Eplanttot_r_sq_simple,
-      Eplanttot_bias_simple = Eplanttot_bias_simple,
-      Eplanttot_MAE_complex = Eplanttot_MAE_complex,
-      Eplanttot_r_sq_complex = Eplanttot_r_sq_complex,
-      Eplanttot_bias_complex = Eplanttot_bias_complex,
-      Eplanttot_MAE_both = Eplanttot_MAE_both,
-      Eplanttot_r_sq_both = Eplanttot_r_sq_both,
-      Eplanttot_bias_both = Eplanttot_bias_both
+      MAE_simple = Eplanttot_MAE_simple,
+      r_sq_simple = Eplanttot_r_sq_simple,
+      bias_simple = Eplanttot_bias_simple,
+      MAE_complex = Eplanttot_MAE_complex,
+      r_sq_complex = Eplanttot_r_sq_complex,
+      bias_complex = Eplanttot_bias_complex,
+      MAE_both = Eplanttot_MAE_both,
+      r_sq_both = Eplanttot_r_sq_both,
+      bias_both = Eplanttot_bias_both
     )
 
     return(res)

@@ -45,23 +45,12 @@ remarks <- load_remarks(code)
 
 # model objects
 forest_object <- buildForest(treeData, shrubData, seedData, miscData)
-soil_object <- buildSoil(soilData)
+soil_object <- medfate::soil(soilData)
 
 # SpParams
-# check if new or old will be used
-if (params$SPParams == 'old') {
-  # load
-  data('SpParamsMED', package = 'medfate')
-  # modify
-  sp_params <- SpParams_mod(SpParamsMED, customParams)
-}
-
-if (params$SPParams == 'new') {
-  # load
-  data('newParams', package = 'MedfateValidation')
-  # modify
-  sp_params <- SpParams_mod(newParams, customParams)
-}
+data('SpParamsMED', package = 'medfate')
+# modify
+sp_params <- SpParams_mod(SpParamsMED, customParams)
 
 # Warning for custom FC
 if (!all(is.na((soilData[['FC']])))) {
@@ -106,18 +95,16 @@ if (params$transpMode %in% c('simple', 'both')) {
   control_obj <- medfate::defaultControl()
   control_obj$verbose <- FALSE
   control_obj$transpirationMode <- 'Simple'
-  control_obj$taper <- params$tapering
-  control_obj$averageFracRhizosphereResistance <- params$rhizosphere
-  
+
   # input object
-  simple_input <- medfate::forest2swbInput(forest_object, soil_object,
+  simple_input <- medfate::forest2spwbInput(forest_object, soil_object,
                                            sp_params, control_obj)
   
   # input modifications (if any)
   simple_input <- inputMod(simple_input, customParams)
   
   # model run
-  res_simple <- medfate::swb(simple_input, soil_object, meteoData)
+  res_simple <- medfate::spwb(simple_input, soil_object, meteoData)
 } else {
   # if simple mode is not performed, report about it
   cat('Simple model has not been selected to be performed')
@@ -127,22 +114,22 @@ if (params$transpMode %in% c('simple', 'both')) {
 ```{r plot_simple, eval = TRUE, fig.height=6, fig.width=8}
 # show the plot only if simple mode must be performed
 if (params$transpMode %in% c('simple', 'both')) {
-  # config layout
-  par(mfrow = c(3,2))
-  # P/PET plot
-  plot(res_simple, yearAxis = TRUE)
-  # ET plot
-  plot(res_simple, type = 'ET', yearAxis = TRUE)
-  # SWC plot
-  plot(res_simple, 'Theta')
-  # Stress plot
-  plot(res_simple, type = 'PlantStress', yearAxis = TRUE)
-  # Short wave radiation leaf
-  plot(res_simple, type = 'PlantPhotosynthesisLeaf')
-  # plant transpiration by leaf
-  plot(res_simple, type = 'PlantTranspirationLeaf')
-  # reset layout
-  par(mfrow = c(1,1))
+    # config layout
+    par(mfrow = c(3,2))
+    # P/PET plot
+    plot(res_simple, yearAxis = TRUE)
+    # ET plot
+    plot(res_simple, type = 'Evapotranspiration', yearAxis = TRUE)
+    # SWC plot
+    plot(res_simple, type = 'SoilTheta')
+    # Stress plot
+    plot(res_simple, type = 'PlantStress', yearAxis = TRUE)
+    # Short wave radiation leaf
+    plot(res_simple, type = 'PlantPhotosynthesisLeaf')
+    # plant transpiration by leaf
+    plot(res_simple, type = 'PlantTranspirationLeaf')
+    # reset layout
+    par(mfrow = c(1,1))
 }
 ```
 
@@ -154,22 +141,20 @@ if (params$transpMode %in% c('complex', 'both')) {
   # control object
   control_obj <- medfate::defaultControl()
   control_obj$verbose <- TRUE
-  control_obj$transpirationMode <- 'Complex'
-  control_obj$taper <- params$tapering
   control_obj$averageFracRhizosphereResistance <- params$rhizosphere
   
   # input object
   # we also rebuild the soil_object to avoid using W data from the previous
   # runs
-  soil_object <- buildSoil(soilData)
-  complex_input <- medfate::forest2swbInput(forest_object, soil_object,
+  soil_object <- medfate::soil(soilData)
+  complex_input <- medfate::forest2spwbInput(forest_object, soil_object,
                                             sp_params, control_obj)
   
   # input modifications (if any)
   complex_input <- inputMod(complex_input, customParams)
   
   # model run
-  res_complex <- medfate::swb(complex_input, soil_object, meteoData,
+  res_complex <- medfate::spwb(complex_input, soil_object, meteoData,
                              terrainData$latitude, terrainData$elevation,
                              terrainData$slope, terrainData$aspect)
 } else {

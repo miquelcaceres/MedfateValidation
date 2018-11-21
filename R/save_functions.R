@@ -36,7 +36,7 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
   } else {
 
     # dates
-    Dates <- rownames(simple_res[['DailyBalance']])
+    Dates <- rownames(simple_res[['WaterBalance']])
 
     # total plant transpiration (only from those cohorts measured)
     coh_meas <- as.character(
@@ -72,7 +72,7 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
     names(LAI_cohorts) <- paste0('LAI_', names(LAI_cohorts))
 
     # soilwater content
-    soilWater <- simple_res[["SoilWaterBalance"]] %>%
+    soilWater <- simple_res[["Soil"]] %>%
       dplyr::select(dplyr::starts_with('W.'))
 
     if(length(Eplanttot)==0) Eplanttot = rep(NA, length(Dates))
@@ -107,7 +107,7 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
   } else {
 
     # dates
-    Dates <- rownames(complex_res[['DailyBalance']])
+    Dates <- rownames(complex_res[['WaterBalance']])
 
     # total plant transpiration (only from those cohorts measured)
     coh_meas <- as.character(
@@ -143,7 +143,7 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
     names(LAI_cohorts) <- paste0('LAI_', names(LAI_cohorts))
 
     # soilwater content
-    soilWater <- complex_res[["SoilWaterBalance"]] %>%
+    soilWater <- complex_res[["Soil"]] %>%
       dplyr::select(dplyr::starts_with('W.'))
 
     # temperature

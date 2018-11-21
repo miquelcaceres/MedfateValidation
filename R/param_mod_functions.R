@@ -6,7 +6,7 @@
 #' @family CustomMods
 #'
 #' @param SpParams Data frame with the species parameters, usually obtained
-#'   from the \code{\link{medfate}} package (\code{data('SpParamsMED')})
+#'   from the \code{\link{medfate}} package.)
 #'
 #' @param customParams Data frame with the custom parameters info, usually
 #'   the result of \code{\link{load_customParams}}
@@ -70,6 +70,7 @@ inputMod <- function(swbInput, customParams) {
   custom <- names(customParams)
   above_par <- names(swbInput[['above']])
   canopy_par <- names(swbInput[['canopy']])
+  transp_par <- names(swbInput[['paramsTransp']])
   # below_par <- names(swbInput$below)
 
 
@@ -94,6 +95,12 @@ inputMod <- function(swbInput, customParams) {
       swbInput[['canopy']][[param]] <- customParams[[param]][1]
     }
 
+    # check if param exists in canopy
+    if (param %in% transp_par) {
+      for (sp in customParams[['Spcode']]) {
+        swbInput[['paramsTransp']][[sp, param]] <- customParams[customParams[['Spcode']] == sp, param]
+      }
+    }
     # check if the param exists in below
     # if (param %in% below_par) {
     #   # subsitute it!

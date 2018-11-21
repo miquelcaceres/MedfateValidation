@@ -8,7 +8,7 @@ SpParams_mod(SpParams, customParams)
 }
 \arguments{
 \item{SpParams}{Data frame with the species parameters, usually obtained
-from the \code{\link{medfate}} package (\code{data('SpParamsMED')})}
+from the \code{\link{medfate}} package.)}
 
 \item{customParams}{Data frame with the custom parameters info, usually
 the result of \code{\link{load_customParams}}}

@@ -6,6 +6,8 @@
 
 plot_swc_simple_gg <- function(models, soil, measured_data) {
 
+  theta_FC = medfate::soil.thetaFC(soil)
+
   # get the measured layers
   swc_vars <- c(
     'SWC',
@@ -22,7 +24,7 @@ plot_swc_simple_gg <- function(models, soil, measured_data) {
     index <- which(swc_vars == name)
     dates <- c(dates, as.character(models[['simple']][['Dates']]))
     SWC_vals_simple <- c(SWC_vals_simple,
-                         models[['simple']][[paste0('W.', index)]] * soil$Theta_FC[[index]])
+                         models[['simple']][[paste0('W.', index)]] * theta_FC[index])
     SWC_vals_meas <- c(SWC_vals_meas, measured_data[[name]])
     Layer <- c(Layer, rep(name, length(measured_data[[name]])))
   }
@@ -95,6 +97,8 @@ plot_swc_simple_gg <- function(models, soil, measured_data) {
 
 plot_swc_complex_gg <- function(models, soil, measured_data) {
 
+  theta_FC = medfate::soil.thetaFC(soil)
+
   # get the measured layers
   swc_vars <- c(
     'SWC',
@@ -111,7 +115,7 @@ plot_swc_complex_gg <- function(models, soil, measured_data) {
     index <- which(swc_vars == name)
     dates <- c(dates, as.character(models[['complex']][['Dates']]))
     SWC_vals_complex <- c(SWC_vals_complex,
-                         models[['complex']][[paste0('W.', index)]] * soil$Theta_FC[[index]])
+                         models[['complex']][[paste0('W.', index)]] * theta_FC[index])
     SWC_vals_meas <- c(SWC_vals_meas, measured_data[[name]])
     Layer <- c(Layer, rep(name, length(measured_data[[name]])))
   }
@@ -184,7 +188,9 @@ plot_swc_complex_gg <- function(models, soil, measured_data) {
 
 plot_swc_both_gg <- function(models, soil, measured_data) {
 
-  # get the measured layers
+  theta_FC = medfate::soil.thetaFC(soil)
+
+    # get the measured layers
   swc_vars <- c(
     'SWC',
     names(measured_data)[stringr::str_detect(names(measured_data), '^SWC_[0-9]$')]
@@ -200,9 +206,9 @@ plot_swc_both_gg <- function(models, soil, measured_data) {
     index <- which(swc_vars == name)
     dates <- c(dates, as.character(models[['complex']][['Dates']]))
     SWC_vals_complex <- c(SWC_vals_complex,
-                          models[['complex']][[paste0('W.', index)]] * soil$Theta_FC[[index]])
+                          models[['complex']][[paste0('W.', index)]] * theta_FC[index])
     SWC_vals_simple <- c(SWC_vals_simple,
-                       models[['simple']][[paste0('W.', index)]] * soil$Theta_FC[[index]])
+                       models[['simple']][[paste0('W.', index)]] * theta_FC[index])
     Layer <- c(Layer, rep(name, length(measured_data[[name]])))
   }
 
