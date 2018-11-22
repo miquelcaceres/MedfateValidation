@@ -1,15 +1,14 @@
 #' Evaluates medfate for one site
 #'
-#' @param code
-#' @param transpMode
-#' @param plot
-#' @param verbose
+#' @param code String with the code of the site to be processed
+#' @param transpMode Either 'simple', 'complex' or 'both'
+#' @param plot A boolean flag indicating wether plots should be produced
 #'
-#' @return
+#' @return A list with evaluation results
 #' @export
-#'
-#' @examples
-eval_site<-function(code, transpMode="simple", plot = FALSE, verbose = FALSE) {
+eval_site<-function(code, transpMode="simple",
+                    control = medfate::defaultControl(),
+                    plot = FALSE) {
 
   # library(dplyr)
 
@@ -47,21 +46,21 @@ eval_site<-function(code, transpMode="simple", plot = FALSE, verbose = FALSE) {
     names(measuredData)[stringr::str_detect(names(measuredData), '^SWC_[0-9]$')]
   )
 
+  simple_input = NULL
+  complex_input = NULL
   res_simple = NULL
   res_complex = NULL
 
   if(transpMode == "simple" || transpMode == "both") {
     # control object
-    control_obj <- medfate::defaultControl()
-    control_obj$verbose <- verbose
-    control_obj$transpirationMode <- "Simple"
+    control$transpirationMode <- "Simple"
 
     # init soil object
     soil_object <- medfate::soil(soilData)
 
     # input object
     simple_input <- medfate::forest2spwbInput(forest_object, soil_object,
-                                              sp_params, control_obj)
+                                              sp_params, control)
 
     # input modifications (if any)
     simple_input <- inputMod(simple_input, customParams)
@@ -89,9 +88,7 @@ eval_site<-function(code, transpMode="simple", plot = FALSE, verbose = FALSE) {
   }
 
   if(transpMode=="complex" || transpMode == "both") {
-    control_obj <- medfate::defaultControl()
-    control_obj$verbose <- verbose
-    control_obj$transpirationMode <- 'Complex'
+    control$transpirationMode <- 'Complex'
 
     # input object
     # we also rebuild the soil_object to avoid using W data from the previous
@@ -100,7 +97,7 @@ eval_site<-function(code, transpMode="simple", plot = FALSE, verbose = FALSE) {
     soil_object <- medfate::soil(soilData)
 
     complex_input <- medfate::forest2spwbInput(forest_object, soil_object,
-                                               sp_params, control_obj)
+                                               sp_params, control)
 
     # input modifications (if any)
     complex_input <- inputMod(complex_input, customParams)
@@ -183,5 +180,17 @@ eval_site<-function(code, transpMode="simple", plot = FALSE, verbose = FALSE) {
     print(plot_res_gg('E_by_Cohort', models_dfs, soil_object, measuredData,transpMode))
   }
 
-  return(list(SWC = SWC_stats, E = E_stats_df))
+  eval = list(SWC = SWC_stats, E = E_stats_df)
+  res = list(mode = transpMode,
+             control = control,
+             forest = forest_object,
+             soil = soil_object,
+             input_simple = simple_input,
+             input_complex = complex_input,
+             spwb_simple = res_simple,
+             spwb_complex = res_complex,
+             models_dfs = models_dfs,
+             measured = measuredData,
+             eval = eval)
+  return(res)
 }

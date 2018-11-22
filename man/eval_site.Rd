@@ -4,10 +4,18 @@
 \alias{eval_site}
 \title{Evaluates medfate for one site}
 \usage{
-eval_site(code, transpMode = "simple", plot = FALSE, verbose = FALSE)
+eval_site(code, transpMode = "simple",
+  control = medfate::defaultControl(), plot = FALSE)
 }
 \arguments{
-\item{verbose}{}
+\item{code}{String with the code of the site to be processed}
+
+\item{transpMode}{Either 'simple', 'complex' or 'both'}
+
+\item{plot}{A boolean flag indicating wether plots should be produced}
+}
+\value{
+A list with evaluation results
 }
 \description{
 Evaluates medfate for one site
