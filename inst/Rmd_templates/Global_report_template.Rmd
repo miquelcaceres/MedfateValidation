@@ -6,7 +6,7 @@ params:
   wd: 'D:/Rpackages/medfate/validation'
   code: 'PRADES'
   transpMode: 'simple'
-  control: ''
+  control: NULL
 output:
   html_document:
     df_print: paged
@@ -26,14 +26,10 @@ library(dplyr)
 library(ggplot2)
 ```
 
-`r params$wd`
-
-`r params$code`
-
 ```{r data, message=FALSE, warning=TRUE}
 
 control <-params$control
-if(control=="") control = medfate::defaultControl()
+if(is.null(control)) control = medfate::defaultControl()
 
 # site/plot code
 code <- params$code
@@ -109,7 +105,7 @@ if (params$transpMode %in% c('simple', 'both')) {
   simple_input <- inputMod(simple_input, customParams)
   
   # model run
-  res_simple <- medfate::spwb(simple_input, soil_object, meteoData)
+  res_simple <- medfate::spwb(simple_input, soil_object, meteoData, elevation = terrainData$elevation)
 } else {
   # if simple mode is not performed, report about it
   cat('Simple model has not been selected to be performed')
@@ -174,7 +170,7 @@ if (params$transpMode %in% c('complex', 'both')) {
   # P/PET plot
   plot(res_complex, yearAxis = TRUE)
   # ET plot
-  plot(res_complex, type = 'EvapoTranspiration', yearAxis = TRUE)
+  plot(res_complex, type = 'Evapotranspiration', yearAxis = TRUE)
   # SWC layers plot
   plot(res_complex, 'SoilTheta')
   # Stress plot
