@@ -9,6 +9,7 @@
 #'   \item{code: Site/Plot code for which the report must be generated}
 #'   \item{transpMode: Transpiration mode, accepted values are \code{simple},
 #'         \code{complex} and \code{both}}
+#'   \item{control: List with control parameters}
 #' }
 #'
 #' @param report which kind of report must be generated, "global" or
@@ -17,9 +18,6 @@
 #' @param output_dir destination folder (if it does not exist, it will be
 #'   created)
 #' @param ... Rmarkdown parameters
-#'
-#' @export
-
 report_render <- function(report = 'global',
                           output_file = NULL, output_dir = NULL, ...) {
 
@@ -97,19 +95,11 @@ report_render <- function(report = 'global',
 #'
 #' @param transpMode Character string indicating the transpiration mode to use
 #'
-#' @param SPParams Character indicating which SpParams table to use. "old" for
-#'   the SpParamsMED table from medfate and "new" for the newParams table of
-#'   MedfateValidation
-#'
-#' @param tapering Logical indicating if use the taper factor (TRUE) or not
-#'   (FALSE)
-#'
-#' @param rhizosphere Number indicating the rhizosphere resistance percentage
+#' @param control List with control parameters
 #'
 #' @export
-
-global_process <- function(sites, wd, transpMode, SPParams = 'old',
-                           tapering = TRUE, rhizosphere = 0.15) {
+report_eval <- function(sites, wd, transpMode,
+                        control = medfate::defaultControl()) {
 
   for (code in sites) {
     report_name <- file.path('Output', packageVersion('medfate')[[1]],
@@ -121,9 +111,8 @@ global_process <- function(sites, wd, transpMode, SPParams = 'old',
     report_folder <- file.path('Output', packageVersion('medfate')[[1]],
                                code)
 
-    report_render('global', report_name, report_folder, wd = wd, code = code,
-                  transpMode = transpMode, SPParams = SPParams,
-                  tapering = tapering, rhizosphere = rhizosphere)
+    report_render('global', report_name, report_folder,
+                  wd = wd, code = code, transpMode = transpMode, control = control)
   }
 }
 

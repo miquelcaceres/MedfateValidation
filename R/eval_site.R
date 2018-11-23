@@ -2,6 +2,7 @@
 #'
 #' @param code String with the code of the site to be processed
 #' @param transpMode Either 'simple', 'complex' or 'both'
+#' @param control List with control parameters
 #' @param plot A boolean flag indicating whether plots should be produced
 #' @param write A boolean flag indicating whether tables must be written in disk
 #'
@@ -134,7 +135,10 @@ eval_site<-function(code, transpMode="simple",
 
   e_measured_coh <- names(measuredData)[!e_meas]
 
-
+  dirp = file.path('Output', packageVersion('medfate')[[1]],code)
+  if(!dir.exists(dirp)) {
+    dir.create(dirp)
+  }
   models_dfs <- saveRes(simple_res = res_simple, complex_res = res_complex,
                         measured_vars = e_measured_coh,
                         spParams = sp_params,

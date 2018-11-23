@@ -253,6 +253,14 @@ plot_swc_both_gg <- function(models, soil, measured_data) {
   return(list(swc = swc_plot, cor = cor_plot))
 }
 
+#' Title
+#'
+#' @param models
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plot_swc_layers_gg <- function(models) {
 
   # simple

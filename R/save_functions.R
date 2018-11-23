@@ -84,13 +84,13 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
     )
 
     # save
-    file_name <- file.path('Output', packageVersion('medfate')[[1]],
-                           site_code,
-                           paste0(format(Sys.time(), "%Y%m%d_%H%M"),
-                                  '_', site_code, '_',
-                                  'simple_model_res.txt'))
 
     if (write) {
+      file_name <- file.path('Output', packageVersion('medfate')[[1]],
+                             site_code,
+                             paste0(format(Sys.time(), "%Y%m%d_%H%M"),
+                                    '_', site_code, '_',
+                                    'simple_model_res.txt'))
       write.table(simple_to_save, file_name, row.names = FALSE,
                   col.names = TRUE, fileEncoding = 'UTF-8')
     }
@@ -159,13 +159,12 @@ saveRes <- function(simple_res = NULL, complex_res = NULL,
     )
 
     # save
-    file_name <- file.path('Output', packageVersion('medfate')[[1]],
-                           site_code,
-                           paste0(format(Sys.time(), "%Y%m%d_%H%M"),
-                                  '_', site_code, '_',
-                                  'complex_model_res.txt'))
-
     if (write) {
+      file_name <- file.path('Output', packageVersion('medfate')[[1]],
+                             site_code,
+                             paste0(format(Sys.time(), "%Y%m%d_%H%M"),
+                                    '_', site_code, '_',
+                                    'complex_model_res.txt'))
       write.table(complex_to_save, file_name, row.names = FALSE,
                   col.names = TRUE, fileEncoding = 'UTF-8')
     }

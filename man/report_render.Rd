@@ -29,5 +29,6 @@ the following:
   \item{code: Site/Plot code for which the report must be generated}
   \item{transpMode: Transpiration mode, accepted values are \code{simple},
         \code{complex} and \code{both}}
+  \item{control: List with control parameters}
 }
 }

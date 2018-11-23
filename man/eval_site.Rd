@@ -12,6 +12,8 @@ eval_site(code, transpMode = "simple",
 
 \item{transpMode}{Either 'simple', 'complex' or 'both'}
 
+\item{control}{List with control parameters}
+
 \item{plot}{A boolean flag indicating whether plots should be produced}
 
 \item{write}{A boolean flag indicating whether tables must be written in disk}

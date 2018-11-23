@@ -1,14 +1,12 @@
 ---
-title: "Global report for `r params$code`"
+title: "Evaluation report for `r params$code`"
 author: "medfateTeam"
 date: "`r Sys.time()`"
 params:
-  wd: ''
-  code: ''
-  transpMode: 'both'
-  SPParams: 'old'
-  tapering: TRUE
-  rhizosphere: 0.15
+  wd: 'D:/Rpackages/medfate/validation'
+  code: 'PRADES'
+  transpMode: 'simple'
+  control: ''
 output:
   html_document:
     df_print: paged
@@ -25,9 +23,18 @@ knitr::opts_knit$set(root.dir = params$wd)
 library(medfate)
 library(MedfateValidation)
 library(dplyr)
+library(ggplot2)
 ```
 
+`r params$wd`
+
+`r params$code`
+
 ```{r data, message=FALSE, warning=TRUE}
+
+control <-params$control
+if(control=="") control = medfate::defaultControl()
+
 # site/plot code
 code <- params$code
 
@@ -91,14 +98,12 @@ remarks
 ```{r simple_model, eval=TRUE, message=FALSE}
 # check if simple mode has to be performed
 if (params$transpMode %in% c('simple', 'both')) {
-  # control object
-  control_obj <- medfate::defaultControl()
-  control_obj$verbose <- FALSE
-  control_obj$transpirationMode <- 'Simple'
+  control$verbose <- FALSE
+  control$transpirationMode <- 'Simple'
 
   # input object
   simple_input <- medfate::forest2spwbInput(forest_object, soil_object,
-                                           sp_params, control_obj)
+                                           sp_params, control)
   
   # input modifications (if any)
   simple_input <- inputMod(simple_input, customParams)
@@ -139,16 +144,14 @@ if (params$transpMode %in% c('simple', 'both')) {
 # check if complex mode has to be performed
 if (params$transpMode %in% c('complex', 'both')) {
   # control object
-  control_obj <- medfate::defaultControl()
-  control_obj$verbose <- TRUE
-  control_obj$averageFracRhizosphereResistance <- params$rhizosphere
-  
+  control$verbose <- TRUE
+  control$transpirationMode <- 'Complex'
   # input object
   # we also rebuild the soil_object to avoid using W data from the previous
   # runs
   soil_object <- medfate::soil(soilData)
   complex_input <- medfate::forest2spwbInput(forest_object, soil_object,
-                                            sp_params, control_obj)
+                                            sp_params, control)
   
   # input modifications (if any)
   complex_input <- inputMod(complex_input, customParams)
@@ -171,9 +174,9 @@ if (params$transpMode %in% c('complex', 'both')) {
   # P/PET plot
   plot(res_complex, yearAxis = TRUE)
   # ET plot
-  plot(res_complex, type = 'ET', yearAxis = TRUE)
+  plot(res_complex, type = 'EvapoTranspiration', yearAxis = TRUE)
   # SWC layers plot
-  plot(res_complex, 'Theta')
+  plot(res_complex, 'SoilTheta')
   # Stress plot
   plot(res_complex, type = 'PlantStress', yearAxis = TRUE)
   # Canopy Energy Balance plot
@@ -202,22 +205,22 @@ if (params$transpMode %in% c('both')) {
   sp_names <- paste0('E_sp', simple_input$above$SP)
   models_dfs <- saveRes(res_simple, res_complex, e_measured_coh,
                         spParams = sp_params,
-                        site_code = params$code)
+                        site_code = code)
 } else {
   if (params$transpMode %in% c('simple')) {
     sp_names <- paste0('E_sp', simple_input$above$SP)
-    models_dfs <- saveRes(res_simple, e_measured_coh,
+    models_dfs <- saveRes(res_simple, NULL, e_measured_coh,
                           spParams = sp_params,
-                          site_code = params$code)
+                          site_code = code)
   } else {
     sp_names <- paste0('E_sp', complex_input$above$SP)
-    models_dfs <- saveRes(complex_res = res_complex, e_measured_coh,
-                          spParams = sp_params, site_code = params$code)
+    models_dfs <- saveRes(NULL, complex_res = res_complex, e_measured_coh,
+                          spParams = sp_params, site_code = code)
   }
 }
 ```
 
-# Models comparision
+# Model comparison
 
 ## SWC in the measured layers
 
@@ -244,11 +247,11 @@ Eplanttot_stats <- statistics_summary('Eplanttot', models_dfs, measuredData,
                                       soil_object)
 ```
 
-Comparision | MAE | r² | Bias
+Comparison | MAE | r² | Bias
 ------------|-----|----|-------
-Simple *vs.* Measured | `r Eplanttot_stats$Eplanttot_MAE_simple` | `r Eplanttot_stats$Eplanttot_r_sq_simple` | `r Eplanttot_stats$Eplanttot_bias_simple`
-Complex *vs.* Measured | `r Eplanttot_stats$Eplanttot_MAE_complex` | `r Eplanttot_stats$Eplanttot_r_sq_complex` | `r Eplanttot_stats$Eplanttot_bias_complex`
-Simple *vs.* Complex | `r Eplanttot_stats$Eplanttot_MAE_both` | `r Eplanttot_stats$Eplanttot_r_sq_both` | `r Eplanttot_stats$Eplanttot_bias_both`
+Simple *vs.* Measured | `r Eplanttot_stats$MAE_simple` | `r Eplanttot_stats$r_sq_simple` | `r Eplanttot_stats$bias_simple`
+Complex *vs.* Measured | `r Eplanttot_stats$MAE_complex` | `r Eplanttot_stats$r_sq_complex` | `r Eplanttot_stats$bias_complex`
+Simple *vs.* Complex | `r Eplanttot_stats$MAE_both` | `r Eplanttot_stats$r_sq_both` | `r Eplanttot_stats$bias_both`
 
 
 ```{r fig_setup_Etot}
