@@ -2,13 +2,14 @@
 #'
 #' @param code String with the code of the site to be processed
 #' @param transpMode Either 'simple', 'complex' or 'both'
-#' @param plot A boolean flag indicating wether plots should be produced
+#' @param plot A boolean flag indicating whether plots should be produced
+#' @param write A boolean flag indicating whether tables must be written in disk
 #'
 #' @return A list with evaluation results
 #' @export
 eval_site<-function(code, transpMode="simple",
                     control = medfate::defaultControl(),
-                    plot = FALSE) {
+                    plot = FALSE, write = FALSE) {
 
   # library(dplyr)
 
@@ -137,7 +138,8 @@ eval_site<-function(code, transpMode="simple",
   models_dfs <- saveRes(simple_res = res_simple, complex_res = res_complex,
                         measured_vars = e_measured_coh,
                         spParams = sp_params,
-                        site_code = code, write=FALSE)
+                        site_code = code, write=write)
+
   SWC_stats <- statistics_summary('SWC', models_dfs, measuredData,
                                   soil_object)
   Eplanttot_stats <- statistics_summary('Eplanttot', models_dfs, measuredData,
@@ -192,6 +194,14 @@ eval_site<-function(code, transpMode="simple",
              models_dfs = models_dfs,
              measured = measuredData,
              eval = eval)
+  if(write) {
+    file_name <- file.path('Output', packageVersion('medfate')[[1]],
+                           code,
+                           paste0(format(Sys.time(), "%Y%m%d_%H%M"),
+                                  '_', code, '_',
+                                  'eval_object.rds'))
+    saveRDS(res, file = file_name)
+  }
   return(res)
 }
 

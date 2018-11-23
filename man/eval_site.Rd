@@ -5,14 +5,16 @@
 \title{Evaluates medfate for one site}
 \usage{
 eval_site(code, transpMode = "simple",
-  control = medfate::defaultControl(), plot = FALSE)
+  control = medfate::defaultControl(), plot = FALSE, write = FALSE)
 }
 \arguments{
 \item{code}{String with the code of the site to be processed}
 
 \item{transpMode}{Either 'simple', 'complex' or 'both'}
 
-\item{plot}{A boolean flag indicating wether plots should be produced}
+\item{plot}{A boolean flag indicating whether plots should be produced}
+
+\item{write}{A boolean flag indicating whether tables must be written in disk}
 }
 \value{
 A list with evaluation results
