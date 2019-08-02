@@ -19,7 +19,7 @@ load_forest<-function(site) {
 #' @export
 load_treeData <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_treeData.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_treeData.txt'))
   # load data
   tree_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                           stringsAsFactors = FALSE)
@@ -33,7 +33,7 @@ load_treeData <- function(site) {
 
 load_shrubData <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_shrubData.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_shrubData.txt'))
 
   # check if file exists, if not return NULL (in order to avoid errors in the
   # workflow)
@@ -54,7 +54,7 @@ load_shrubData <- function(site) {
 
 load_seedData <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_seedData.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_seedData.txt'))
 
   # check if file exists, if not return NULL (in order to avoid errors in the
   # workflow)
@@ -75,7 +75,7 @@ load_seedData <- function(site) {
 
 load_miscData <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_miscData.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_miscData.txt'))
   # load data
   misc_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                           stringsAsFactors = FALSE)
@@ -89,7 +89,7 @@ load_miscData <- function(site) {
 
 load_meteoData <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_meteoData.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_meteoData.txt'))
   # load data
   meteo_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                            stringsAsFactors = FALSE)
@@ -107,7 +107,7 @@ load_meteoData <- function(site) {
 
 load_soilData <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_soilData.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_soilData.txt'))
   # load data
   soil_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                           stringsAsFactors = FALSE)
@@ -121,7 +121,7 @@ load_soilData <- function(site) {
 
 load_soilDataUnilayer <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_soilDataUnilayer.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_soilDataUnilayer.txt'))
   # load data
   soil_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                           stringsAsFactors = FALSE)
@@ -135,10 +135,13 @@ load_soilDataUnilayer <- function(site) {
 
 load_measuredData <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_measuredData.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_measuredData.txt'))
   # load data
   measured_data <- read.table(location, header = TRUE, sep = '\t', dec = '.',
                               stringsAsFactors = FALSE)
+  # rownames
+  rownames(measured_data) <- measured_data[['Date']]
+
   # return data frame
   return(measured_data)
 }
@@ -149,7 +152,7 @@ load_measuredData <- function(site) {
 
 load_terrainData <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_terrainData.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_terrainData.txt'))
 
   # check if file exists, if not return NULL (in order to avoid errors in the
   # workflow)
@@ -170,7 +173,7 @@ load_terrainData <- function(site) {
 
 load_customParams <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_customParams.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_customParams.txt'))
 
   # check if file exists, if not return NULL (in order to avoid errors in the
   # workflow)
@@ -192,7 +195,7 @@ load_customParams <- function(site) {
 
 load_remarks <- function(site) {
   # file route
-  location <- file.path('Sites_data', site, paste0(site, '_remarks.txt'))
+  location <- file.path(pkg.globals$site_data_path,'Sites_data', site, paste0(site, '_remarks.txt'))
 
   # check if file exists, if not return NULL (in order to avoid errors in the
   # workflow)
@@ -207,6 +210,32 @@ load_remarks <- function(site) {
   return(remarks)
 }
 
+#' @describeIn load_forest
+#'
+#' @export
+load_list<-function(code, includeTrees = TRUE, includeShrubs = TRUE) {
+  data(SpParamsMED)
+  l = list()
+  l$treeData <- load_treeData(code)
+  if(!includeTrees) {
+    l$treeData = l$treeData[numeric(0),]
+  }
+  l$shrubData <- load_shrubData(code)
+  if(!includeShrubs) {
+    l$shrubData = l$shrubData[numeric(0),]
+  }
+  l$seedData <- load_seedData(code)
+  l$customParams <- load_customParams(code)
+  l$measuredData <- load_measuredData(code)
+  l$meteoData <- load_meteoData(code)
+  l$miscData <- load_miscData(code)
+  l$soilData <- load_soilData(code)
+  l$terrainData <- load_terrainData(code)
+  l$remarks <- load_remarks(code)
+  l$sp_params <- modifySpParams(SpParamsMED, l$customParams)
+  l$forest_object1 <- buildForest(l$treeData, l$shrubData, l$seedData, l$miscData)
+  return(l)
+}
 #' Load all the RData's generated in the validation process
 #'
 #' This function will be used in the general report with all sites data

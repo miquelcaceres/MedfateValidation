@@ -13,6 +13,7 @@
 \alias{load_terrainData}
 \alias{load_customParams}
 \alias{load_remarks}
+\alias{load_list}
 \title{Loading data functions}
 \usage{
 load_forest(site)
@@ -38,6 +39,8 @@ load_terrainData(site)
 load_customParams(site)
 
 load_remarks(site)
+
+load_list(code, includeTrees = TRUE, includeShrubs = TRUE)
 }
 \arguments{
 \item{site}{Character indicating site code to load.}
@@ -68,6 +71,8 @@ This functions search and load the data for the corresponding site
 \item \code{load_customParams}: 
 
 \item \code{load_remarks}: 
+
+\item \code{load_list}: 
 }}
 
 \concept{Load}
